@@ -1,0 +1,39 @@
+name: main
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOCKER_IMAGE: ghcr.io/chuhlomin/grid
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build and push to CR
+        uses: chuhlomin/actions/docker-build-push@main
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PKG_TOKEN }}
+          image_name: ${{ env.DOCKER_IMAGE }}
+          tags: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+
+      - name: Deploy to GKE
+        uses: chuhlomin/actions/deploy-gke@main
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT }}
+          cluster_name: cluster-east
+          location: us-east4-c
+          vars: |
+            image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+            app: grid
+            replicas: 2
+            domain: grid.chuhlomin.com
+          rollout_status_wait: deployment/grid
