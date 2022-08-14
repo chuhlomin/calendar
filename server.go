@@ -26,4 +26,6 @@ func (s *server) routes() {
 	s.router.Get("/dot.png", handlerStatic("dot.png"))
 	s.router.Get("/diamond.png", handlerStatic("diamond.png"))
 	s.router.Get("/rhombus.png", handlerStatic("rhombus.png"))
+
+	s.router.Post("/pdf", handlerPDF)
 }

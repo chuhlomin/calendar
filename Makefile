@@ -18,4 +18,4 @@ test:
 ## run: runs the binary
 run:
 	@go build -o grid .
-	@./grid
+	@./grid --bind :8082

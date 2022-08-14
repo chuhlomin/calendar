@@ -10,12 +10,12 @@
     <div class="wrapper">
         <div class="panel">
             <h1>Grid</h1>
-            <form>
+            <form onsubmit="submitForm(this); return false;">
                 <fieldset>
                     <legend>Paper Size: </legend>
                     <select name="size" onchange="changePageSize(this)">
-                        <option value="letter">US Letter (8.50" × 11.00")</span></option>
-                        <option value="a4">A4 (210 × 297 mm)</option>
+                        <option value="Letter">US Letter (8.50" × 11.00")</span></option>
+                        <option value="A4">A4 (210 × 297 mm)</option>
                     </select>
                 </fieldset>
 
@@ -46,6 +46,8 @@
                         </label>
                     </div>
                 </fieldset>
+
+                <input type="submit" value="Download PDF">
             </form>
         </div>
         <div class="content">

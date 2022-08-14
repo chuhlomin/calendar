@@ -2,14 +2,14 @@
 
 const pageSizes = [
     {
-        id: "letter",
+        id: "Letter",
         name: "US Letter",
         description: "8.5\" × 11\"",
         width: 216,
         height: 279
     },
     {
-        id: "a4",
+        id: "A4",
         name: "A4",
         description: "210mm × 297mm",
         width: 210,
@@ -18,7 +18,8 @@ const pageSizes = [
 ];
 
 let currentPage = pageSizes[0];
-let currentOrientation = "portrait";
+let currentOrientation = "P";
+let currentPattern = "rect";
 
 function updatePage() {
     let svg = document.getElementById("svg");
@@ -27,7 +28,7 @@ function updatePage() {
 
     let width = currentPage.width;
     let height = currentPage.height;
-    if (currentOrientation === "landscape") {
+    if (currentOrientation === "L") {
         width = currentPage.height;
         height = currentPage.width;
     }
@@ -47,11 +48,11 @@ function changePageSize(element) {
 function changeOrientation(element) {
     switch (element.value) {
     case "portrait":
-        currentOrientation = "portrait";
+        currentOrientation = "P";
         updatePage();
         break;
     case "landscape":
-        currentOrientation = "landscape";
+        currentOrientation = "L";
         updatePage();
         break;
     default:
@@ -62,4 +63,33 @@ function changeOrientation(element) {
 function changePattern(element) {
     let pattern = document.getElementById("pattern");
     pattern.setAttribute("fill", "url(#" + element.value + ")");
+    currentPattern = element.value;
+}
+
+function submitForm() {
+    fetch("/pdf", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            size: currentPage.id,
+            orientation: currentOrientation,
+            pattern: currentPattern
+        })
+    }).then(response => {
+        if (response.ok) {
+            response.blob().then(blob => {
+                let url = URL.createObjectURL(blob);
+                let a = document.createElement("a");
+                a.href = url;
+                a.download = "grid.pdf";
+                a.click();
+            });
+        } else {
+            console.log("Error: " + response.statusText);
+        }
+    }).catch(error => {
+        console.log("Error: " + error);
+    });
 }
