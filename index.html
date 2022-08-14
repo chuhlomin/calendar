@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Grid</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="common">
+    <div class="wrapper">
+        <div class="panel">
+            <form>
+                <fieldset>
+                    <legend>Paper Size: </legend>
+                    <select name="size" onchange="changePageSize(this)">
+                        <option value="letter">US Letter (8.50" × 11.00")</span></option>
+                        <option value="a4">A4 (210 × 297 mm)</option>
+                    </select>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Orientation:</legend>
+                    <label><input type="radio" name="orientation" value="portrait" checked onclick="changeOrientation(this)"> Portrait</label>
+                    <label><input type="radio" name="orientation" value="landscape" onclick="changeOrientation(this)"> Landscape</label>
+                </fieldset>
+            </form>
+        </div>
+        <div class="content">
+            <div class="page">
+                <svg id="svg" viewBox="0 0 210 297" preserveAspectRatio="xMidYMid meet">
+                    <rect id="rect" fill="white" width="210" height="297"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./script.js"></script>
+</body>
+</html>

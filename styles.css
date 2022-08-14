@@ -1,0 +1,102 @@
+@charset "UTF-8";
+
+:root {
+  --font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", "Open Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+
+  --color-text: #24292f;
+  --color-background: #F0F0F0;
+
+  --color-panel-text: #222222;
+  --color-panel-background: #e7ebee;
+  --color-panel-border: #d3d3d3;
+}
+
+/* Use a more-intuitive box-sizing model. */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+* {
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-default);
+  font-size: 16px;
+  line-height: 1.5;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+html, body, .wrapper {
+  min-height: 100vh;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 25ch 1fr;
+}
+
+.panel {
+  grid-column: 1;
+  padding: 0;
+  background: var(--color-panel-background);
+  border-right: 1px solid var(--color-panel-border);
+}
+
+.content {
+  grid-column: 2;
+  padding: 20px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.page {
+    text-align: center;
+}
+
+.page svg {
+    max-width: 100%;
+    height: calc(100vh - 40px);
+}
+
+.page svg rect {
+    stroke-width: 0.25;
+    stroke: #999999;
+}
+
+form {
+    padding: 20px;
+}
+
+select {
+    font-size: 16px;
+}
+
+label {
+    display: block;
+}
+
+fieldset {
+    border: 0;
+    padding: 0;
+}
+
+fieldset + fieldset {
+    margin-top: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: #eaf3f2;
+    --color-background: #282a3a;
+
+    --color-panel-text: #888d94;
+    --color-panel-background: #1e1f2b;
+    --color-panel-border: #161821;
+    --color-panel-current: #252633;
+  }
+}
