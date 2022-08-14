@@ -83,6 +83,7 @@ label {
 fieldset {
     border: 0;
     padding: 0;
+    cursor: default;
 }
 
 fieldset + fieldset {
@@ -105,6 +106,7 @@ fieldset + fieldset {
 }
 
 .patterns label img {
+    display: block;
     background: white;
     border: 1px solid #d3d3d3;
     border-radius: 6px;
