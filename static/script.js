@@ -21,6 +21,34 @@ let currentPage = pageSizes[0];
 let currentOrientation = "P";
 let currentPattern = "rect";
 
+window.onload = function() {
+    // read state from localStorage
+    let sizeID = localStorage.getItem("sizeID");
+    if (sizeID) {
+        currentPage = pageSizes.find(size => size.id == sizeID);
+        let sizeSelect = document.getElementsByName("size")[0];
+        sizeSelect.value = sizeID;
+    }
+    let orientation = localStorage.getItem("orientation");
+    if (orientation) {
+        currentOrientation = orientation;
+        let orientationSelect = document.querySelector("input[name='orientation'][value='" + orientation + "']");
+        orientationSelect.checked = true;
+    }
+
+    if (sizeID || orientation) {
+        updatePage();
+    }
+
+    let pattern = localStorage.getItem("pattern");
+    if (pattern) {
+        currentPattern = pattern;
+        let patternSelect = document.querySelector("input[name='pattern'][value='" + pattern + "']");
+        patternSelect.checked = true;
+        updatePattern(currentPattern);
+    }
+}
+
 function updatePage() {
     let svg = document.getElementById("svg");
     let rect = document.getElementById("rect");
@@ -43,27 +71,29 @@ function updatePage() {
 function changePageSize(element) {
     currentPage = pageSizes.find(pageSize => pageSize.id === element.value);
     updatePage();
+    localStorage.setItem("sizeID", currentPage.id);
 }
 
 function changeOrientation(element) {
-    switch (element.value) {
-    case "portrait":
-        currentOrientation = "P";
-        updatePage();
-        break;
-    case "landscape":
-        currentOrientation = "L";
-        updatePage();
-        break;
-    default:
+    if (element.value != "P" && element.value != "L") {
         console.log("Unknown orientation: " + element.value);
+        return;
     }
+
+    currentOrientation = element.value;
+    updatePage();
+    localStorage.setItem("orientation", element.value);
 }
 
 function changePattern(element) {
-    let pattern = document.getElementById("pattern");
-    pattern.setAttribute("fill", "url(#" + element.value + ")");
     currentPattern = element.value;
+    updatePattern(currentPattern);
+    localStorage.setItem("pattern", currentPattern);
+}
+
+function updatePattern(patternName) {
+    let pattern = document.getElementById("pattern");
+    pattern.setAttribute("fill", "url(#" + patternName + ")");
 }
 
 function submitForm() {
