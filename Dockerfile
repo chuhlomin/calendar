@@ -11,4 +11,4 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
 FROM scratch
 COPY static /
 COPY --from=builder /go/bin/app /app
-ENTRYPOINT ["/go/bin/app", "--bind", "0.0.0.0:80"]
+ENTRYPOINT ["/app", "--bind", "0.0.0.0:80"]
