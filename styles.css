@@ -89,6 +89,37 @@ fieldset + fieldset {
     margin-top: 20px;
 }
 
+.patterns {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
+.patterns label input {
+    display: none;
+}
+
+.patterns label {
+    display: block;
+}
+
+.patterns label img {
+    background: white;
+    border: 1px solid #d3d3d3;
+    border-radius: 6px;
+    overflow: hidden;
+    width: 100%;
+    height: auto;
+    box-shadow: 0 -5px 10px inset rgba(0,0,0,0.1);
+}
+
+.patterns input:checked + img {
+    border-color: #0b7fff;
+    box-shadow: 0 -5px 10px inset rgba(0,0,0,0.1),
+        0 0 0 1px #0b7fff;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --color-text: #eaf3f2;
@@ -99,4 +130,28 @@ fieldset + fieldset {
     --color-panel-border: #161821;
     --color-panel-current: #252633;
   }
+}
+
+@media print {
+    body {
+        background: none;
+    }
+    .wrapper {
+        display: block;
+    }
+    .panel {
+        display: none;
+    }
+    .content {
+        padding: 0;
+    }
+    .page {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+    .page svg rect {
+        stroke-width: 0;
+    }
 }

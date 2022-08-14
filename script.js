@@ -23,6 +23,7 @@ let currentOrientation = "portrait";
 function updatePage() {
     let svg = document.getElementById("svg");
     let rect = document.getElementById("rect");
+    let pattern = document.getElementById("pattern");
 
     let width = currentPage.width;
     let height = currentPage.height;
@@ -34,6 +35,8 @@ function updatePage() {
     svg.setAttribute("viewBox", "0 0 " + width + " " + height);
     rect.setAttribute("width", width);
     rect.setAttribute("height", height);
+    pattern.setAttribute("width", width);
+    pattern.setAttribute("height", height);
 }
 
 function changePageSize(element) {
@@ -54,4 +57,9 @@ function changeOrientation(element) {
     default:
         console.log("Unknown orientation: " + element.value);
     }
+}
+
+function changePattern(element) {
+    let pattern = document.getElementById("pattern");
+    pattern.setAttribute("fill", "url(#" + element.value + ")");
 }
