@@ -20,6 +20,7 @@ const pageSizes = [
 let currentPage = pageSizes[0];
 let currentOrientation = "P";
 let currentPattern = "rect";
+let currentPatternSize = 15;
 
 window.onload = function() {
     // read state from localStorage
@@ -46,6 +47,14 @@ window.onload = function() {
         let patternSelect = document.querySelector("input[name='pattern'][value='" + pattern + "']");
         patternSelect.checked = true;
         updatePattern(currentPattern);
+    }
+
+    let patternSize = localStorage.getItem("patternSize");
+    if (patternSize) {
+        currentPatternSize = patternSize;
+        let sizeInput = document.getElementsByName("patternSize")[0];
+        sizeInput.value = patternSize;
+        updatePatternSize(currentPatternSize);
     }
 }
 
@@ -91,9 +100,31 @@ function changePattern(element) {
     localStorage.setItem("pattern", currentPattern);
 }
 
+function changePatternSize(element) {
+    currentPatternSize = element.value;
+    updatePatternSize(currentPatternSize);
+    localStorage.setItem("patternSize", currentPatternSize);
+}
+
 function updatePattern(patternName) {
     let pattern = document.getElementById("pattern");
     pattern.setAttribute("fill", "url(#" + patternName + ")");
+}
+
+function updatePatternSize(size) {
+    let patterns = document.getElementsByTagName("pattern");
+
+    for (let pattern of patterns) {
+        let width = size;
+        let height = size;
+
+        if (pattern.id == "rhombus") {
+            height = width * 0.6;
+        }
+
+        pattern.setAttribute("width", width);
+        pattern.setAttribute("height", height);
+    }
 }
 
 function submitForm() {
@@ -105,7 +136,10 @@ function submitForm() {
         body: JSON.stringify({
             size: currentPage.id,
             orientation: currentOrientation,
-            pattern: currentPattern
+            pattern: {
+                name: currentPattern,
+                size: currentPatternSize
+            }
         })
     }).then(response => {
         if (response.ok) {

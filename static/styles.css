@@ -95,6 +95,10 @@ fieldset + fieldset {
     margin-top: 10px;
 }
 
+input[type="number"] {
+    text-align: right;
+}
+
 input[type="submit"] {
     display: block;
     margin-top: 20px;
