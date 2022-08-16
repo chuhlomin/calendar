@@ -118,7 +118,7 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 			}
 		}
 	default:
-		return fmt.Errorf("unknown pattern: %s", pattern)
+		return fmt.Errorf("unknown pattern: %s", pattern.Name)
 	}
 
 	return nil
