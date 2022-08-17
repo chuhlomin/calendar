@@ -118,11 +118,11 @@ input[type="submit"] {
     row-gap: 10px;
 }
 
-.patterns label input {
+.pattern input {
     display: none;
 }
 
-.patterns label {
+.pattern label {
     display: block;
 }
 

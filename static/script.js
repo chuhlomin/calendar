@@ -53,6 +53,15 @@ window.onload = function() {
     button.addEventListener('colorChange', function (event) {
         changeColor(event.detail.color.hexa);
     });
+
+    let patterns = document.getElementsByClassName("pattern");
+    for (let patternEl of patterns) {
+        patternEl.addEventListener("keypress", function(event) {
+            if (event.code == "Space" || event.code == "Enter") {
+                changePattern(patternEl.childNodes[1]);
+            }
+        });
+    }
 };
 
 function updatePage() {
