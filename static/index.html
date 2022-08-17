@@ -14,9 +14,14 @@
             <form onsubmit="submitForm(this); return false;">
                 <fieldset>
                     <legend>Paper Size: </legend>
-                    <select name="size" onchange="changePageSize(this)">
-                        <option value="Letter">US Letter (8.50" × 11.00")</span></option>
-                        <option value="A4">A4 (210 × 297 mm)</option>
+                    <select name="size" id="pageSize" onchange="changePageSize(this)">
+                        <option value="Letter" data-width="216" data-height="279">US Letter (8.50" × 11.00")</span></option>
+                        <option value="Legal" data-width="216" data-height="356">US Legal (8.50" × 14.00")</span></option>
+                        <option value="A1" data-width="594" data-height="841">A1 (594 × 841 mm)</option>
+                        <option value="A2" data-width="420" data-height="594">A2 (420 × 594 mm)</option>
+                        <option value="A3" data-width="297" data-height="420">A3 (297 × 420 mm)</option>
+                        <option value="A4" data-width="210" data-height="297">A4 (210 × 297 mm)</option>
+                        <option value="A5" data-width="148" data-height="210">A5 (148 × 210 mm)</option>
                     </select>
                 </fieldset>
 
@@ -31,19 +36,19 @@
                     <div class="patterns">
                         <label>
                             <input type="radio" name="pattern" value="rect" checked onclick="changePattern(this)">
-                            <img src="rect.png">
+                            <img src="rect.png" alt="simple grid">
                         </label>
                         <label>
                             <input type="radio" name="pattern" value="dot" onclick="changePattern(this)">
-                            <img src="dot.png">
+                            <img src="dot.png" alt="dots">
                         </label>
                         <label>
                             <input type="radio" name="pattern" value="diamond" onclick="changePattern(this)">
-                            <img src="diamond.png">
+                            <img src="diamond.png" alt="45º grid">
                         </label>
                         <label>
                             <input type="radio" name="pattern" value="rhombus" onclick="changePattern(this)">
-                            <img src="rhombus.png">
+                            <img src="rhombus.png" alt="rhombus grid">
                         </label>
                     </div>
                 </fieldset>

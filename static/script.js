@@ -1,23 +1,6 @@
 "use strict";
 
-const pageSizes = [
-    {
-        id: "Letter",
-        name: "US Letter",
-        description: "8.5\" × 11\"",
-        width: 216,
-        height: 279
-    },
-    {
-        id: "A4",
-        name: "A4",
-        description: "210mm × 297mm",
-        width: 210,
-        height: 297
-    }
-];
-
-let currentPage = pageSizes[0];
+let currentPageSize = "A4";
 let currentOrientation = "P";
 let currentPattern = "rect";
 let currentPatternSize = "15";
@@ -27,7 +10,7 @@ window.onload = function() {
     // read state from localStorage
     let sizeID = localStorage.getItem("sizeID");
     if (sizeID) {
-        currentPage = pageSizes.find(size => size.id == sizeID);
+        currentPageSize = sizeID;
         let sizeSelect = document.getElementsByName("size")[0];
         sizeSelect.value = sizeID;
     }
@@ -70,18 +53,20 @@ window.onload = function() {
     button.addEventListener('colorChange', function (event) {
         changeColor(event.detail.color.hexa);
     });
-}
+};
 
 function updatePage() {
     let svg = document.getElementById("svg");
     let rect = document.getElementById("rect");
     let pattern = document.getElementById("pattern");
 
-    let width = currentPage.width;
-    let height = currentPage.height;
+    let pageData = document.getElementById("pageSize").querySelector("option[value='" + currentPageSize + "']").dataset;
+
+    let width = pageData.width;
+    let height = pageData.height;
     if (currentOrientation === "L") {
-        width = currentPage.height;
-        height = currentPage.width;
+        width = pageData.height;
+        height = pageData.width;
     }
 
     svg.setAttribute("viewBox", "0 0 " + width + " " + height);
@@ -92,9 +77,9 @@ function updatePage() {
 }
 
 function changePageSize(element) {
-    currentPage = pageSizes.find(pageSize => pageSize.id === element.value);
+    currentPageSize = element.value;
     updatePage();
-    localStorage.setItem("sizeID", currentPage.id);
+    localStorage.setItem("sizeID", currentPageSize);
 }
 
 function changeOrientation(element) {
