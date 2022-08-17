@@ -20,7 +20,8 @@ const pageSizes = [
 let currentPage = pageSizes[0];
 let currentOrientation = "P";
 let currentPattern = "rect";
-let currentPatternSize = 15;
+let currentPatternSize = "15";
+let currentPatternColor = "#000000";
 
 window.onload = function() {
     // read state from localStorage
@@ -56,6 +57,19 @@ window.onload = function() {
         sizeInput.value = patternSize;
         updatePatternSize(currentPatternSize);
     }
+
+    let patternColor = localStorage.getItem("patternColor");
+    if (patternColor) {
+        currentPatternColor = patternColor;
+        updatePatternColor(currentPatternColor);
+    }
+
+    // initialize color picker
+    let button = document.getElementById('picker');
+    let picker = new ColorPicker(button, currentPatternColor);
+    button.addEventListener('colorChange', function (event) {
+        changeColor(event.detail.color.hexa);
+    });
 }
 
 function updatePage() {
@@ -106,6 +120,12 @@ function changePatternSize(element) {
     localStorage.setItem("patternSize", currentPatternSize);
 }
 
+function changeColor(color) {
+    currentPatternColor = color;
+    updatePatternColor(currentPatternColor);
+    localStorage.setItem("patternColor", currentPatternColor);
+}
+
 function updatePattern(patternName) {
     let pattern = document.getElementById("pattern");
     pattern.setAttribute("fill", "url(#" + patternName + ")");
@@ -127,6 +147,18 @@ function updatePatternSize(size) {
     }
 }
 
+function updatePatternColor(color) {
+    let svg = document.getElementById("svg");
+    const paths = svg.getElementsByTagName("path");
+    for (let path of paths) {
+        path.setAttribute("stroke", color);
+    }
+    const circles = svg.getElementsByTagName("circle")
+    for (let circle of circles) {
+        circle.setAttribute("fill", color);
+    }
+}
+
 function submitForm() {
     fetch("/pdf", {
         method: "POST",
@@ -138,7 +170,8 @@ function submitForm() {
             orientation: currentOrientation,
             pattern: {
                 name: currentPattern,
-                size: currentPatternSize
+                size: currentPatternSize,
+                color: currentPatternColor
             }
         })
     }).then(response => {

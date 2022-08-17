@@ -85,6 +85,10 @@ label {
     display: block;
 }
 
+label.inline {
+    display: inline;
+}
+
 fieldset {
     border: 0;
     padding: 0;
@@ -137,6 +141,13 @@ input[type="submit"] {
     border-color: #0b7fff;
     box-shadow: 0 -5px 10px inset rgba(0,0,0,0.1),
         0 0 0 1px #0b7fff;
+}
+
+#picker {
+    width: 2rem;
+    height: 21px;
+    border: 1px solid #d3d3d3;
+    border-radius: 6px;
 }
 
 @media (prefers-color-scheme: dark) {

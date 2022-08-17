@@ -17,9 +17,10 @@ type pdfRequest struct {
 }
 
 type pattern struct {
-	Name string `json:"name"`
-	Size string `json:"size"`
-	size float64
+	Name  string `json:"name"`
+	Size  string `json:"size"`
+	Color string `json:"color"`
+	size  float64
 }
 
 func handlerPDF(w http.ResponseWriter, r *http.Request) {
@@ -57,8 +58,8 @@ func createPDF(writer io.Writer, size, orientation string, pattern pattern) erro
 	pdf.SetAutoPageBreak(false, 0)
 
 	pdf.AddPage()
-	pdf.SetDrawColor(0, 0, 0)
 	pdf.SetFillColor(255, 255, 255)
+	pdf.SetDrawColor(convertColor(pattern.Color))
 
 	err := drawPattern(pdf, pattern)
 	if err != nil {
@@ -122,4 +123,14 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 	}
 
 	return nil
+}
+
+func convertColor(hex string) (int, int, int) {
+	var r, g, b int64
+	if len(hex) == 7 {
+		r, _ = strconv.ParseInt(hex[1:3], 16, 0)
+		g, _ = strconv.ParseInt(hex[3:5], 16, 0)
+		b, _ = strconv.ParseInt(hex[5:7], 16, 0)
+	}
+	return int(r), int(g), int(b)
 }

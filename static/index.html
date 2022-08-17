@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Grid</title>
 <link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@r-tek/colr_pickr@2.0.0/build/colr_pickr.min.css">
 </head>
 <body>
 <div class="common">
@@ -48,10 +49,14 @@
                 </fieldset>
 
                 <fieldset>
-                    <label>
+                    <label class="inline">
                         Size:
                         <input type="number" name="patternSize" value="15" min="1" max="100" onchange="changePatternSize(this)">
                     </label>
+                </fieldset>
+                <fieldset>
+                    <label for="picker" class="inline">Color:</label>
+                    <button id="picker" type="button"></button>
                 </fieldset>
 
                 <input type="submit" value="Download PDF">
@@ -86,5 +91,6 @@
     </div>
 </div>
 <script src="./script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@r-tek/colr_pickr@2.0.0/build/colr_pickr.min.js"></script>
 </body>
 </html>
