@@ -58,6 +58,7 @@ window.onload = function() {
     for (let patternEl of patterns) {
         patternEl.addEventListener("keypress", function(event) {
             if (event.code == "Space" || event.code == "Enter") {
+                patternEl.childNodes[1].checked = true;
                 changePattern(patternEl.childNodes[1]);
             }
         });
