@@ -160,7 +160,7 @@ function submitForm() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            size: currentPage.id,
+            size: currentPageSize,
             orientation: currentOrientation,
             pattern: {
                 name: currentPattern,
