@@ -89,13 +89,13 @@ label.inline {
     display: inline;
 }
 
-fieldset {
+.field {
     border: 0;
     padding: 0;
     cursor: default;
 }
 
-fieldset + fieldset {
+.field + .field {
     margin-top: 10px;
 }
 

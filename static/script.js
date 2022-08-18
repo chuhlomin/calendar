@@ -5,6 +5,7 @@ let currentOrientation = "P";
 let currentPattern = "rect";
 let currentPatternSize = "15";
 let currentPatternColor = "#000000";
+let currentLineWidth = "1";
 
 window.onload = function() {
     // read state from localStorage
@@ -45,6 +46,14 @@ window.onload = function() {
     if (patternColor) {
         currentPatternColor = patternColor;
         updatePatternColor(currentPatternColor);
+    }
+
+    let lineWidth = localStorage.getItem("patternLineWidth");
+    if (lineWidth) {
+        currentLineWidth = lineWidth;
+        let lineWidthInput = document.getElementsByName("patternLineWidth")[0];
+        lineWidthInput.value = lineWidth;
+        updateLineWidth(currentLineWidth);
     }
 
     // initialize color picker
@@ -121,6 +130,12 @@ function changeColor(color) {
     localStorage.setItem("patternColor", currentPatternColor);
 }
 
+function changePatternLineWidth(element) {
+    currentLineWidth = element.value;
+    updateLineWidth(currentLineWidth);
+    localStorage.setItem("patternLineWidth", currentLineWidth);
+}
+
 function updatePattern(patternName) {
     let pattern = document.getElementById("pattern");
     pattern.setAttribute("fill", "url(#" + patternName + ")");
@@ -154,6 +169,18 @@ function updatePatternColor(color) {
     }
 }
 
+function updateLineWidth(width) {
+    let svg = document.getElementById("svg");
+    const paths = svg.getElementsByTagName("path");
+    for (let path of paths) {
+        path.setAttribute("stroke-width", width);
+    }
+    const circles = svg.getElementsByTagName("circle")
+    for (let circle of circles) {
+        circle.setAttribute("r", width);
+    }
+}
+
 function submitForm() {
     fetch("/pdf", {
         method: "POST",
@@ -166,7 +193,8 @@ function submitForm() {
             pattern: {
                 name: currentPattern,
                 size: currentPatternSize,
-                color: currentPatternColor
+                color: currentPatternColor,
+                lineWidth: currentLineWidth
             }
         })
     }).then(response => {

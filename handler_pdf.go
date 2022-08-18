@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/jung-kurt/gofpdf"
+	"github.com/pkg/errors"
 )
 
 type pdfRequest struct {
@@ -17,10 +19,12 @@ type pdfRequest struct {
 }
 
 type pattern struct {
-	Name  string `json:"name"`
-	Size  string `json:"size"`
-	Color string `json:"color"`
-	size  float64
+	Name      string `json:"name"`
+	Size      string `json:"size"`
+	Color     string `json:"color"`
+	LineWidth string `json:"lineWidth"`
+	size      float64
+	lineWidth float64
 }
 
 func handlerPDF(w http.ResponseWriter, r *http.Request) {
@@ -34,6 +38,14 @@ func handlerPDF(w http.ResponseWriter, r *http.Request) {
 	// convert pattern size from string to float64
 	req.Pattern.size, err = strconv.ParseFloat(req.Pattern.Size, 64)
 	if err != nil {
+		log.Println("error converting pattern size:", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	req.Pattern.lineWidth, err = strconv.ParseFloat(req.Pattern.LineWidth, 64)
+	if err != nil {
+		log.Println("error converting line width:", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -41,13 +53,9 @@ func handlerPDF(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/pdf")
 	w.Header().Set("Content-Disposition", "attachment; filename=grid.pdf")
 
-	err = createPDF(
-		w,
-		req.Size,
-		req.Orientation,
-		req.Pattern,
-	)
+	err = createPDF(w, req.Size, req.Orientation, req.Pattern)
 	if err != nil {
+		log.Println("error creating pdf:", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -63,12 +71,12 @@ func createPDF(writer io.Writer, size, orientation string, pattern pattern) erro
 
 	err := drawPattern(pdf, pattern)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "error drawing pattern")
 	}
 
 	err = pdf.Output(writer)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "error writing pdf")
 	}
 
 	return nil
@@ -77,6 +85,8 @@ func createPDF(writer io.Writer, size, orientation string, pattern pattern) erro
 func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 	w, h := pdf.GetPageSize()
 	patternSize := pattern.size
+
+	pdf.SetLineWidth(pattern.lineWidth)
 
 	switch pattern.Name {
 	case "rect":
@@ -90,7 +100,7 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 		pdf.SetFillColor(0, 0, 0)
 		for x := 0.0; x < w; x += patternSize {
 			for y := 0.0; y < h; y += patternSize {
-				pdf.Circle(x, y, 0.2, "F")
+				pdf.Circle(x, y, pattern.lineWidth, "F")
 			}
 		}
 	case "diamond":
