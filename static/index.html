@@ -11,7 +11,7 @@
     <div class="wrapper">
         <div class="panel">
             <h1>Grid</h1>
-            <form onsubmit="submitForm(this); return false;">
+            <form action="" onsubmit="return false">
                 <div class="field">
                     <legend>Paper Size: </legend>
                     <select name="size" id="pageSize" onchange="changePageSize(this)">
@@ -55,46 +55,29 @@
 
                 <div class="field">
                     <label class="inline">
-                        Size:
-                        <input type="number" name="patternSize" value="15" min="1" max="100" onchange="changePatternSize(this)">
+                        Pattern Size (mm):
+                        <input type="number" name="patternSize" value="5" min="1" max="100" onchange="changePatternSize(this)" onkeyup="changePatternSize(this)">
+                    </label>
+                </div>
+                <div class="field">
+                    <label class="inline">
+                        Line width (nm):
+                        <input type="number" name="patternLineWidth" value="250" min="0" max="1000" onchange="changePatternLineWidth(this)" onkeyup="changePatternLineWidth(this)">
                     </label>
                 </div>
                 <div class="field">
                     <label for="picker" class="inline">Color:</label>
                     <button id="picker" type="button"></button>
                 </div>
-                <div class="field">
-                    <label class="inline">
-                        Line width:
-                        <input type="number" name="patternLineWidth" value="1" min="0" max="100" onchange="changePatternLineWidth(this)">
-                    </label>
-                </div>
 
-                <input type="submit" value="Download PDF">
+                <input type="submit" value="Download PDF" onclick="submitForm(this)">
             </form>
         </div>
         <div class="content">
             <div class="page">
                 <svg id="svg" viewBox="0 0 210 297" preserveAspectRatio="xMidYMid meet">
                     <rect id="rect" fill="white" width="210" height="297"/>
-
-                    <defs>
-                        <pattern id="rect" viewBox="0,0,100,100" width="15" height="15" patternUnits="userSpaceOnUse">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M0.5 0.5H101.5V101.5H0.5V0.5ZM1.5 1.5V100.5H100.5V1.5H1.5Z" fill="none" stroke="black" stroke-width="1"/>
-                        </pattern>
-                        <pattern id="dot" viewBox="0,0,100,100" width="15" height="15" patternUnits="userSpaceOnUse">
-                            <circle cx="0" cy="0" r="1" fill="black"/>
-                            <circle cx="100" cy="0" r="1" fill="black"/>
-                            <circle cx="100" cy="100" r="1" fill="black"/>
-                            <circle cx="0" cy="100" r="1" fill="black"/>
-                        </pattern>
-                        <pattern id="diamond" viewBox="0,0,100,100" width="15" height="15" patternUnits="userSpaceOnUse">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M50 -0.718872L100.719 50L50 100.719L-0.718823 50L50 -0.718872ZM50 0.695341L0.69539 50L50 99.3046L99.3046 50L50 0.695341Z" fill="none" stroke="black" stroke-width="1" />
-                        </pattern>
-                        <pattern id="rhombus" viewBox="0,0,100,60" width="15" height="9" patternUnits="userSpaceOnUse">
-                            <path d="M50 -0.0117191L100.012 30L50 60.0117L-0.0117166 30L50 -0.0117191Z" fill="none" stroke="black" stroke-width="1"/>
-                        </pattern>
-                    </defs>
+                    <defs id="patterns"></defs>
                     <rect id="pattern" fill="url(#rect)" width="210" height="297" />
                 </svg>
             </div>
@@ -102,6 +85,24 @@
     </div>
 </div>
 <script src="./script.js"></script>
+<script id="template_patterns" type="x-tmpl-mustache">
+    <pattern id="rect" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
+        <rect width="{{ size }}" height="{{ size }}" style="fill:none;stroke:{{ color }};stroke-width:{{ lineWidth }}"/>
+    </pattern>
+    <pattern id="dot" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
+        <circle cx="0" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="{{ size }}" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="{{ size }}" cy="{{ size }}" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="0" cy="{{ size }}" r="{{ lineWidth }}" fill="{{ color }}"/>
+    </pattern>
+    <pattern id="diamond" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M{{ sizeHalf }} 0 L{{ size }} {{ sizeHalf }} L{{ sizeHalf }} {{ size }} L0 {{ sizeHalf }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
+    </pattern>
+    <pattern id="rhombus" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M{{ sizeHalf }} 0 L{{ size }} {{ heightHalf }} L{{ sizeHalf }} {{ height }} L0 {{ heightHalf }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
+    </pattern>
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@r-tek/colr_pickr@2.0.0/build/colr_pickr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
 </body>
 </html>

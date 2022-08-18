@@ -64,10 +64,7 @@ func handlerPDF(w http.ResponseWriter, r *http.Request) {
 func createPDF(writer io.Writer, size, orientation string, pattern pattern) error {
 	pdf := gofpdf.New(orientation, "mm", size, "")
 	pdf.SetAutoPageBreak(false, 0)
-
 	pdf.AddPage()
-	pdf.SetFillColor(255, 255, 255)
-	pdf.SetDrawColor(convertColor(pattern.Color))
 
 	err := drawPattern(pdf, pattern)
 	if err != nil {
@@ -83,10 +80,13 @@ func createPDF(writer io.Writer, size, orientation string, pattern pattern) erro
 }
 
 func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
+	pdf.SetFillColor(255, 255, 255)
+	pdf.SetDrawColor(convertColor(pattern.Color))
+
 	w, h := pdf.GetPageSize()
 	patternSize := pattern.size
 
-	pdf.SetLineWidth(pattern.lineWidth)
+	pdf.SetLineWidth(pattern.lineWidth / 1000)
 
 	switch pattern.Name {
 	case "rect":
@@ -97,10 +97,10 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 			}
 		}
 	case "dot":
-		pdf.SetFillColor(0, 0, 0)
+		pdf.SetFillColor(convertColor(pattern.Color))
 		for x := 0.0; x < w; x += patternSize {
 			for y := 0.0; y < h; y += patternSize {
-				pdf.Circle(x, y, pattern.lineWidth, "F")
+				pdf.Circle(x, y, pattern.lineWidth/1000, "F")
 			}
 		}
 	case "diamond":

@@ -3,9 +3,9 @@
 let currentPageSize = "A4";
 let currentOrientation = "P";
 let currentPattern = "rect";
-let currentPatternSize = "15";
-let currentPatternColor = "#000000";
-let currentLineWidth = "1";
+let currentPatternSize = "5";
+let currentPatternColor = "#cccccc";
+let currentLineWidth = "250";
 
 window.onload = function() {
     // read state from localStorage
@@ -39,13 +39,11 @@ window.onload = function() {
         currentPatternSize = patternSize;
         let sizeInput = document.getElementsByName("patternSize")[0];
         sizeInput.value = patternSize;
-        updatePatternSize(currentPatternSize);
     }
 
     let patternColor = localStorage.getItem("patternColor");
     if (patternColor) {
         currentPatternColor = patternColor;
-        updatePatternColor(currentPatternColor);
     }
 
     let lineWidth = localStorage.getItem("patternLineWidth");
@@ -53,8 +51,9 @@ window.onload = function() {
         currentLineWidth = lineWidth;
         let lineWidthInput = document.getElementsByName("patternLineWidth")[0];
         lineWidthInput.value = lineWidth;
-        updateLineWidth(currentLineWidth);
     }
+
+    updatePatterns();
 
     // initialize color picker
     let button = document.getElementById('picker');
@@ -120,19 +119,19 @@ function changePattern(element) {
 
 function changePatternSize(element) {
     currentPatternSize = element.value;
-    updatePatternSize(currentPatternSize);
+    updatePatterns();
     localStorage.setItem("patternSize", currentPatternSize);
 }
 
 function changeColor(color) {
     currentPatternColor = color;
-    updatePatternColor(currentPatternColor);
+    updatePatterns();
     localStorage.setItem("patternColor", currentPatternColor);
 }
 
 function changePatternLineWidth(element) {
     currentLineWidth = element.value;
-    updateLineWidth(currentLineWidth);
+    updatePatterns();
     localStorage.setItem("patternLineWidth", currentLineWidth);
 }
 
@@ -141,44 +140,20 @@ function updatePattern(patternName) {
     pattern.setAttribute("fill", "url(#" + patternName + ")");
 }
 
-function updatePatternSize(size) {
-    let patterns = document.getElementsByTagName("pattern");
-
-    for (let pattern of patterns) {
-        let width = size;
-        let height = size;
-
-        if (pattern.id == "rhombus") {
-            height = width * 0.6;
+function updatePatterns() {
+    let template = document.getElementById('template_patterns').innerHTML;
+    let rendered = Mustache.render(
+        template,
+        {
+            size: currentPatternSize,
+            sizeHalf: currentPatternSize / 2,
+            height: currentPatternSize * 0.6,
+            heightHalf: currentPatternSize * 0.3,
+            color: currentPatternColor,
+            lineWidth: currentLineWidth/1000,
         }
-
-        pattern.setAttribute("width", width);
-        pattern.setAttribute("height", height);
-    }
-}
-
-function updatePatternColor(color) {
-    let svg = document.getElementById("svg");
-    const paths = svg.getElementsByTagName("path");
-    for (let path of paths) {
-        path.setAttribute("stroke", color);
-    }
-    const circles = svg.getElementsByTagName("circle")
-    for (let circle of circles) {
-        circle.setAttribute("fill", color);
-    }
-}
-
-function updateLineWidth(width) {
-    let svg = document.getElementById("svg");
-    const paths = svg.getElementsByTagName("path");
-    for (let path of paths) {
-        path.setAttribute("stroke-width", width);
-    }
-    const circles = svg.getElementsByTagName("circle")
-    for (let circle of circles) {
-        circle.setAttribute("r", width);
-    }
+    );
+    document.getElementById('patterns').innerHTML = rendered;
 }
 
 function submitForm() {
@@ -194,7 +169,7 @@ function submitForm() {
                 name: currentPattern,
                 size: currentPatternSize,
                 color: currentPatternColor,
-                lineWidth: currentLineWidth
+                lineWidth: currentLineWidth,
             }
         })
     }).then(response => {
