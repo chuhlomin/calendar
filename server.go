@@ -22,6 +22,8 @@ func (s *server) routes() {
 	s.router.Get("/styles.css", handlerStatic("styles.css"))
 	s.router.Get("/script.js", handlerStatic("script.js"))
 	s.router.Get("/patterns.png", handlerStatic("patterns.png"))
+	s.router.Get("/GitHub-Mark-32px.png", handlerStatic("GitHub-Mark-32px.png"))
+	s.router.Get("/GitHub-Mark-Light-32px.png", handlerStatic("GitHub-Mark-Light-32px.png"))
 
 	s.router.Post("/pdf", handlerPDF)
 }

@@ -1,19 +1,29 @@
 @charset "UTF-8";
 
 :root {
-  --font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", "Open Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  --font-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  --font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", "Open Sans",
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    Liberation Mono, monospace;
 
   --color-text: #24292f;
-  --color-background: #F0F0F0;
+  --color-background: #f0f0f0;
 
   --color-panel-text: #222222;
   --color-panel-background: #e7ebee;
   --color-panel-border: #d3d3d3;
+
+  --underline-opacity: 0.25;
+  --color-link: #0969da;
+  --color-link-underscore: rgba(9, 105, 218, var(--underline-opacity));
+  --color-link-hover: #0969da;
+  --color-link-hover-underscore: rgba(9, 105, 218, var(--underline-opacity));
 }
 
 /* Use a more-intuitive box-sizing model. */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -31,8 +41,23 @@ body {
   color: var(--color-text);
 }
 
-html, body, .wrapper {
+html,
+body,
+.wrapper {
   min-height: 100vh;
+}
+
+a {
+  transition-property: color, border;
+  transition-duration: 0.33s;
+  transition-timing-function: ease-out;
+  text-decoration: none;
+  color: var(--color-link);
+  border-bottom: 1px solid var(--color-link-underscore);
+}
+a:hover {
+  color: var(--color-link-hover);
+  border-color: var(--color-link-hover-underscore);
 }
 
 .wrapper {
@@ -43,13 +68,15 @@ html, body, .wrapper {
 .panel {
   grid-column: 1;
   padding: 0;
+  display: flex;
+  flex-direction: column;
   background: var(--color-panel-background);
   border-right: 1px solid var(--color-panel-border);
 }
 
 .panel h1 {
-    padding: 10px 20px 0;
-    margin: 0;
+  padding: 10px 20px 0;
+  margin: 0;
 }
 
 .content {
@@ -60,123 +87,144 @@ html, body, .wrapper {
 }
 
 .page {
-    text-align: center;
+  text-align: center;
 }
 
 .page svg {
-    max-width: 100%;
-    height: calc(100vh - 40px);
+  max-width: 100%;
+  height: calc(100vh - 40px);
 }
 
 .page svg rect {
-    stroke-width: 0.25;
-    stroke: #999999;
+  stroke-width: 0.25;
+  stroke: #999999;
 }
 
 form {
-    padding: 0 20px 20px;
+  padding: 0 20px 20px;
 }
 
 select {
-    font-size: 16px;
-    width: 100%;
+  font-size: 16px;
+  width: 100%;
 }
 
 label {
-    display: block;
+  display: block;
 }
 
 label.inline {
-    display: inline;
+  display: inline;
 }
 
 label.full-width-label {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .field {
-    border: 0;
-    padding: 0;
-    cursor: default;
+  border: 0;
+  padding: 0;
+  cursor: default;
 }
 
 .field + .field {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 input[type="number"] {
-    text-align: right;
-    width: 8ch;
+  text-align: right;
+  width: 8ch;
 }
 
 input[type="submit"] {
-    display: block;
-    margin-top: 20px;
-    width: 100%;
-    padding: 10px 20px;
-    font-size: 22px;
+  display: block;
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 22px;
 }
 
 .patterns {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    column-gap: 10px;
-    row-gap: 10px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  column-gap: 10px;
+  row-gap: 10px;
 }
 
 .pattern input {
-    display: none;
+  display: none;
 }
 
 .pattern label {
-    display: block;
+  display: block;
 }
 
 /* class that starts with pattern-*/
 [class^="pattern-"] {
-    display: block;
-    background: url("patterns.png") no-repeat;
-    background-size: 600% 100%;
-    border: 1px solid #d3d3d3;
-    border-radius: 6px;
-    overflow: hidden;
-    width: 100%;
-    aspect-ratio: 1;
-    box-shadow: 0 -5px 10px inset rgba(0,0,0,0.1);
+  display: block;
+  background: url("patterns.png") no-repeat;
+  background-size: 600% 100%;
+  border: 1px solid #d3d3d3;
+  border-radius: 6px;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1;
+  box-shadow: 0 -5px 10px inset rgba(0, 0, 0, 0.1);
 }
 
 .pattern-lines {
-    background-position: 20% 0;
+  background-position: 20% 0;
 }
 
 .pattern-dot {
-    background-position: 40% 0;
+  background-position: 40% 0;
 }
 
 .pattern-diamond {
-    background-position: 60% 0;
+  background-position: 60% 0;
 }
 
 .pattern-rhombus {
-    background-position: 80% 0;
+  background-position: 80% 0;
 }
 
 .pattern-triangles {
-    background-position: 100% 0;
+  background-position: 100% 0;
 }
 
 .patterns input:checked + div {
-    border-color: #0b7fff;
-    box-shadow: 0 -5px 10px inset rgba(0,0,0,0.1),
-        0 0 0 1px #0b7fff;
+  border-color: #0b7fff;
+  box-shadow: 0 -5px 10px inset rgba(0, 0, 0, 0.1), 0 0 0 1px #0b7fff;
 }
 
 #picker {
-    width: 2rem;
-    height: 21px;
-    border: 1px solid #d3d3d3;
-    border-radius: 6px;
+  width: 2rem;
+  height: 21px;
+  border: 1px solid #d3d3d3;
+  border-radius: 6px;
+}
+
+.github-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: 0.1rem;
+
+  background: url(GitHub-Mark-32px.png) center left no-repeat;
+  background-size: 16px 16px;
+
+  border: none;
+  text-decoration: none;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.credit {
+  padding: 0 20px 20px;
+  font-size: 12px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -188,29 +236,42 @@ input[type="submit"] {
     --color-panel-background: #1e1f2b;
     --color-panel-border: #161821;
     --color-panel-current: #252633;
+
+    --color-link: #6bf;
+    --color-link-underscore: rgba(102, 187, 255, var(--underline-opacity));
+    --color-link-hover: #f8ff83;
+    --color-link-hover-underscore: rgba(
+      248,
+      255,
+      131,
+      var(--underline-opacity)
+    );
+  }
+  .github-icon {
+    background-image: url(GitHub-Mark-Light-32px.png);
   }
 }
 
 @media print {
-    body {
-        background: none;
-    }
-    .wrapper {
-        display: block;
-    }
-    .panel {
-        display: none;
-    }
-    .content {
-        padding: 0;
-    }
-    .page {
-        margin: 0;
-        width: 100%;
-        height: 100%;
-        overflow: visible;
-    }
-    .page svg rect {
-        stroke-width: 0;
-    }
+  body {
+    background: none;
+  }
+  .wrapper {
+    display: block;
+  }
+  .panel {
+    display: none;
+  }
+  .content {
+    padding: 0;
+  }
+  .page {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .page svg rect {
+    stroke-width: 0;
+  }
 }
