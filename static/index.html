@@ -36,32 +36,32 @@
                     <div class="patterns">
                         <label class="pattern" tabindex="0">
                             <input type="radio" name="pattern" value="rect" checked onclick="changePattern(this)">
-                            <img src="rect.png" alt="simple grid">
+                            <div class="pattern-rect"></div>
                         </label>
                         <label class="pattern" tabindex="0">
                             <input type="radio" name="pattern" value="dot" onclick="changePattern(this)">
-                            <img src="dot.png" alt="dots">
+                            <div class="pattern-dot"></div>
                         </label>
                         <label class="pattern" tabindex="0">
                             <input type="radio" name="pattern" value="diamond" onclick="changePattern(this)">
-                            <img src="diamond.png" alt="45º grid">
+                            <div class="pattern-diamond"></div>
                         </label>
                         <label class="pattern" tabindex="0">
                             <input type="radio" name="pattern" value="rhombus" onclick="changePattern(this)">
-                            <img src="rhombus.png" alt="rhombus grid">
+                            <div class="pattern-rhombus"></div>
                         </label>
                     </div>
                 </div>
 
                 <div class="field">
-                    <label class="inline">
-                        Pattern Size (mm):
+                    <label class="full-width-label">
+                        <span>Pattern Size (mm):</span>
                         <input type="number" name="patternSize" value="5" min="1" max="100" onchange="changePatternSize(this)" onkeyup="changePatternSize(this)">
                     </label>
                 </div>
                 <div class="field">
-                    <label class="inline">
-                        Line width (nm):
+                    <label class="full-width-label">
+                        <span>Line width (nm):</span>
                         <input type="number" name="patternLineWidth" value="250" min="0" max="1000" onchange="changePatternLineWidth(this)" onkeyup="changePatternLineWidth(this)">
                     </label>
                 </div>

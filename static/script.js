@@ -156,7 +156,11 @@ function updatePatterns() {
     document.getElementById('patterns').innerHTML = rendered;
 }
 
-function submitForm() {
+function submitForm(element) {
+    let defaultLabel = element.value;
+    element.setAttribute("disabled", "disabled");
+    element.value = "Generating PDF...";
+
     fetch("/pdf", {
         method: "POST",
         headers: {
@@ -181,10 +185,16 @@ function submitForm() {
                 a.download = "grid.pdf";
                 a.click();
             });
+            element.removeAttribute("disabled");
+            element.value = defaultLabel;
         } else {
             console.log("Error: " + response.statusText);
+            element.removeAttribute("disabled");
+            element.value = defaultLabel;
         }
     }).catch(error => {
         console.log("Error: " + error);
+        element.removeAttribute("disabled");
+        element.value = defaultLabel;
     });
 }

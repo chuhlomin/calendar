@@ -79,6 +79,7 @@ form {
 
 select {
     font-size: 16px;
+    width: 100%;
 }
 
 label {
@@ -87,6 +88,11 @@ label {
 
 label.inline {
     display: inline;
+}
+
+label.full-width-label {
+    display: flex;
+    justify-content: space-between;
 }
 
 .field {
@@ -101,6 +107,7 @@ label.inline {
 
 input[type="number"] {
     text-align: right;
+    width: 8ch;
 }
 
 input[type="submit"] {
@@ -108,7 +115,7 @@ input[type="submit"] {
     margin-top: 20px;
     width: 100%;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 22px;
 }
 
 .patterns {
@@ -126,18 +133,32 @@ input[type="submit"] {
     display: block;
 }
 
-.patterns label img {
+/* class that starts with pattern-*/
+[class^="pattern-"] {
     display: block;
-    background: white;
+    background: url("patterns.png") no-repeat;
+    background-size: 400% 100%;
     border: 1px solid #d3d3d3;
     border-radius: 6px;
     overflow: hidden;
     width: 100%;
-    height: auto;
+    aspect-ratio: 1;
     box-shadow: 0 -5px 10px inset rgba(0,0,0,0.1);
 }
 
-.patterns input:checked + img {
+.pattern-dot {
+    background-position: 33.3% 0;
+}
+
+.pattern-diamond {
+    background-position: 66.6% 0;
+}
+
+.pattern-rhombus {
+    background-position: 100% 0;
+}
+
+.patterns input:checked + div {
     border-color: #0b7fff;
     box-shadow: 0 -5px 10px inset rgba(0,0,0,0.1),
         0 0 0 1px #0b7fff;
