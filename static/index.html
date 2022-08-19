@@ -39,6 +39,10 @@
                             <div class="pattern-rect"></div>
                         </label>
                         <label class="pattern" tabindex="0">
+                            <input type="radio" name="pattern" value="lines" onclick="changePattern(this)">
+                            <div class="pattern-lines"></div>
+                        </label>
+                        <label class="pattern" tabindex="0">
                             <input type="radio" name="pattern" value="dot" onclick="changePattern(this)">
                             <div class="pattern-dot"></div>
                         </label>
@@ -49,6 +53,10 @@
                         <label class="pattern" tabindex="0">
                             <input type="radio" name="pattern" value="rhombus" onclick="changePattern(this)">
                             <div class="pattern-rhombus"></div>
+                        </label>
+                        <label class="pattern" tabindex="0">
+                            <input type="radio" name="pattern" value="triangles" onclick="changePattern(this)">
+                            <div class="pattern-triangles"></div>
                         </label>
                     </div>
                 </div>
@@ -89,6 +97,9 @@
     <pattern id="rect" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
         <rect width="{{ size }}" height="{{ size }}" style="fill:none;stroke:{{ color }};stroke-width:{{ lineWidth }}"/>
     </pattern>
+    <pattern id="lines" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0 H{{ size }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
+    </pattern>
     <pattern id="dot" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
         <circle cx="0" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
         <circle cx="{{ size }}" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
@@ -100,6 +111,9 @@
     </pattern>
     <pattern id="rhombus" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M{{ sizeHalf }} 0 L{{ size }} {{ heightHalf }} L{{ sizeHalf }} {{ height }} L0 {{ heightHalf }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
+    </pattern>
+    <pattern id="triangles" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0 V{{ height }} M{{ sizeHalf }} 0 L0 {{ heightHalf }} L{{ sizeHalf }} {{ height }} V0 L{{ size }} {{ heightHalf }} L{{ sizeHalf }} {{ height }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
     </pattern>
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@r-tek/colr_pickr@2.0.0/build/colr_pickr.min.js"></script>

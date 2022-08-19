@@ -188,12 +188,16 @@ function submitForm(element) {
             element.removeAttribute("disabled");
             element.value = defaultLabel;
         } else {
-            console.log("Error: " + response.statusText);
+            response.text().then(text => {
+                alert(text);
+                console.log(text);
+            });
+
             element.removeAttribute("disabled");
             element.value = defaultLabel;
         }
     }).catch(error => {
-        console.log("Error: " + error);
+        alert("Error: " + error);
         element.removeAttribute("disabled");
         element.value = defaultLabel;
     });

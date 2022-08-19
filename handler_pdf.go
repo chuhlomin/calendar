@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -27,6 +26,8 @@ type pattern struct {
 	lineWidth float64
 }
 
+var errUnknownPattern = errors.New("unknown pattern")
+
 func handlerPDF(w http.ResponseWriter, r *http.Request) {
 	req, err := parsePDFRequest(r)
 	if err != nil {
@@ -40,8 +41,14 @@ func handlerPDF(w http.ResponseWriter, r *http.Request) {
 
 	err = createPDF(w, req.Size, req.Orientation, req.Pattern)
 	if err != nil {
-		log.Println("error creating pdf:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("error creating PDF: %s", err)
+		if errors.Cause(err) == errUnknownPattern {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("Sorry, don't know how to draw a " + req.Pattern.Name + " pattern."))
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Sorry, something went wrong"))
+		}
 		return
 	}
 }
@@ -102,6 +109,11 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 				pdf.Rect(x, y, patternSize, patternSize, "D")
 			}
 		}
+	case "lines":
+		w, h := pdf.GetPageSize()
+		for y := 0.0; y < h; y += patternSize {
+			pdf.Line(0, y, w, y)
+		}
 	case "dot":
 		pdf.SetFillColor(convertColor(pattern.Color))
 		for x := 0.0; x < w; x += patternSize {
@@ -134,8 +146,29 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 				pdf.DrawPath("D")
 			}
 		}
+	case "triangles":
+		patternHeight := patternSize * 0.6
+
+		for x := 0.0; x < w; x += patternSize {
+			pdf.MoveTo(x, 0)
+			pdf.LineTo(x, h)
+		}
+
+		for x := 0.0; x < w; x += patternSize {
+			for y := 0.0; y < h; y += patternHeight {
+				pdf.MoveTo(x+patternSize/2, y)
+				pdf.LineTo(x, y+patternHeight/2)
+				pdf.LineTo(x+patternSize/2, y+patternHeight)
+				pdf.LineTo(x+patternSize/2, y)
+				pdf.LineTo(x+patternSize, y+patternHeight/2)
+				pdf.LineTo(x+patternSize/2, y+patternHeight)
+				pdf.ClosePath()
+				pdf.DrawPath("D")
+			}
+		}
+
 	default:
-		return fmt.Errorf("unknown pattern: %s", pattern.Name)
+		return errors.Wrap(errUnknownPattern, pattern.Name)
 	}
 
 	return nil

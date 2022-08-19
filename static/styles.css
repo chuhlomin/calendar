@@ -120,7 +120,7 @@ input[type="submit"] {
 
 .patterns {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
     column-gap: 10px;
     row-gap: 10px;
 }
@@ -137,7 +137,7 @@ input[type="submit"] {
 [class^="pattern-"] {
     display: block;
     background: url("patterns.png") no-repeat;
-    background-size: 400% 100%;
+    background-size: 600% 100%;
     border: 1px solid #d3d3d3;
     border-radius: 6px;
     overflow: hidden;
@@ -146,15 +146,23 @@ input[type="submit"] {
     box-shadow: 0 -5px 10px inset rgba(0,0,0,0.1);
 }
 
+.pattern-lines {
+    background-position: 20% 0;
+}
+
 .pattern-dot {
-    background-position: 33.3% 0;
+    background-position: 40% 0;
 }
 
 .pattern-diamond {
-    background-position: 66.6% 0;
+    background-position: 60% 0;
 }
 
 .pattern-rhombus {
+    background-position: 80% 0;
+}
+
+.pattern-triangles {
     background-position: 100% 0;
 }
 
