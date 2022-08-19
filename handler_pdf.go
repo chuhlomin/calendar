@@ -28,25 +28,10 @@ type pattern struct {
 }
 
 func handlerPDF(w http.ResponseWriter, r *http.Request) {
-	var req pdfRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
+	req, err := parsePDFRequest(r)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	// convert pattern size from string to float64
-	req.Pattern.size, err = strconv.ParseFloat(req.Pattern.Size, 64)
-	if err != nil {
-		log.Println("error converting pattern size:", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	req.Pattern.lineWidth, err = strconv.ParseFloat(req.Pattern.LineWidth, 64)
-	if err != nil {
-		log.Println("error converting line width:", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Printf("error parsing PDF request: %s", err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -59,6 +44,27 @@ func handlerPDF(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func parsePDFRequest(r *http.Request) (*pdfRequest, error) {
+	var req pdfRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		return nil, errors.Wrap(err, "error decoding json")
+	}
+
+	// convert pattern size from string to float64
+	req.Pattern.size, err = strconv.ParseFloat(req.Pattern.Size, 64)
+	if err != nil {
+		return nil, errors.Wrap(err, "error converting pattern size")
+	}
+
+	req.Pattern.lineWidth, err = strconv.ParseFloat(req.Pattern.LineWidth, 64)
+	if err != nil {
+		return nil, errors.Wrap(err, "error converting pattern line width")
+	}
+
+	return &req, nil
 }
 
 func createPDF(writer io.Writer, size, orientation string, pattern pattern) error {
