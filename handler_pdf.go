@@ -93,8 +93,10 @@ func createPDF(writer io.Writer, size, orientation string, pattern pattern) erro
 }
 
 func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
+	r, g, b, a := convertColor(pattern.Color)
 	pdf.SetFillColor(255, 255, 255)
-	pdf.SetDrawColor(convertColor(pattern.Color))
+	pdf.SetDrawColor(r, g, b)
+	pdf.SetAlpha(a, "Normal")
 
 	w, h := pdf.GetPageSize()
 	patternSize := pattern.size
@@ -115,7 +117,7 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 			pdf.Line(0, y, w, y)
 		}
 	case "dot":
-		pdf.SetFillColor(convertColor(pattern.Color))
+		pdf.SetFillColor(r, g, b)
 		for x := 0.0; x < w; x += patternSize {
 			for y := 0.0; y < h; y += patternSize {
 				pdf.Circle(x, y, pattern.lineWidth/1000, "F")
@@ -174,12 +176,23 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 	return nil
 }
 
-func convertColor(hex string) (int, int, int) {
-	var r, g, b int64
+func convertColor(hex string) (int, int, int, float64) {
+	var r, g, b, a int64
+
 	if len(hex) == 7 {
 		r, _ = strconv.ParseInt(hex[1:3], 16, 0)
 		g, _ = strconv.ParseInt(hex[3:5], 16, 0)
 		b, _ = strconv.ParseInt(hex[5:7], 16, 0)
+		return int(r), int(g), int(b), 1.0
 	}
-	return int(r), int(g), int(b)
+
+	if len(hex) == 9 {
+		r, _ = strconv.ParseInt(hex[1:3], 16, 0)
+		g, _ = strconv.ParseInt(hex[3:5], 16, 0)
+		b, _ = strconv.ParseInt(hex[5:7], 16, 0)
+		a, _ = strconv.ParseInt(hex[7:9], 16, 0)
+		return int(r), int(g), int(b), float64(a) / 255.0
+	}
+
+	return 0, 0, 0, 0
 }
