@@ -1,6 +1,8 @@
 package main
 
 import (
+	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -19,11 +21,14 @@ func (s *server) routes() {
 	s.router.Use(middleware.StripSlashes)
 
 	s.router.Get("/", handlerStatic("index.html"))
-	s.router.Get("/styles.css", handlerStatic("styles.css"))
-	s.router.Get("/script.js", handlerStatic("script.js"))
-	s.router.Get("/patterns.png", handlerStatic("patterns.png"))
-	s.router.Get("/GitHub-Mark-32px.png", handlerStatic("GitHub-Mark-32px.png"))
-	s.router.Get("/GitHub-Mark-Light-32px.png", handlerStatic("GitHub-Mark-Light-32px.png"))
+
+	files, err := ioutil.ReadDir("./static")
+	if err != nil {
+		log.Fatalf("could not read static files: %v", err)
+	}
+	for _, file := range files {
+		s.router.Get("/"+file.Name(), handlerStatic(file.Name()))
+	}
 
 	s.router.Post("/pdf", handlerPDF)
 }

@@ -3,8 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <title>Grid</title>
-<link rel="stylesheet" href="./styles.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@r-tek/colr_pickr@2.0.0/build/colr_pickr.min.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="colr_pickr.min.css">
+
+<link rel="alternate icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- OpenGraph Card -->
+<meta property="og:image" content="https://grid.chuhlomin.com/og.png">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="960">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Grid">
+<meta property="og:url" content="https://grid.chuhlomin.com">
+<meta property="og:description" content="Grid patterns PDF generator">
+<!-- Twitter Card -->
+<meta name="twitter:url" content="https://grid.chuhlomin.com">
+<meta name="twirrer:domain" content="grid.chuhlomin.com">
+<meta name="twitter:title" content="Grid">
+<meta name="twitter:description" content="Grid patterns PDF generator">
+<meta name="twitter:image" content="https://grid.chuhlomin.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 <div class="common">
@@ -95,7 +114,7 @@
         </div>
     </div>
 </div>
-<script src="./script.js"></script>
+<script src="script.js"></script>
 <script id="template_patterns" type="x-tmpl-mustache">
     <pattern id="rect" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
         <rect width="{{ size }}" height="{{ size }}" style="fill:none;stroke:{{ color }};stroke-width:{{ lineWidth }}"/>
@@ -119,7 +138,7 @@
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0 V{{ height }} M{{ size }} 0 V{{ height }} M{{ sizeHalf }} 0 L0 {{ heightHalf }} L{{ sizeHalf }} {{ height }} V0 L{{ size }} {{ heightHalf }} L{{ sizeHalf }} {{ height }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
     </pattern>
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@r-tek/colr_pickr@2.0.0/build/colr_pickr.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
+<script src="colr_pickr.min.js"></script>
+<script src="mustache.min.js"></script>
 </body>
 </html>
