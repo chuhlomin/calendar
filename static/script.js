@@ -156,6 +156,17 @@ function updatePatterns() {
     document.getElementById('patterns').innerHTML = rendered;
 }
 
+function togglePreview(element) {
+    let body = document.getElementsByTagName("body")[0];
+    if (body.classList.contains("preview")) {
+        body.classList.remove("preview");
+        element.innerHTML = "Show Preview";
+    } else {
+        body.classList.add("preview");
+        element.innerHTML = "Hide Preview";
+    }
+}
+
 function submitForm(element) {
     let defaultLabel = element.value;
     element.setAttribute("disabled", "disabled");

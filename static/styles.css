@@ -63,6 +63,7 @@ a:hover {
 .wrapper {
   display: grid;
   grid-template-columns: 25ch 1fr;
+  grid-template-rows: 1fr auto;
 }
 
 .panel {
@@ -79,8 +80,29 @@ a:hover {
   margin: 0;
 }
 
+.actions {
+  grid-column: 1;
+  padding: 20px;
+  background: var(--color-panel-background);
+  border-right: 1px solid var(--color-panel-border);
+}
+
+.actions button {
+  display: block;
+  width: 100%;
+  font-size: 22px;
+  -webkit-appearance: push-button;
+  -moz-appearance: push-button;
+  appearance: push-button;
+}
+
+#preview {
+  display: none;
+}
+
 .content {
   grid-column: 2;
+  grid-row: 1/-1;
   padding: 20px;
   height: 100vh;
   overflow: hidden;
@@ -101,7 +123,7 @@ a:hover {
 }
 
 form {
-  padding: 0 20px 20px;
+  padding: 0 20px;
 }
 
 select {
@@ -135,14 +157,6 @@ label.full-width-label {
 input[type="number"] {
   text-align: right;
   width: 8ch;
-}
-
-input[type="submit"] {
-  display: block;
-  margin-top: 20px;
-  width: 100%;
-  padding: 10px 20px;
-  font-size: 22px;
 }
 
 .patterns {
@@ -223,7 +237,7 @@ input[type="submit"] {
 }
 
 .credit {
-  padding: 0 20px 20px;
+  padding-top: 20px;
   font-size: 12px;
 }
 
@@ -273,5 +287,42 @@ input[type="submit"] {
   }
   .page svg rect {
     stroke-width: 0;
+  }
+}
+
+@media screen and (max-width: 450px) { /* mobile */
+  .wrapper {
+    grid-template-columns: 1fr;
+  }
+  .panel {
+    grid-column: 1;
+    border-right: none;
+  }
+  .actions {
+    border-right: none;
+  }
+  #preview {
+    display: block;
+  }
+  .content {
+    display: none;
+  }
+
+  .preview .panel {
+    display: none;
+  }
+  .preview .actions {
+    border-top: 1px solid var(--color-panel-border);
+  }
+  .preview .content {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .preview .content {
+    height: auto;
+  }
+  .preview .page svg {
+    height: auto;
   }
 }
