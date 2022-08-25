@@ -5,6 +5,8 @@
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   --font-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
     Liberation Mono, monospace;
+  --font-size: 16px;
+  --font-size-small: 12px;
 
   --color-text: #24292f;
   --color-background: #f0f0f0;
@@ -37,7 +39,7 @@
 body {
   margin: 0;
   font-family: var(--font-default);
-  font-size: 16px;
+  font-size: var(--font-size);
   line-height: 1.5;
   background: var(--color-background);
   color: var(--color-text);
@@ -90,8 +92,8 @@ a:hover {
 .actions button {
   display: block;
   width: 100%;
-  font-size: 16px;
-  
+  font-size: var(--font-size);
+  color: #24292f;
   background: #fff;
   border: 1px solid #d3d3d3;
   border-radius: var(--border-radius);
@@ -114,7 +116,7 @@ a:hover {
 .credit {
   grid-column: 1;
   grid-row: 3;
-  font-size: 12px;
+  font-size: var(--font-size-small);
   padding: 0 20px 20px;
 }
 
@@ -152,7 +154,7 @@ form {
 }
 
 select {
-  font-size: 16px;
+  font-size: var(--font-size);
   width: 100%;
 }
 
@@ -180,6 +182,7 @@ label.full-width-label {
 }
 
 input[type="number"] {
+  font-size: var(--font-size);
   text-align: right;
   width: 8ch;
 }
@@ -307,6 +310,9 @@ input[type="number"] {
 }
 
 @media screen and (max-width: 450px) { /* mobile */
+  :root {
+    --font-size: 20px;
+  }
   .wrapper {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr auto auto;
@@ -314,6 +320,9 @@ input[type="number"] {
   .panel {
     grid-column: 1;
     grid-row: 1;
+  }
+  .actions button {
+    padding: 10px;
   }
   .panel,
   .actions,
@@ -327,6 +336,9 @@ input[type="number"] {
     display: none;
   }
 
+  .preview .wrapper {
+    height: 100vh;
+  }
   .preview .panel {
     display: none;
   }
