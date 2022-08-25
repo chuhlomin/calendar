@@ -63,16 +63,15 @@ a:hover {
 .wrapper {
   display: grid;
   grid-template-columns: 25ch 1fr;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: auto 1fr auto;
 }
 
 .panel {
   grid-column: 1;
+  grid-row: 1;
   padding: 0;
   display: flex;
   flex-direction: column;
-  background: var(--color-panel-background);
-  border-right: 1px solid var(--color-panel-border);
 }
 
 .panel h1 {
@@ -82,9 +81,8 @@ a:hover {
 
 .actions {
   grid-column: 1;
+  grid-row: 2;
   padding: 20px;
-  background: var(--color-panel-background);
-  border-right: 1px solid var(--color-panel-border);
 }
 
 .actions button {
@@ -100,9 +98,23 @@ a:hover {
   display: none;
 }
 
+.credit {
+  grid-column: 1;
+  grid-row: 3;
+  font-size: 12px;
+  padding: 0 20px 20px;
+}
+
+.panel,
+.actions,
+.credit {
+  background: var(--color-panel-background);
+  border-right: 1px solid var(--color-panel-border);
+}
+
 .content {
   grid-column: 2;
-  grid-row: 1/-1;
+  grid-row: 1 / -1;
   padding: 20px;
   height: 100vh;
   overflow: hidden;
@@ -232,15 +244,6 @@ input[type="number"] {
   text-decoration: none;
 }
 
-.spacer {
-  flex-grow: 1;
-}
-
-.credit {
-  padding-top: 20px;
-  font-size: 12px;
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --color-text: #eaf3f2;
@@ -293,12 +296,15 @@ input[type="number"] {
 @media screen and (max-width: 450px) { /* mobile */
   .wrapper {
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto auto;
   }
   .panel {
     grid-column: 1;
-    border-right: none;
+    grid-row: 1;
   }
-  .actions {
+  .panel,
+  .actions,
+  .credit {
     border-right: none;
   }
   #preview {
