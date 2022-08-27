@@ -83,8 +83,15 @@
 
                 <div class="field">
                     <label class="full-width-label">
-                        <span>Size (mm):</span>
+                        <span class="without-height">Size (mm):</span>
+                        <span class="with-height" style="display: none">Width (mm):</span>
                         <input type="number" name="patternSize" value="5" min="1" max="100" onchange="changePatternSize(this)" onkeyup="changePatternSize(this)">
+                    </label>
+                </div>
+                <div class="field with-height" id="heightField" style="display: none">
+                    <label class="full-width-label">
+                        <span>Height (mm):</span>
+                        <input type="number" name="patternHeight" value="5" min="1" max="100" onchange="changePatternHeight(this)" onkeyup="changePatternHeight(this)">
                     </label>
                 </div>
                 <div class="field">

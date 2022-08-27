@@ -4,6 +4,7 @@ let currentPageSize = "A4";
 let currentOrientation = "P";
 let currentPattern = "rect";
 let currentPatternSize = "5";
+let currentPatternHeight = "3";
 let currentPatternColor = "#cccccc";
 let currentLineWidth = "250";
 
@@ -32,6 +33,7 @@ window.onload = function() {
         let patternSelect = document.querySelector("input[name='pattern'][value='" + pattern + "']");
         patternSelect.checked = true;
         updatePattern(currentPattern);
+        updateForm(currentPattern);
     }
 
     let patternSize = localStorage.getItem("patternSize");
@@ -39,6 +41,13 @@ window.onload = function() {
         currentPatternSize = patternSize;
         let sizeInput = document.getElementsByName("patternSize")[0];
         sizeInput.value = patternSize;
+    }
+
+    let patternHeight = localStorage.getItem("patternHeight");
+    if (patternHeight) {
+        currentPatternHeight = patternHeight;
+        let heightInput = document.getElementsByName("patternHeight")[0];
+        heightInput.value = patternHeight;
     }
 
     let patternColor = localStorage.getItem("patternColor");
@@ -115,12 +124,42 @@ function changePattern(element) {
     currentPattern = element.value;
     updatePattern(currentPattern);
     localStorage.setItem("pattern", currentPattern);
+    updateForm(currentPattern);
+}
+
+function updateForm(pattern) {
+    switch (currentPattern) {
+    case "rhombus":
+    case "triangles":
+        updateHeightElements(true);
+        break;
+    default:
+        updateHeightElements(false);
+    }
+}
+
+function updateHeightElements(show) {
+    const withHeight = document.getElementsByClassName("with-height")
+    const withoutHeight = document.getElementsByClassName("without-height")
+
+    for (let el of withHeight) {
+        el.style.display = show ? "block" : "none";
+    }
+    for (let el of withoutHeight) {
+        el.style.display = show ? "none" : "block";
+    }
 }
 
 function changePatternSize(element) {
     currentPatternSize = element.value;
     updatePatterns();
     localStorage.setItem("patternSize", currentPatternSize);
+}
+
+function changePatternHeight(element) {
+    currentPatternHeight = element.value;
+    updatePatterns();
+    localStorage.setItem("patternHeight", currentPatternHeight);
 }
 
 function changeColor(color) {
@@ -147,10 +186,10 @@ function updatePatterns() {
         {
             size: currentPatternSize,
             sizeHalf: currentPatternSize / 2,
-            height: currentPatternSize * 0.6,
-            heightHalf: currentPatternSize * 0.3,
+            height: currentPatternHeight,
+            heightHalf: currentPatternHeight / 2,
             color: currentPatternColor,
-            lineWidth: currentLineWidth/1000,
+            lineWidth: currentLineWidth / 1000,
         }
     );
     document.getElementById('patterns').innerHTML = rendered;
@@ -183,6 +222,7 @@ function submitForm(element) {
             pattern: {
                 name: currentPattern,
                 size: currentPatternSize,
+                height: currentPatternHeight,
                 color: currentPatternColor,
                 lineWidth: currentLineWidth,
             }

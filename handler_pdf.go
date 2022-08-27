@@ -20,9 +20,11 @@ type pdfRequest struct {
 type pattern struct {
 	Name      string `json:"name"`
 	Size      string `json:"size"`
+	Height    string `json:"height"`
 	Color     string `json:"color"`
 	LineWidth string `json:"lineWidth"`
 	size      float64
+	height    float64
 	lineWidth float64
 }
 
@@ -65,6 +67,10 @@ func parsePDFRequest(r *http.Request) (*pdfRequest, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "error converting pattern size")
 	}
+	req.Pattern.height, err = strconv.ParseFloat(req.Pattern.Height, 64)
+	if err != nil {
+		return nil, errors.Wrap(err, "error converting pattern height")
+	}
 
 	req.Pattern.lineWidth, err = strconv.ParseFloat(req.Pattern.LineWidth, 64)
 	if err != nil {
@@ -100,6 +106,7 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 
 	w, h := pdf.GetPageSize()
 	patternSize := pattern.size
+	patternHeight := pattern.height
 
 	pdf.SetLineWidth(pattern.lineWidth / 1000)
 
@@ -136,7 +143,6 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 			}
 		}
 	case "rhombus":
-		patternHeight := patternSize * 0.6
 		for x := 0.0; x < w; x += patternSize {
 			for y := 0.0; y < h; y += patternHeight {
 				pdf.MoveTo(x+patternSize/2, y)
@@ -149,8 +155,6 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 			}
 		}
 	case "triangles":
-		patternHeight := patternSize * 0.6
-
 		for x := 0.0; x < w; x += patternSize {
 			pdf.MoveTo(x, 0)
 			pdf.LineTo(x, h)
