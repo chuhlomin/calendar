@@ -87,6 +87,10 @@ a:hover {
   grid-column: 1;
   grid-row: 2;
   padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .actions button {
@@ -99,14 +103,16 @@ a:hover {
   border-radius: var(--border-radius);
   padding: 5px 10px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  user-select: none;
 }
 
 .actions button:active {
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.actions button + button {
-  margin-top: 10px;
+.actions .show-preview,
+.actions .hide-preview {
+  display: none;
 }
 
 #preview {
@@ -117,12 +123,11 @@ a:hover {
   grid-column: 1;
   grid-row: 3;
   font-size: var(--font-size-small);
-  padding: 0 20px 20px;
+  margin-top: 20px;
 }
 
 .panel,
-.actions,
-.credit {
+.actions {
   background: var(--color-panel-background);
   border-right: 1px solid var(--color-panel-border);
 }
@@ -320,17 +325,34 @@ input[type="number"] {
   .panel {
     grid-column: 1;
     grid-row: 1;
+    padding-bottom: calc(124px + 20px);
+  }
+  .actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--color-panel-border);
+    box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.1s linear;
+  }
+  .scrolled .actions {
+    box-shadow: 0 0px 5px rgba(0, 0, 0, 0.05);
+  }
+  .actions .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 10px;
   }
   .actions button {
     padding: 10px;
   }
-  .panel,
-  .actions,
-  .credit {
-    border-right: none;
-  }
-  #preview {
+  .actions .show-preview {
     display: block;
+  }
+  .panel,
+  .actions {
+    border-right: none;
   }
   .content {
     display: none;
@@ -343,7 +365,15 @@ input[type="number"] {
     display: none;
   }
   .preview .actions {
-    border-top: 1px solid var(--color-panel-border);
+    position: relative;
+    grid-row: 2;
+    box-shadow: none;
+  }
+  .preview .actions .show-preview {
+    display: none;
+  }
+  .preview .actions .hide-preview {
+    display: block;
   }
   .preview .content {
     display: block;
@@ -361,5 +391,11 @@ input[type="number"] {
     top: 50%;
     left: 20px;
     transform: translateY(-50%);
+  }
+}
+
+@media screen and (max-width: 350px) { /* ? */
+  .may-hide {
+    display: none;
   }
 }

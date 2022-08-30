@@ -8,6 +8,8 @@ let currentPatternHeight = "3";
 let currentPatternColor = "#cccccc";
 let currentLineWidth = "250";
 
+let body = document.getElementsByTagName("body")[0];
+
 window.onload = function() {
     // read state from localStorage
     let sizeID = localStorage.getItem("sizeID");
@@ -81,6 +83,14 @@ window.onload = function() {
         });
     }
 };
+
+window.onscroll = function() {
+    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+        body.classList.add("scrolled");
+    } else {
+        body.classList.remove("scrolled");
+    }
+}
 
 function updatePage() {
     let svg = document.getElementById("svg");
@@ -196,13 +206,10 @@ function updatePatterns() {
 }
 
 function togglePreview(element) {
-    let body = document.getElementsByTagName("body")[0];
     if (body.classList.contains("preview")) {
         body.classList.remove("preview");
-        element.innerHTML = "Show Preview";
     } else {
         body.classList.add("preview");
-        element.innerHTML = "Hide Preview";
     }
 }
 
