@@ -359,7 +359,7 @@ input[type="number"] {
   }
 
   .preview .wrapper {
-    height: 100vh;
+    height: 100%;
   }
   .preview .panel {
     display: none;
