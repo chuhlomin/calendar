@@ -324,6 +324,7 @@ input[type="number"] {
     width: auto;
     right: 0;
     padding-bottom: calc(124px + 20px);
+    border-right: 0;
   }
   .actions {
     position: fixed;
@@ -331,7 +332,6 @@ input[type="number"] {
     left: 0;
     right: 0;
     height: auto;
-    border-right: none;
     border-top: 1px solid var(--color-panel-border);
     box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.1s linear;
