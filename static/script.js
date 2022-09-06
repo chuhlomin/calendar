@@ -9,6 +9,7 @@ let currentPatternColor = "#cccccc";
 let currentLineWidth = "250";
 
 let body = document.getElementsByTagName("body")[0];
+let panel = document.getElementsByClassName('panel')[0];
 
 window.onload = function() {
     // read state from localStorage
@@ -84,8 +85,14 @@ window.onload = function() {
     }
 };
 
-window.onscroll = function() {
-    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+let yOffset = 0;
+
+panel.onscroll = function() {
+    if (!body.classList.contains("preview")) {
+        yOffset = panel.scrollTop;
+    }
+
+    if (window.innerHeight + yOffset >= panel.scrollHeight) {
         body.classList.add("scrolled");
     } else {
         body.classList.remove("scrolled");
@@ -208,6 +215,7 @@ function updatePatterns() {
 function togglePreview(element) {
     if (body.classList.contains("preview")) {
         body.classList.remove("preview");
+        panel.scrollTop = yOffset;
     } else {
         body.classList.add("preview");
     }
