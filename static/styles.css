@@ -144,7 +144,8 @@ a:hover {
 
 .page svg {
   max-width: 100%;
-  height: calc(100vh - 40px);
+  max-height: calc(100vh - 40px);
+  height: -webkit-fill-available;
 }
 
 .page svg rect {
@@ -399,6 +400,14 @@ input[type="number"] {
     top: 50%;
     left: 20px;
     transform: translateY(-50%);
+  }
+}
+
+@supports(padding: max(0px)) {
+  @media screen and (max-width: 450px) { /* mobile */
+    .content {
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
   }
 }
 
