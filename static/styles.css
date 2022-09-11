@@ -43,6 +43,10 @@ body {
   line-height: 1.5;
   background: var(--color-background);
   color: var(--color-text);
+
+  /* Prevent adjustments of font size after orientation changes */
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
