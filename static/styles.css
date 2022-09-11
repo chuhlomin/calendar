@@ -36,6 +36,12 @@
   margin: 0;
 }
 
+html {
+  /* Prevent adjustments of font size after orientation changes */
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   font-family: var(--font-default);
@@ -43,10 +49,6 @@ body {
   line-height: 1.5;
   background: var(--color-background);
   color: var(--color-text);
-
-  /* Prevent adjustments of font size after orientation changes */
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
 }
 
 html,
