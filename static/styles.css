@@ -251,10 +251,10 @@ input[type="number"] {
 }
 
 #picker {
-  width: 2rem;
-  height: 21px;
+  float: right;
+  width: 8ch;
+  font-size: var(--font-size);
   border: 1px solid #d3d3d3;
-  border-radius: var(--border-radius);
 }
 
 .github-icon {
