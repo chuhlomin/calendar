@@ -3,7 +3,7 @@
 let currentPageSize = "A4";
 let currentOrientation = "P";
 let currentPattern = "rect";
-let currentPatternSize = "5";
+let currentPatternWidth = "5";
 let currentPatternHeight = "3";
 let currentPatternColor = "#cccccc";
 let currentLineWidth = "250";
@@ -39,11 +39,11 @@ window.onload = function() {
         updateForm(currentPattern);
     }
 
-    let patternSize = localStorage.getItem("patternSize");
-    if (patternSize) {
-        currentPatternSize = patternSize;
-        let sizeInput = document.getElementsByName("patternSize")[0];
-        sizeInput.value = patternSize;
+    let patternWidth = localStorage.getItem("patternWidth");
+    if (patternWidth) {
+        currentPatternWidth = patternWidth;
+        let widthInput = document.getElementsByName("patternWidth")[0];
+        widthInput.value = patternWidth;
     }
 
     let patternHeight = localStorage.getItem("patternHeight");
@@ -161,10 +161,10 @@ function updateWidthElements(enabled) {
     }
 }
 
-function changePatternSize(element) {
-    currentPatternSize = element.value;
+function changePatternWidth(element) {
+    currentPatternWidth = element.value;
     updatePatterns();
-    localStorage.setItem("patternSize", currentPatternSize);
+    localStorage.setItem("patternWidth", currentPatternWidth);
 }
 
 function changePatternHeight(element) {
@@ -195,8 +195,8 @@ function updatePatterns() {
     let rendered = Mustache.render(
         template,
         {
-            size: currentPatternSize,
-            sizeHalf: currentPatternSize / 2,
+            width: currentPatternWidth,
+            widthHalf: currentPatternWidth / 2,
             height: currentPatternHeight,
             heightHalf: currentPatternHeight / 2,
             color: currentPatternColor,
@@ -230,7 +230,7 @@ function submitForm(element) {
             orientation: currentOrientation,
             pattern: {
                 name: currentPattern,
-                size: currentPatternSize,
+                width: currentPatternWidth,
                 height: currentPatternHeight,
                 color: currentPatternColor,
                 lineWidth: currentLineWidth,

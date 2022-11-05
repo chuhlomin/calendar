@@ -19,13 +19,16 @@ type pdfRequest struct {
 
 type pattern struct {
 	Name      string `json:"name"`
-	Size      string `json:"size"`
+	Width     string `json:"width"`
 	Height    string `json:"height"`
 	Color     string `json:"color"`
 	LineWidth string `json:"lineWidth"`
-	size      float64
+
+	width     float64
 	height    float64
 	lineWidth float64
+
+	Size string `json:"size"` // deprecated
 }
 
 var errUnknownPattern = errors.New("unknown pattern")
@@ -63,7 +66,11 @@ func parsePDFRequest(r *http.Request) (*pdfRequest, error) {
 	}
 
 	// convert pattern size from string to float64
-	req.Pattern.size, err = strconv.ParseFloat(req.Pattern.Size, 64)
+	width := req.Pattern.Width
+	if width == "" { // fallback to deprecated field
+		width = req.Pattern.Size
+	}
+	req.Pattern.width, err = strconv.ParseFloat(width, 64)
 	if err != nil {
 		return nil, errors.Wrap(err, "error converting pattern size")
 	}
@@ -105,7 +112,7 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 	pdf.SetAlpha(a, "Normal")
 
 	w, h := pdf.GetPageSize()
-	patternSize := pattern.size
+	patternWidth := pattern.width
 	patternHeight := pattern.height
 
 	pdf.SetLineWidth(pattern.lineWidth / 1000)
@@ -113,70 +120,70 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 	switch pattern.Name {
 	case "rect":
 		w, h := pdf.GetPageSize()
-		for x := 0.0; x < w; x += patternSize {
+		for x := 0.0; x < w; x += patternWidth {
 			for y := 0.0; y < h; y += patternHeight {
-				pdf.Rect(x, y, patternSize, patternHeight, "D")
+				pdf.Rect(x, y, patternWidth, patternHeight, "D")
 			}
 		}
 	case "lines":
 		w, h := pdf.GetPageSize()
-		for y := 0.0; y < h; y += patternSize {
+		for y := 0.0; y < h; y += patternWidth {
 			pdf.Line(0, y, w, y)
 		}
 	case "dot":
 		pdf.SetFillColor(r, g, b)
-		for x := 0.0; x < w; x += patternSize {
+		for x := 0.0; x < w; x += patternWidth {
 			for y := 0.0; y < h; y += patternHeight {
 				pdf.Circle(x, y, pattern.lineWidth/1000, "F")
 			}
 		}
 	case "diamond": // not used
-		for x := 0.0; x < w; x += patternSize {
-			for y := 0.0; y < h; y += patternSize {
-				pdf.MoveTo(x+patternSize/2, y)
-				pdf.LineTo(x, y+patternSize/2)
-				pdf.LineTo(x+patternSize/2, y+patternSize)
-				pdf.LineTo(x+patternSize, y+patternSize/2)
-				pdf.LineTo(x+patternSize/2, y)
+		for x := 0.0; x < w; x += patternWidth {
+			for y := 0.0; y < h; y += patternHeight {
+				pdf.MoveTo(x+patternWidth/2, y)
+				pdf.LineTo(x, y+patternHeight/2)
+				pdf.LineTo(x+patternWidth/2, y+patternHeight)
+				pdf.LineTo(x+patternWidth, y+patternHeight/2)
+				pdf.LineTo(x+patternWidth/2, y)
 				pdf.ClosePath()
 				pdf.DrawPath("D")
 			}
 		}
 	case "rhombus":
-		for x := 0.0; x < w; x += patternSize {
+		for x := 0.0; x < w; x += patternWidth {
 			for y := 0.0; y < h; y += patternHeight {
-				pdf.MoveTo(x+patternSize/2, y)
+				pdf.MoveTo(x+patternWidth/2, y)
 				pdf.LineTo(x, y+patternHeight/2)
-				pdf.LineTo(x+patternSize/2, y+patternHeight)
-				pdf.LineTo(x+patternSize, y+patternHeight/2)
-				pdf.LineTo(x+patternSize/2, y)
+				pdf.LineTo(x+patternWidth/2, y+patternHeight)
+				pdf.LineTo(x+patternWidth, y+patternHeight/2)
+				pdf.LineTo(x+patternWidth/2, y)
 				pdf.ClosePath()
 				pdf.DrawPath("D")
 			}
 		}
 	case "triangles":
-		for x := 0.0; x < w; x += patternSize {
+		for x := 0.0; x < w; x += patternWidth {
 			pdf.MoveTo(x, 0)
 			pdf.LineTo(x, h)
 		}
 
-		for x := 0.0; x < w; x += patternSize {
+		for x := 0.0; x < w; x += patternWidth {
 			for y := 0.0; y < h; y += patternHeight {
-				pdf.MoveTo(x+patternSize/2, y)
+				pdf.MoveTo(x+patternWidth/2, y)
 				pdf.LineTo(x, y+patternHeight/2)
-				pdf.LineTo(x+patternSize/2, y+patternHeight)
-				pdf.LineTo(x+patternSize/2, y)
-				pdf.LineTo(x+patternSize, y+patternHeight/2)
-				pdf.LineTo(x+patternSize/2, y+patternHeight)
+				pdf.LineTo(x+patternWidth/2, y+patternHeight)
+				pdf.LineTo(x+patternWidth/2, y)
+				pdf.LineTo(x+patternWidth, y+patternHeight/2)
+				pdf.LineTo(x+patternWidth/2, y+patternHeight)
 				pdf.ClosePath()
 				pdf.DrawPath("D")
 			}
 		}
 	case "hexdot":
 		pdf.SetFillColor(r, g, b)
-		for x := 0.0; x < w; x += patternSize {
+		for x := 0.0; x < w; x += patternWidth {
 			for y := 0.0; y < h; y += patternHeight {
-				pdf.Circle(x+patternSize/2, y, pattern.lineWidth/1000, "F")
+				pdf.Circle(x+patternWidth/2, y, pattern.lineWidth/1000, "F")
 				pdf.Circle(x, y+patternHeight/2, pattern.lineWidth/1000, "F")
 			}
 		}

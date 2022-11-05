@@ -92,7 +92,7 @@
                 <div class="field" id="widthField">
                     <label class="full-width-label">
                         <span>Width (mm):</span>
-                        <input id="widthInput" type="number" name="patternSize" value="5" min="1" max="100" onchange="changePatternSize(this)" onkeyup="changePatternSize(this)">
+                        <input id="widthInput" type="number" name="patternWidth" value="5" min="1" max="100" onchange="changePatternWidth(this)" onkeyup="changePatternWidth(this)">
                     </label>
                 </div>
                 <div class="field">
@@ -136,32 +136,32 @@
 </div>
 <script src="script.js"></script>
 <script id="template_patterns" type="x-tmpl-mustache">
-    <pattern id="rect" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
-        <rect width="{{ size }}" height="{{ height }}" style="fill:none;stroke:{{ color }};stroke-width:{{ lineWidth }}"/>
+    <pattern id="rect" viewBox="0,0,{{ width }},{{ height }}" width="{{ width }}" height="{{ height }}" patternUnits="userSpaceOnUse">
+        <rect width="{{ width }}" height="{{ height }}" style="fill:none;stroke:{{ color }};stroke-width:{{ lineWidth }}"/>
     </pattern>
-    <pattern id="lines" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0 H{{ size }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
+    <pattern id="lines" viewBox="0,0,{{ width }},{{ height }}" width="{{ width }}" height="{{ height }}" patternUnits="userSpaceOnUse">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0 H{{ width }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
     </pattern>
-    <pattern id="dot" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
+    <pattern id="dot" viewBox="0,0,{{ width }},{{ height }}" width="{{ width }}" height="{{ height }}" patternUnits="userSpaceOnUse">
         <circle cx="0" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
-        <circle cx="{{ size }}" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
-        <circle cx="{{ size }}" cy="{{ height }}" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="{{ width }}" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="{{ width }}" cy="{{ height }}" r="{{ lineWidth }}" fill="{{ color }}"/>
         <circle cx="0" cy="{{ height }}" r="{{ lineWidth }}" fill="{{ color }}"/>
     </pattern>
-    <pattern id="diamond" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M{{ sizeHalf }} 0 L{{ size }} {{ sizeHalf }} L{{ sizeHalf }} {{ size }} L0 {{ sizeHalf }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
+    <pattern id="diamond" viewBox="0,0,{{ width }},{{ width }}" width="{{ width }}" height="{{ width }}" patternUnits="userSpaceOnUse">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M{{ widthHalf }} 0 L{{ width }} {{ widthHalf }} L{{ widthHalf }} {{ width }} L0 {{ widthHalf }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
     </pattern>
-    <pattern id="rhombus" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M{{ sizeHalf }} 0 L{{ size }} {{ heightHalf }} L{{ sizeHalf }} {{ height }} L0 {{ heightHalf }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
+    <pattern id="rhombus" viewBox="0,0,{{ width }},{{ height }}" width="{{ width }}" height="{{ height }}" patternUnits="userSpaceOnUse">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M{{ widthHalf }} 0 L{{ width }} {{ heightHalf }} L{{ widthHalf }} {{ height }} L0 {{ heightHalf }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
     </pattern>
-    <pattern id="triangles" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0 V{{ height }} M{{ size }} 0 V{{ height }} M{{ sizeHalf }} 0 L0 {{ heightHalf }} L{{ sizeHalf }} {{ height }} V0 L{{ size }} {{ heightHalf }} L{{ sizeHalf }} {{ height }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
+    <pattern id="triangles" viewBox="0,0,{{ width }},{{ height }}" width="{{ width }}" height="{{ height }}" patternUnits="userSpaceOnUse">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0 V{{ height }} M{{ width }} 0 V{{ height }} M{{ widthHalf }} 0 L0 {{ heightHalf }} L{{ widthHalf }} {{ height }} V0 L{{ width }} {{ heightHalf }} L{{ widthHalf }} {{ height }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
     </pattern>
-    <pattern id="hexdot" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
-        <circle cx="{{ sizeHalf }}" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
+    <pattern id="hexdot" viewBox="0,0,{{ width }},{{ height }}" width="{{ width }}" height="{{ height }}" patternUnits="userSpaceOnUse">
+        <circle cx="{{ widthHalf }}" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
         <circle cx="0" cy="{{ heightHalf }}" r="{{ lineWidth }}" fill="{{ color }}"/>
-        <circle cx="{{ sizeHalf }}" cy="{{ height }}" r="{{ lineWidth }}" fill="{{ color }}"/>
-        <circle cx="{{ size }} " cy="{{ heightHalf }}" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="{{ widthHalf }}" cy="{{ height }}" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="{{ width }} " cy="{{ heightHalf }}" r="{{ lineWidth }}" fill="{{ color }}"/>
     </pattern>
 </script>
 <script src="colr_pickr.min.js"></script>
