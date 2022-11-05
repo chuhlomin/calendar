@@ -139,6 +139,28 @@ function changeOrientation(element) {
 
 function changePattern(element) {
     currentPattern = element.value;
+
+    if (localStorage.getItem("patternSizeChanged") != "true") {
+        // switching from square-like to diaming-like patterns makes patterns
+        // look wrong: too wide or too narrow
+        // so if the user has not changed the pattern size, we change it
+        // automatically to make it look better.
+        // This is not perfect, but it's better than nothing.
+
+        if (element.dataset.width) {
+            currentPatternWidth = element.dataset.width;
+            let widthInput = document.getElementsByName("patternWidth")[0];
+            widthInput.value = currentPatternWidth;
+        }
+
+        if (element.dataset.height) {
+            currentPatternHeight = element.dataset.height;
+            let heightInput = document.getElementsByName("patternHeight")[0];
+            heightInput.value = currentPatternHeight;
+        }
+        updatePatterns();
+    }
+
     updatePattern(currentPattern);
     localStorage.setItem("pattern", currentPattern);
     updateForm(currentPattern);
@@ -165,12 +187,14 @@ function changePatternWidth(element) {
     currentPatternWidth = element.value;
     updatePatterns();
     localStorage.setItem("patternWidth", currentPatternWidth);
+    localStorage.setItem("patternSizeChanged", true);
 }
 
 function changePatternHeight(element) {
     currentPatternHeight = element.value;
     updatePatterns();
     localStorage.setItem("patternHeight", currentPatternHeight);
+    localStorage.setItem("patternSizeChanged", true);
 }
 
 function changeColor(color) {
