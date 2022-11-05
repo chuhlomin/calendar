@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  DOCKER_IMAGE: ghcr.io/chuhlomin/grid
+  DOCKER_IMAGE: ghcr.io/chuhlomin/calendar
 
 jobs:
   main:
@@ -33,7 +33,7 @@ jobs:
           location: us-east4-c
           vars: |
             image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
-            app: grid
+            app: calendar
             replicas: 2
-            domain: grid.chuhlomin.com
-          rollout_status_wait: deployment/grid
+            domain: calendar.chuhlomin.com
+          rollout_status_wait: deployment/calendar

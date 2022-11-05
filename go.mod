@@ -1,4 +1,4 @@
-module github.com/chuhlomin/grid
+module github.com/chuhlomin/calendar
 
 go 1.18
 

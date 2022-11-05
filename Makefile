@@ -17,5 +17,5 @@ test:
 .PHONY: run
 ## run: runs the binary
 run:
-	@go build -o grid .
-	@./grid --bind :8082
+	@go build -o calendar .
+	@./calendar --bind :8082

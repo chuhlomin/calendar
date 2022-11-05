@@ -1,10 +1,31 @@
 @charset "UTF-8";
 
+@font-face {
+	font-family: 'Iosevka Web';
+	font-display: swap;
+	font-weight: 400;
+	font-stretch: normal;
+	font-style: normal;
+	src: url('iosevka-regular.ttf') format('truetype'), url('iosevka-regular.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Iosevka Aile Web';
+	font-display: swap;
+	font-weight: 400;
+	font-stretch: normal;
+	font-style: normal;
+	src: url('iosevka-aile-regular.ttf') format('truetype'), url('iosevka-aile-regular.woff2') format('woff2');
+}
+
 :root {
   --font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", "Open Sans",
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  --font-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+  --font-monospace: Iosevka Web, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
     Liberation Mono, monospace;
+  --font-sans: Iosevka Aile Web, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-size: 16px;
   --font-size-small: 12px;
 
@@ -150,9 +171,15 @@ a:hover {
 }
 
 .page svg {
+  font-family: var(--font-monospace);
   max-width: 100%;
   max-height: calc(100vh - 40px);
   height: -webkit-fill-available;
+}
+
+.page svg .year,
+.page svg .weekday {
+  font-family: var(--font-sans);
 }
 
 .page svg rect {

@@ -1,6 +1,6 @@
 {
-  "name": "Grid",
-  "description": "Weather forecast information",
+  "name": "Calendar",
+  "description": "",
   "display": "standalone",
   "icons": [
     {

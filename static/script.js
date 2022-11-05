@@ -2,11 +2,8 @@
 
 let currentPageSize = "A4";
 let currentOrientation = "P";
-let currentPattern = "triangles";
-let currentPatternWidth = "10";
-let currentPatternHeight = "6";
-let currentPatternColor = "#cccccc";
-let currentLineWidth = "250";
+let currentFirstDay = "0";
+let currentTextColor = "#000000";
 
 let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
@@ -30,59 +27,33 @@ window.onload = function() {
         updatePage();
     }
 
-    let pattern = localStorage.getItem("pattern");
-    if (pattern) {
-        currentPattern = pattern;
-        let patternSelect = document.querySelector("input[name='pattern'][value='" + pattern + "']");
-        patternSelect.checked = true;
-        updatePattern(currentPattern);
-        updateForm(currentPattern);
+    let firstDay = localStorage.getItem("firstDay");
+    if (firstDay) {
+        currentFirstDay = firstDay;
+        let firstDaySelect = document.querySelector("input[name='firstDay'][value='" + firstDay + "']");
+        firstDaySelect.checked = true;
     }
 
-    let patternWidth = localStorage.getItem("patternWidth");
-    if (patternWidth) {
-        currentPatternWidth = patternWidth;
-        let widthInput = document.getElementsByName("patternWidth")[0];
-        widthInput.value = patternWidth;
+    let textColor = localStorage.getItem("textColor");
+    if (textColor) {
+        currentTextColor = textColor;
     }
 
-    let patternHeight = localStorage.getItem("patternHeight");
-    if (patternHeight) {
-        currentPatternHeight = patternHeight;
-        let heightInput = document.getElementsByName("patternHeight")[0];
-        heightInput.value = patternHeight;
-    }
+    // let lineWidth = localStorage.getItem("patternLineWidth");
+    // if (lineWidth) {
+    //     currentLineWidth = lineWidth;
+    //     let lineWidthInput = document.getElementsByName("patternLineWidth")[0];
+    //     lineWidthInput.value = lineWidth;
+    // }
 
-    let patternColor = localStorage.getItem("patternColor");
-    if (patternColor) {
-        currentPatternColor = patternColor;
-    }
-
-    let lineWidth = localStorage.getItem("patternLineWidth");
-    if (lineWidth) {
-        currentLineWidth = lineWidth;
-        let lineWidthInput = document.getElementsByName("patternLineWidth")[0];
-        lineWidthInput.value = lineWidth;
-    }
-
-    updatePatterns();
+    updateCalendar();
 
     // initialize color picker
     let button = document.getElementById('picker');
-    let picker = new ColorPicker(button, currentPatternColor);
+    let picker = new ColorPicker(button, currentTextColor);
     button.addEventListener('colorChange', function (event) {
-        changeColor(event.detail.color.hexa);
+        changeTextColor(event.detail.color.hexa);
     });
-
-    let patterns = document.getElementsByClassName("pattern");
-    for (let patternEl of patterns) {
-        patternEl.addEventListener("keypress", function(event) {
-            if (event.code == "Space" || event.code == "Enter") {
-                patternEl.childNodes[1].checked = true;
-                changePattern(patternEl.childNodes[1]);
-            }
-        });
-    }
 };
 
 let yOffset = 0;
@@ -116,8 +87,8 @@ function updatePage() {
     svg.setAttribute("viewBox", "0 0 " + width + " " + height);
     rect.setAttribute("width", width);
     rect.setAttribute("height", height);
-    pattern.setAttribute("width", width);
-    pattern.setAttribute("height", height);
+    // pattern.setAttribute("width", width);
+    // pattern.setAttribute("height", height);
 }
 
 function changePageSize(element) {
@@ -137,97 +108,155 @@ function changeOrientation(element) {
     localStorage.setItem("orientation", element.value);
 }
 
-function changePattern(element) {
-    currentPattern = element.value;
-
-    if (localStorage.getItem("patternSizeChanged") != "true") {
-        // switching from square-like to diaming-like patterns makes patterns
-        // look wrong: too wide or too narrow
-        // so if the user has not changed the pattern size, we change it
-        // automatically to make it look better.
-        // This is not perfect, but it's better than nothing.
-
-        if (element.dataset.width) {
-            currentPatternWidth = element.dataset.width;
-            let widthInput = document.getElementsByName("patternWidth")[0];
-            widthInput.value = currentPatternWidth;
-        }
-
-        if (element.dataset.height) {
-            currentPatternHeight = element.dataset.height;
-            let heightInput = document.getElementsByName("patternHeight")[0];
-            heightInput.value = currentPatternHeight;
-        }
-        updatePatterns();
-    }
-
-    updatePattern(currentPattern);
-    localStorage.setItem("pattern", currentPattern);
-    updateForm(currentPattern);
+function changeFirstDay(element) {
+    currentFirstDay = element.value;
+    updateCalendar();
+    localStorage.setItem("firstDay", currentFirstDay);
 }
 
-function updateForm(pattern) {
-    updateWidthElements(currentPattern != "lines");
+function changeTextColor(color) {
+    currentTextColor = color;
+    updateCalendar();
+    localStorage.setItem("textColor", currentTextColor);
 }
 
-function updateWidthElements(enabled) {
-    const field = document.getElementById("widthField");
-    const input = document.getElementById("widthInput");
+function updateCalendar() {
+    let pageData = document.getElementById("pageSize").querySelector("option[value='" + currentPageSize + "']").dataset;
+    let width = pageData.width;
 
-    if (enabled) {
-        field.classList.remove("disabled");
-        input.removeAttribute("disabled");
-    } else {
-        field.classList.add("disabled");
-        input.setAttribute("disabled", "disabled");
-    }
-}
+    const [d, w] = days(2022, 11, currentFirstDay);
 
-function changePatternWidth(element) {
-    currentPatternWidth = element.value;
-    updatePatterns();
-    localStorage.setItem("patternWidth", currentPatternWidth);
-    localStorage.setItem("patternSizeChanged", true);
-}
-
-function changePatternHeight(element) {
-    currentPatternHeight = element.value;
-    updatePatterns();
-    localStorage.setItem("patternHeight", currentPatternHeight);
-    localStorage.setItem("patternSizeChanged", true);
-}
-
-function changeColor(color) {
-    currentPatternColor = color;
-    updatePatterns();
-    localStorage.setItem("patternColor", currentPatternColor);
-}
-
-function changePatternLineWidth(element) {
-    currentLineWidth = element.value;
-    updatePatterns();
-    localStorage.setItem("patternLineWidth", currentLineWidth);
-}
-
-function updatePattern(patternName) {
-    let pattern = document.getElementById("pattern");
-    pattern.setAttribute("fill", "url(#" + patternName + ")");
-}
-
-function updatePatterns() {
-    let template = document.getElementById('template_patterns').innerHTML;
-    let rendered = Mustache.render(
-        template,
+    let templateMonth = document.getElementById('template_month').innerHTML;
+    let renderedMonth = Mustache.render(
+        templateMonth,
         {
-            width: currentPatternWidth,
-            widthHalf: currentPatternWidth / 2,
-            height: currentPatternHeight,
-            heightHalf: currentPatternHeight / 2,
-            color: currentPatternColor,
-            lineWidth: currentLineWidth / 1000,
+            year: "2022",
+            month: "November",
+            halfWidth: width/2,
+            days: d,
+            weekdays: weekdays(currentFirstDay),
+            weeknumbers: weeknumbers(w)
         }
     );
-    document.getElementById('patterns').innerHTML = rendered;
+
+    let templateStyles = document.getElementById('template_styles').innerHTML;
+    let renderedStyles = Mustache.render(
+        templateStyles,
+        {
+            textColor: currentTextColor,
+        }
+    );
+
+    document.getElementById('defs').innerHTML = renderedMonth;
+    document.getElementById('style').innerHTML = renderedStyles;
+}
+
+function days(year, month, firstDay) {
+    firstDay = parseInt(firstDay);
+    let days = [];
+    let date = new Date(year, month - 1, 1);
+    let end = new Date(year, month, 0);
+
+    if (date.getDay() != firstDay) {
+        date.setDate(date.getDate() - (date.getDay() - firstDay));
+    }
+
+    let row = 0;
+    let column = 0;
+    let weeknumbers = [];
+
+    let weeknumber = getWeekNumber(date);
+    weeknumbers.push(weeknumber);
+
+    while (date <= end) {
+        days.push({
+            day: date.getDate(),
+            x: column * 25 + 40,
+            y: row * 35 + 50,
+            inactive: date.getMonth() != month - 1,
+            weekend: date.getDay() == 0 || date.getDay() == 6,
+        });
+
+        date.setDate(date.getDate() + 1);
+
+        if (column == 6) {
+            row++;
+            column = 0;
+            weeknumber++;
+            weeknumbers.push(weeknumber);
+        } else {
+            column++;
+        }
+    }
+
+    // finish last row
+    while (date.getDay() != firstDay) {
+        days.push({
+            day: date.getDate(),
+            x: column * 25 + 40,
+            y: row * 35 + 50,
+            inactive: true,
+        });
+
+        date.setDate(date.getDate() + 1);
+        column++;
+    }
+
+    return [days, weeknumbers];
+}
+
+function weekdays(firstDay) {
+    let weekdays = [
+        // "Sunday",
+        // "Monday",
+        // "Tuesday",
+        // "Wednesday",
+        // "Thursday",
+        // "Friday",
+        // "Saturday",
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+    ];
+
+    // parse int
+    firstDay = parseInt(firstDay);
+    
+    let days = [];
+    for (let i = 0; i < 7; i++) {
+        days.push({
+            day: weekdays[(firstDay + i) % 7],
+            x: i * 25 + 40,
+            y: 30,
+        });
+    }
+
+    return days;
+}
+
+function weeknumbers(w) {
+    let result = [];
+
+    for (let i = 0; i < w.length; i++) {
+        result.push({
+            weeknumber: w[i],
+            x: 20,
+            y: i * 35 + 42,
+        });
+    }
+
+    return result;
+}
+
+function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+    let yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
 }
 
 function togglePreview(element) {
@@ -252,13 +281,6 @@ function submitForm(element) {
         body: JSON.stringify({
             size: currentPageSize,
             orientation: currentOrientation,
-            pattern: {
-                name: currentPattern,
-                width: currentPatternWidth,
-                height: currentPatternHeight,
-                color: currentPatternColor,
-                lineWidth: currentLineWidth,
-            }
         })
     }).then(response => {
         if (response.ok) {
@@ -266,7 +288,7 @@ function submitForm(element) {
                 let url = URL.createObjectURL(blob);
                 let a = document.createElement("a");
                 a.href = url;
-                a.download = "grid.pdf";
+                a.download = "calendar.pdf";
                 a.click();
             });
             element.removeAttribute("disabled");

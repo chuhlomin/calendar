@@ -15,7 +15,7 @@ spec:
         app: {{ .app }}
     spec:
       containers:
-        - name: grid
+        - name: calendar
           image: {{ .image }}
           ports:
             - containerPort: 80
