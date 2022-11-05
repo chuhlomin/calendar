@@ -2,9 +2,9 @@
 
 let currentPageSize = "A4";
 let currentOrientation = "P";
-let currentPattern = "rect";
-let currentPatternWidth = "5";
-let currentPatternHeight = "3";
+let currentPattern = "triangles";
+let currentPatternWidth = "10";
+let currentPatternHeight = "6";
 let currentPatternColor = "#cccccc";
 let currentLineWidth = "250";
 

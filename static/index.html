@@ -59,7 +59,7 @@
                     <legend>Pattern:</legend>
                     <div class="patterns">
                         <label class="pattern" tabindex="0">
-                            <input type="radio" name="pattern" value="rect" checked onclick="changePattern(this)" data-width="5" data-height="5">
+                            <input type="radio" name="pattern" value="rect" onclick="changePattern(this)" data-width="5" data-height="5">
                             <div class="pattern-rect"></div>
                         </label>
                         <label class="pattern" tabindex="0">
@@ -79,7 +79,7 @@
                             <div class="pattern-rhombus"></div>
                         </label>
                         <label class="pattern" tabindex="0">
-                            <input type="radio" name="pattern" value="triangles" onclick="changePattern(this)" data-width="10" data-height="6">
+                            <input type="radio" name="pattern" value="triangles" checked onclick="changePattern(this)" data-width="10" data-height="6">
                             <div class="pattern-triangles"></div>
                         </label>
                         <label class="pattern" tabindex="0">
@@ -92,13 +92,13 @@
                 <div class="field" id="widthField">
                     <label class="full-width-label">
                         <span>Width (mm):</span>
-                        <input id="widthInput" type="number" name="patternWidth" value="5" min="1" max="100" onchange="changePatternWidth(this)" onkeyup="changePatternWidth(this)">
+                        <input id="widthInput" type="number" name="patternWidth" value="10" min="1" max="100" onchange="changePatternWidth(this)" onkeyup="changePatternWidth(this)">
                     </label>
                 </div>
                 <div class="field">
                     <label class="full-width-label">
                         <span>Height (mm):</span>
-                        <input type="number" name="patternHeight" value="3" min="1" max="100" onchange="changePatternHeight(this)" onkeyup="changePatternHeight(this)">
+                        <input type="number" name="patternHeight" value="6" min="1" max="100" onchange="changePatternHeight(this)" onkeyup="changePatternHeight(this)">
                     </label>
                 </div>
                 <div class="field">
