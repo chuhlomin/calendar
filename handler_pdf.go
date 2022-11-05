@@ -114,8 +114,8 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 	case "rect":
 		w, h := pdf.GetPageSize()
 		for x := 0.0; x < w; x += patternSize {
-			for y := 0.0; y < h; y += patternSize {
-				pdf.Rect(x, y, patternSize, patternSize, "D")
+			for y := 0.0; y < h; y += patternHeight {
+				pdf.Rect(x, y, patternSize, patternHeight, "D")
 			}
 		}
 	case "lines":
@@ -126,11 +126,11 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 	case "dot":
 		pdf.SetFillColor(r, g, b)
 		for x := 0.0; x < w; x += patternSize {
-			for y := 0.0; y < h; y += patternSize {
+			for y := 0.0; y < h; y += patternHeight {
 				pdf.Circle(x, y, pattern.lineWidth/1000, "F")
 			}
 		}
-	case "diamond":
+	case "diamond": // not used
 		for x := 0.0; x < w; x += patternSize {
 			for y := 0.0; y < h; y += patternSize {
 				pdf.MoveTo(x+patternSize/2, y)
@@ -170,6 +170,14 @@ func drawPattern(pdf gofpdf.Pdf, pattern pattern) error {
 				pdf.LineTo(x+patternSize/2, y+patternHeight)
 				pdf.ClosePath()
 				pdf.DrawPath("D")
+			}
+		}
+	case "hexdot":
+		pdf.SetFillColor(r, g, b)
+		for x := 0.0; x < w; x += patternSize {
+			for y := 0.0; y < h; y += patternHeight {
+				pdf.Circle(x+patternSize/2, y, pattern.lineWidth/1000, "F")
+				pdf.Circle(x, y+patternHeight/2, pattern.lineWidth/1000, "F")
 			}
 		}
 

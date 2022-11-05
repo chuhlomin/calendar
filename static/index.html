@@ -70,10 +70,10 @@
                             <input type="radio" name="pattern" value="dot" onclick="changePattern(this)">
                             <div class="pattern-dot"></div>
                         </label>
-                        <label class="pattern" tabindex="0">
+                        <!--label class="pattern" tabindex="0">
                             <input type="radio" name="pattern" value="diamond" onclick="changePattern(this)">
                             <div class="pattern-diamond"></div>
-                        </label>
+                        </label-->
                         <label class="pattern" tabindex="0">
                             <input type="radio" name="pattern" value="rhombus" onclick="changePattern(this)">
                             <div class="pattern-rhombus"></div>
@@ -82,17 +82,20 @@
                             <input type="radio" name="pattern" value="triangles" onclick="changePattern(this)">
                             <div class="pattern-triangles"></div>
                         </label>
+                        <label class="pattern" tabindex="0">
+                            <input type="radio" name="pattern" value="hexdot" onclick="changePattern(this)">
+                            <div class="pattern-hexdot"></div>
+                        </label>
                     </div>
                 </div>
 
-                <div class="field">
+                <div class="field" id="widthField">
                     <label class="full-width-label">
-                        <span class="without-height">Size (mm):</span>
-                        <span class="with-height" style="display: none">Width (mm):</span>
-                        <input type="number" name="patternSize" value="5" min="1" max="100" onchange="changePatternSize(this)" onkeyup="changePatternSize(this)">
+                        <span>Width (mm):</span>
+                        <input id="widthInput" type="number" name="patternSize" value="5" min="1" max="100" onchange="changePatternSize(this)" onkeyup="changePatternSize(this)">
                     </label>
                 </div>
-                <div class="field with-height" id="heightField" style="display: none">
+                <div class="field">
                     <label class="full-width-label">
                         <span>Height (mm):</span>
                         <input type="number" name="patternHeight" value="3" min="1" max="100" onchange="changePatternHeight(this)" onkeyup="changePatternHeight(this)">
@@ -133,17 +136,17 @@
 </div>
 <script src="script.js"></script>
 <script id="template_patterns" type="x-tmpl-mustache">
-    <pattern id="rect" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
-        <rect width="{{ size }}" height="{{ size }}" style="fill:none;stroke:{{ color }};stroke-width:{{ lineWidth }}"/>
+    <pattern id="rect" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
+        <rect width="{{ size }}" height="{{ height }}" style="fill:none;stroke:{{ color }};stroke-width:{{ lineWidth }}"/>
     </pattern>
-    <pattern id="lines" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
+    <pattern id="lines" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0 H{{ size }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
     </pattern>
-    <pattern id="dot" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
+    <pattern id="dot" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
         <circle cx="0" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
         <circle cx="{{ size }}" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
-        <circle cx="{{ size }}" cy="{{ size }}" r="{{ lineWidth }}" fill="{{ color }}"/>
-        <circle cx="0" cy="{{ size }}" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="{{ size }}" cy="{{ height }}" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="0" cy="{{ height }}" r="{{ lineWidth }}" fill="{{ color }}"/>
     </pattern>
     <pattern id="diamond" viewBox="0,0,{{ size }},{{ size }}" width="{{ size }}" height="{{ size }}" patternUnits="userSpaceOnUse">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M{{ sizeHalf }} 0 L{{ size }} {{ sizeHalf }} L{{ sizeHalf }} {{ size }} L0 {{ sizeHalf }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
@@ -153,6 +156,12 @@
     </pattern>
     <pattern id="triangles" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0 V{{ height }} M{{ size }} 0 V{{ height }} M{{ sizeHalf }} 0 L0 {{ heightHalf }} L{{ sizeHalf }} {{ height }} V0 L{{ size }} {{ heightHalf }} L{{ sizeHalf }} {{ height }} Z" fill="none" stroke="{{ color }}" stroke-width="{{ lineWidth }}">
+    </pattern>
+    <pattern id="hexdot" viewBox="0,0,{{ size }},{{ height }}" width="{{ size }}" height="{{ height }}" patternUnits="userSpaceOnUse">
+        <circle cx="{{ sizeHalf }}" cy="0" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="0" cy="{{ heightHalf }}" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="{{ sizeHalf }}" cy="{{ height }}" r="{{ lineWidth }}" fill="{{ color }}"/>
+        <circle cx="{{ size }} " cy="{{ heightHalf }}" r="{{ lineWidth }}" fill="{{ color }}"/>
     </pattern>
 </script>
 <script src="colr_pickr.min.js"></script>

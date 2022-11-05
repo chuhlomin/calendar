@@ -97,7 +97,7 @@ panel.onscroll = function() {
     } else {
         body.classList.remove("scrolled");
     }
-}
+};
 
 function updatePage() {
     let svg = document.getElementById("svg");
@@ -145,25 +145,19 @@ function changePattern(element) {
 }
 
 function updateForm(pattern) {
-    switch (currentPattern) {
-    case "rhombus":
-    case "triangles":
-        updateHeightElements(true);
-        break;
-    default:
-        updateHeightElements(false);
-    }
+    updateWidthElements(currentPattern != "lines");
 }
 
-function updateHeightElements(show) {
-    const withHeight = document.getElementsByClassName("with-height")
-    const withoutHeight = document.getElementsByClassName("without-height")
+function updateWidthElements(enabled) {
+    const field = document.getElementById("widthField");
+    const input = document.getElementById("widthInput");
 
-    for (let el of withHeight) {
-        el.style.display = show ? "block" : "none";
-    }
-    for (let el of withoutHeight) {
-        el.style.display = show ? "none" : "block";
+    if (enabled) {
+        field.classList.remove("disabled");
+        input.removeAttribute("disabled");
+    } else {
+        field.classList.add("disabled");
+        input.setAttribute("disabled", "disabled");
     }
 }
 

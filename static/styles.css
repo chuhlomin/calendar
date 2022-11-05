@@ -198,6 +198,14 @@ input[type="number"] {
   width: 8ch;
 }
 
+input[type="number"]:disabled {
+  color: #999999;
+}
+
+.field.disabled {
+  opacity: 0.5;
+}
+
 .patterns {
   display: grid;
   grid-template-columns: auto auto auto;
@@ -216,7 +224,7 @@ input[type="number"] {
 /* class that starts with pattern-*/
 [class^="pattern-"] {
   display: block;
-  background: url("patterns.png") no-repeat;
+  background: url("patterns.png?t=20221104") no-repeat;
   background-size: 600% 100%;
   border: 1px solid #d3d3d3;
   border-radius: var(--border-radius);
@@ -234,15 +242,15 @@ input[type="number"] {
   background-position: 40% 0;
 }
 
-.pattern-diamond {
+.pattern-rhombus {
   background-position: 60% 0;
 }
 
-.pattern-rhombus {
+.pattern-triangles {
   background-position: 80% 0;
 }
 
-.pattern-triangles {
+.pattern-hexdot {
   background-position: 100% 0;
 }
 
