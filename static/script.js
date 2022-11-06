@@ -15,12 +15,19 @@ let config = {
     daysYShift: "50",
 };
 
-
 let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
 
+function loadConfig(key) {
+    let value = localStorage.getItem(key);
+    if (value) {
+        config[key] = value;
+    }
+}
+
 window.onload = function() {
     // read state from localStorage
+
     let sizeID = localStorage.getItem("sizeID");
     if (sizeID) {
         config["pageSize"] = sizeID;
@@ -39,25 +46,10 @@ window.onload = function() {
         firstDaySelect.checked = true;
     }
 
-    let textColor = localStorage.getItem("textColor");
-    if (textColor) {
-        config["textColor"] = textColor;
-    }
-
-    let weekendColor = localStorage.getItem("weekendColor");
-    if (weekendColor) {
-        config["weekendColor"] = weekendColor;
-    }
-
-    let year = localStorage.getItem("year");
-    if (year) {
-        config["year"] = year;
-    }
-
-    let month = localStorage.getItem("month");
-    if (month) {
-        config["month"] = month;
-    }
+    loadConfig("textColor");
+    loadConfig("weekendColor");
+    loadConfig("year");
+    loadConfig("month");
 
     let daysXStep = localStorage.getItem("daysXStep");
     if (daysXStep) {
