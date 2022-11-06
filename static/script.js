@@ -67,17 +67,9 @@ function loadConfig(key) {
 window.onload = function() {
     // read state from localStorage
 
-    loadConfig("sizeID");
-    loadConfig("firstDay");
-    loadConfig("textColor");
-    loadConfig("weekendColor");
-    loadConfig("year");
-    loadConfig("month");
-    loadConfig("daysXStep");
-    loadConfig("daysXShift");
-    loadConfig("daysXStep");
-    loadConfig("daysYStep");
-    loadConfig("daysYShift");
+    for (let key in config) {
+        loadConfig(key);
+    }
 
     updateCalendar();
 };
