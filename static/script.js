@@ -220,8 +220,13 @@ function days(year, month, firstDay) {
         end.setDate(end.getDate() + 7);
     }
 
+    // add days from previous month
     if (date.getDay() != firstDay) {
-        date.setDate(date.getDate() - (date.getDay() - firstDay));
+        if (date.getDay() == lastDay) {
+            date.setDate(date.getDate() - 6);
+        } else {
+            date.setDate(date.getDate() - (date.getDay() - firstDay));
+        }
     }
 
     let row = 0;
