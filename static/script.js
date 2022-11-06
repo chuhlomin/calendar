@@ -208,9 +208,17 @@ function updateCalendar() {
 
 function days(year, month, firstDay) {
     firstDay = parseInt(firstDay);
+    let lastDay = firstDay - 1;
+    if (lastDay < 0) {
+        lastDay = 6;
+    }
+
     let days = [];
-    let date = new Date(year, month - 1, 1);
-    let end = new Date(year, month, 0);
+    let date = new Date(year, month, 1);
+    let end = new Date(year, month + 1, 0);
+    if (end.getDay() === lastDay) {
+        end.setDate(end.getDate() + 7);
+    }
 
     if (date.getDay() != firstDay) {
         date.setDate(date.getDate() - (date.getDay() - firstDay));
@@ -221,24 +229,26 @@ function days(year, month, firstDay) {
     let weeknumbers = [];
 
     let weeknumber = getWeekNumber(date);
-    weeknumbers.push(weeknumber);
 
     while (date <= end) {
         days.push({
             day: date.getDate(),
             x: column * 25 + 40,
             y: row * 35 + 50,
-            inactive: date.getMonth() != month - 1,
+            inactive: date.getMonth() != month,
             weekend: date.getDay() == 0 || date.getDay() == 6,
         });
+
+        if (date.getDay() == firstDay) {
+            weeknumbers.push(weeknumber);
+            weeknumber++;
+        }
 
         date.setDate(date.getDate() + 1);
 
         if (column == 6) {
             row++;
             column = 0;
-            weeknumber++;
-            weeknumbers.push(weeknumber);
         } else {
             column++;
         }
