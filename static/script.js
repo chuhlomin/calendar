@@ -2,16 +2,18 @@
 
 let today = new Date();
 
-let currentPageSize = "A4";
-let currentFirstDay = "0";
-let currentTextColor = "#222222";
-let currentWeekendColor = "#aa5555";
-let currentYear = today.getFullYear();
-let currentMonth = today.getMonth();
-let currentDaysXStep = "25";
-let currentDaysXShift = "40";
-let currentDaysYStep = "35";
-let currentDaysYShift = "50";
+let config = {
+    pageSize: "A4",
+    firstDay: "0",
+    textColor: "#222222",
+    weekendColor: "#aa5555",
+    year: today.getFullYear(),
+    month: today.getMonth(),
+    daysXStep: "25",
+    daysXShift: "40",
+    daysYStep: "35",
+    daysYShift: "50",
+};
 
 
 let body = document.getElementsByTagName("body")[0];
@@ -21,66 +23,66 @@ window.onload = function() {
     // read state from localStorage
     let sizeID = localStorage.getItem("sizeID");
     if (sizeID) {
-        currentPageSize = sizeID;
+        config["pageSize"] = sizeID;
         let sizeSelect = document.getElementsByName("size")[0];
         sizeSelect.value = sizeID;
     }
 
-    if (sizeID || orientation) {
+    if (sizeID) {
         updatePage();
     }
 
     let firstDay = localStorage.getItem("firstDay");
     if (firstDay) {
-        currentFirstDay = firstDay;
+        config["firstDay"] = firstDay;
         let firstDaySelect = document.querySelector("input[name='firstDay'][value='" + firstDay + "']");
         firstDaySelect.checked = true;
     }
 
     let textColor = localStorage.getItem("textColor");
     if (textColor) {
-        currentTextColor = textColor;
+        config["textColor"] = textColor;
     }
 
     let weekendColor = localStorage.getItem("weekendColor");
     if (weekendColor) {
-        currentWeekendColor = weekendColor;
+        config["weekendColor"] = weekendColor;
     }
 
     let year = localStorage.getItem("year");
     if (year) {
-        currentYear = year;
+        config["year"] = year;
     }
 
     let month = localStorage.getItem("month");
     if (month) {
-        currentMonth = month;
+        config["month"] = month;
     }
 
     let daysXStep = localStorage.getItem("daysXStep");
     if (daysXStep) {
-        currentDaysXStep = daysXStep;
+        config["daysXStep"] = daysXStep;
         let daysXStepInput = document.getElementsByName("daysXStep")[0];
         daysXStepInput.value = daysXStep;
     }
 
     let daysXShift = localStorage.getItem("daysXShift");
     if (daysXShift) {
-        currentDaysXShift = daysXShift;
+        config["daysXShift"] = daysXShift;
         let daysXShiftInput = document.getElementsByName("daysXShift")[0];
         daysXShiftInput.value = daysXShift;
     }
 
     let daysYStep = localStorage.getItem("daysYStep");
     if (daysYStep) {
-        currentDaysYStep = daysYStep;
+        config["daysYStep"] = daysYStep;
         let daysYStepInput = document.getElementsByName("daysYStep")[0];
         daysYStepInput.value = daysYStep;
     }
 
     let daysYShift = localStorage.getItem("daysYShift");
     if (daysYShift) {
-        currentDaysYShift = daysYShift;
+        config["daysYShift"] = daysYShift;
         let daysYShiftInput = document.getElementsByName("daysYShift")[0];
         daysYShiftInput.value = daysYShift;
     }
@@ -89,13 +91,13 @@ window.onload = function() {
 
     // initialize color pickers
     let pickerTextColor = document.getElementById('pickerTextColor');
-    new ColorPicker(pickerTextColor, currentTextColor);
+    new ColorPicker(pickerTextColor, config.textColor);
     pickerTextColor.addEventListener('colorChange', function (event) {
         changeTextColor(event.detail.color.hexa);
     });
 
     let pickerWeekendColor = document.getElementById('pickerWeekendColor');
-    new ColorPicker(pickerWeekendColor, currentWeekendColor);
+    new ColorPicker(pickerWeekendColor, config.weekendColor);
     pickerWeekendColor.addEventListener('colorChange', function (event) {
         changeWeekendColor(event.detail.color.hexa);
     });
@@ -119,7 +121,7 @@ function updatePage() {
     let svg = document.getElementById("svg");
     let rect = document.getElementById("rect");
 
-    let pageData = document.getElementById("pageSize").querySelector("option[value='" + currentPageSize + "']").dataset;
+    let pageData = document.getElementById("pageSize").querySelector("option[value='" + config.pageSize + "']").dataset;
 
     let width = pageData.width;
     let height = pageData.height;
@@ -130,32 +132,32 @@ function updatePage() {
 }
 
 function changePageSize(element) {
-    currentPageSize = element.value;
+    config["pageSize"] = element.value;
     updatePage();
-    localStorage.setItem("sizeID", currentPageSize);
+    localStorage.setItem("sizeID", config.pageSize);
 }
 
 function changeFirstDay(element) {
-    currentFirstDay = element.value;
+    config["firstDay"] = element.value;
     updateCalendar();
-    localStorage.setItem("firstDay", currentFirstDay);
+    localStorage.setItem("firstDay", config.firstDay);
 }
 
 function changeTextColor(color) {
-    currentTextColor = color;
+    config["textColor"] = color;
     updateCalendar();
-    localStorage.setItem("textColor", currentTextColor);
+    localStorage.setItem("textColor", config.textColor);
 }
 
 function changeWeekendColor(color) {
-    currentWeekendColor = color;
+    config["weekendColor"] = color;
     updateCalendar();
-    localStorage.setItem("weekendColor", currentWeekendColor);
+    localStorage.setItem("weekendColor", config.weekendColor);
 }
 
 function changeMonth(step) {
-    let month = parseInt(currentMonth);
-    let year = parseInt(currentYear);
+    let month = parseInt(config.month);
+    let year = parseInt(config.year);
 
     month += step;
     if (month < 0) {
@@ -166,52 +168,52 @@ function changeMonth(step) {
         year++;
     }
 
-    currentMonth = month;
-    currentYear = year;
+    config.month = month;
+    config.year = year;
 
     updateCalendar();
 
-    localStorage.setItem("month", currentMonth);
-    localStorage.setItem("year", currentYear);
+    localStorage.setItem("month", config.month);
+    localStorage.setItem("year", config.year);
 }
 
 function changeDaysXStep(element) {
-    currentDaysXStep = element.value;
+    config["daysXStep"] = element.value;
     updateCalendar();
-    localStorage.setItem("daysXStep", currentDaysXStep);
+    localStorage.setItem("daysXStep", config.daysXStep);
 }
 
 function changeDaysXShift(element) {
-    currentDaysXShift = element.value;
+    config["daysXShift"] = element.value;
     updateCalendar();
-    localStorage.setItem("daysXShift", currentDaysXShift);
+    localStorage.setItem("daysXShift", config.daysXShift);
 }
 
 function changeDaysYStep(element) {
-    currentDaysYStep = element.value;
+    config["daysYStep"] = element.value;
     updateCalendar();
-    localStorage.setItem("daysYStep", currentDaysYStep);
+    localStorage.setItem("daysYStep", config.daysYStep);
 }
 
 function changeDaysYShift(element) {
-    currentDaysYShift = element.value;
+    config["daysYShift"] = element.value;
     updateCalendar();
-    localStorage.setItem("daysYShift", currentDaysYShift);
+    localStorage.setItem("daysYShift", config.daysYShift);
 }
 
 function updateCalendar() {
-    let pageData = document.getElementById("pageSize").querySelector("option[value='" + currentPageSize + "']").dataset;
+    let pageData = document.getElementById("pageSize").querySelector("option[value='" + config.pageSize + "']").dataset;
     let width = pageData.width;
 
     // validate year
-    let year = parseInt(currentYear);
+    let year = parseInt(config.year);
     if (isNaN(year)) {
         console.log("Invalid year: " + year);
         return;
     }
 
     // validate month
-    let month = parseInt(currentMonth);
+    let month = parseInt(config.month);
     if (isNaN(month)) {
         console.log("Invalid month: " + month);
         return;
@@ -221,31 +223,31 @@ function updateCalendar() {
         return;
     }
 
-    let firstDay = parseInt(currentFirstDay);
+    let firstDay = parseInt(config.firstDay);
     let lastDay = firstDay - 1;
     if (lastDay < 0) {
         lastDay = 6;
     }
 
-    let daysXShift = parseInt(currentDaysXShift);
+    let daysXShift = parseInt(config.daysXShift);
     if (isNaN(daysXShift)) {
         console.log("Invalid daysXShift: " + daysXShift);
         return;
     }
 
-    let daysXStep = parseInt(currentDaysXStep);
+    let daysXStep = parseInt(config.daysXStep);
     if (isNaN(daysXStep)) {
         console.log("Invalid daysXStep: " + daysXStep);
         return;
     }
 
-    let daysYShift = parseInt(currentDaysYShift);
+    let daysYShift = parseInt(config.daysYShift);
     if (isNaN(daysYShift)) {
         console.log("Invalid daysYShift: " + daysYShift);
         return;
     }
 
-    let daysYStep = parseInt(currentDaysYStep);
+    let daysYStep = parseInt(config.daysYStep);
     if (isNaN(daysYStep)) {
         console.log("Invalid daysYStep: " + daysYStep);
         return;
@@ -266,11 +268,11 @@ function updateCalendar() {
     let renderedMonth = Mustache.render(
         templateMonth,
         {
-            year: currentYear,
+            year: config.year,
             month: getMonthName(month),
             halfWidth: width/2,
             days: d,
-            weekdays: weekdays(currentFirstDay),
+            weekdays: weekdays(config.firstDay),
             weeknumbers: weeknumbers(w)
         }
     );
@@ -279,8 +281,8 @@ function updateCalendar() {
     let renderedStyles = Mustache.render(
         templateStyles,
         {
-            textColor: currentTextColor,
-            weekendColor: currentWeekendColor
+            textColor: config.textColor,
+            weekendColor: config.weekendColor
         }
     );
 
@@ -438,23 +440,18 @@ function submitForm(element) {
     element.setAttribute("disabled", "disabled");
     element.value = "Generating PDF...";
 
+    let [cfg, errors] = validateConfig(config);
+    if (errors.length > 0) {
+        alert(errors.join("\r"));
+        return;
+    }
+
     fetch("/pdf", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            size: currentPageSize,
-            year: parseInt(currentYear),
-            month: parseInt(currentMonth),
-            firstDay: parseInt(currentFirstDay),
-            textColor: currentTextColor,
-            weekendColor: currentWeekendColor,
-            daysXShift: parseInt(currentDaysXShift),
-            daysXStep: parseInt(currentDaysXStep),
-            daysYShift: parseInt(currentDaysYShift),
-            daysYStep: parseInt(currentDaysYStep),
-        })
+        body: JSON.stringify(cfg)
     }).then(response => {
         if (response.ok) {
             response.blob().then(blob => {
@@ -480,4 +477,53 @@ function submitForm(element) {
         element.removeAttribute("disabled");
         element.value = defaultLabel;
     });
+}
+
+function validateConfig(cfg) {
+    let errors = [];
+
+    let year = parseInt(cfg.year);
+    if (isNaN(year)) {
+        errors.push("Year is not a number");
+    }
+
+    let month = parseInt(cfg.month);
+    if (isNaN(month)) {
+        errors.push("Month is not a number");
+    }
+
+    let firstDay = parseInt(cfg.firstDay);
+    if (isNaN(firstDay)) {
+        errors.push("First day is not a number");
+    }
+
+    let daysXStep = parseInt(cfg.daysXStep);
+    if (isNaN(daysXStep)) {
+        errors.push("Days X step is not a number");
+    }
+
+    let daysXShift = parseInt(cfg.daysXShift);
+    if (isNaN(daysXShift)) {
+        errors.push("Days X shift is not a number");
+    }
+
+    let daysYStep = parseInt(cfg.daysYStep);
+    if (isNaN(daysYStep)) {
+        errors.push("Days Y step is not a number");
+    }
+
+    let daysYShift = parseInt(cfg.daysYShift);
+    if (isNaN(daysYShift)) {
+        errors.push("Days Y shift is not a number");
+    }
+
+    cfg.year = year;
+    cfg.month = month;
+    cfg.firstDay = firstDay;
+    cfg.daysXStep = daysXStep;
+    cfg.daysXShift = daysXShift;
+    cfg.daysYStep = daysYStep;
+    cfg.daysYShift = daysYShift;
+
+    return [cfg, errors];
 }
