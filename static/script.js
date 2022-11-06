@@ -1,9 +1,14 @@
 "use strict";
 
+let today = new Date();
+
 let currentPageSize = "A4";
 let currentOrientation = "P";
 let currentFirstDay = "0";
 let currentTextColor = "#000000";
+let currentYear = today.getFullYear();
+let currentMonth = today.getMonth();
+
 
 let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
@@ -37,6 +42,16 @@ window.onload = function() {
     let textColor = localStorage.getItem("textColor");
     if (textColor) {
         currentTextColor = textColor;
+    }
+
+    let year = localStorage.getItem("year");
+    if (year) {
+        currentYear = year;
+    }
+
+    let month = localStorage.getItem("month");
+    if (month) {
+        currentMonth = month;
     }
 
     // let lineWidth = localStorage.getItem("patternLineWidth");
@@ -120,18 +135,58 @@ function changeTextColor(color) {
     localStorage.setItem("textColor", currentTextColor);
 }
 
+function changeMonth(step) {
+    let month = parseInt(currentMonth);
+    let year = parseInt(currentYear);
+
+    month += step;
+    if (month < 0) {
+        month = 11;
+        year--;
+    } else if (month > 11) {
+        month = 0;
+        year++;
+    }
+
+    currentMonth = month;
+    currentYear = year;
+
+    updateCalendar();
+
+    localStorage.setItem("month", currentMonth);
+    localStorage.setItem("year", currentYear);
+}
+
 function updateCalendar() {
     let pageData = document.getElementById("pageSize").querySelector("option[value='" + currentPageSize + "']").dataset;
     let width = pageData.width;
 
-    const [d, w] = days(2022, 11, currentFirstDay);
+    // validate year
+    let year = parseInt(currentYear);
+    if (isNaN(year)) {
+        console.log("Invalid year: " + year);
+        return;
+    }
+
+    // validate month
+    let month = parseInt(currentMonth);
+    if (isNaN(month)) {
+        console.log("Invalid month: " + month);
+        return;
+    }
+    if (month < 0 || month > 11) {
+        console.log("Invalid month: " + month);
+        return;
+    }
+
+    const [d, w] = days(year, month, currentFirstDay);
 
     let templateMonth = document.getElementById('template_month').innerHTML;
     let renderedMonth = Mustache.render(
         templateMonth,
         {
-            year: "2022",
-            month: "November",
+            year: currentYear,
+            month: getMonthName(month),
             halfWidth: width/2,
             days: d,
             weekdays: weekdays(currentFirstDay),
@@ -250,6 +305,25 @@ function weeknumbers(w) {
     }
 
     return result;
+}
+
+let months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+];
+
+function getMonthName(month) {
+    return months[month];
 }
 
 function getWeekNumber(d) {

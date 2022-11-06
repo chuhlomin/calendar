@@ -71,15 +71,16 @@
             </form>
             <div class="actions">
                 <div class="buttons">
-                    <button class="show-preview" onclick="togglePreview(this)"><span class="may-hide">Show </span>Preview</button>
-                    <button class="hide-preview" onclick="togglePreview(this)"><span class="may-hide">Hide </span>Preview</button>
-                    <button onclick="submitForm(this)">Download<span class="may-hide"> PDF</span></button>
+                    <button class="btn show-preview" onclick="togglePreview(this)"><span class="may-hide">Show </span>Preview</button>
+                    <button class="btn hide-preview" onclick="togglePreview(this)"><span class="may-hide">Hide </span>Preview</button>
+                    <button class="btn" onclick="submitForm(this)">Download<span class="may-hide"> PDF</span></button>
                 </div>
                 <div class="credit">Made by <a href="https://chuhlomin.com/">Konstantin Chukhlomin</a></div>
             </div>
         </div>
         <div class="content">
             <div class="page">
+                <button class="btn page-nav left" onclick="changeMonth(-1)">←</button>
                 <svg id="svg" viewBox="0 0 210 297" preserveAspectRatio="xMidYMid meet">
                     <style id="style"></style>
                     <rect id="rect" fill="white" width="210" height="297"/>
@@ -89,6 +90,7 @@
                     <use x="0" y="0" href="#weekdays" fill="url('#weekdays')" />
                     <use x="0" y="0" href="#weeknumbers" fill="url('#weeknumbers')" />
                 </svg>
+                <button class="btn page-nav right" onclick="changeMonth(1)">→</button>
             </div>
         </div>
     </div>
