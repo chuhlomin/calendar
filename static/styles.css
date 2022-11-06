@@ -164,7 +164,7 @@ a:hover {
   right: 0;
   top: 0;
   bottom: 0;
-  padding: 20px 40px;
+  padding: 20px 50px;
   overflow: hidden;
   background: var(--color-content-background);
 }
@@ -199,11 +199,11 @@ a:hover {
 }
 
 .page-nav.left {
-  left: -32px;
+  left: -43px;
 }
 
 .page-nav.right {
-  right: -32px;
+  right: -43px;
 }
 
 form {
