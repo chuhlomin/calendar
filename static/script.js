@@ -365,6 +365,8 @@ function submitForm(element) {
         body: JSON.stringify({
             size: currentPageSize,
             orientation: currentOrientation,
+            year: parseInt(currentYear),
+            month: parseInt(currentMonth),
             firstDay: currentFirstDay,
             textColor: currentTextColor,
         })

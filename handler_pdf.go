@@ -23,6 +23,8 @@ type pdfRequest struct {
 	Orientation string `json:"orientation"`
 	FirstDay    string `json:"firstDay"`
 	TextColor   string `json:"textColor"`
+	Year        int    `json:"year"`
+	Month       int    `json:"month"`
 
 	textColor color.Color
 }
@@ -59,6 +61,10 @@ func parsePDFRequest(r *http.Request) (*pdfRequest, error) {
 		return nil, errors.Wrapf(err, "error parsing text color %q", req.TextColor)
 	}
 
+	if req.Month < 0 || req.Month > 11 {
+		return nil, errors.Errorf("invalid month %d", req.Month)
+	}
+
 	return &req, nil
 }
 
@@ -88,8 +94,8 @@ func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 
 	// w, h := pdf.GetPageSize()
 
-	year := 2022
-	month := time.November
+	year := req.Year
+	month := time.Month(req.Month + 1)
 
 	calendar := dates.GetCalendar(year, month)
 
