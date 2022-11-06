@@ -281,6 +281,8 @@ function submitForm(element) {
         body: JSON.stringify({
             size: currentPageSize,
             orientation: currentOrientation,
+            firstDay: currentFirstDay,
+            textColor: currentTextColor,
         })
     }).then(response => {
         if (response.ok) {
