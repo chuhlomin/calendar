@@ -15,84 +15,71 @@ let config = {
     daysYShift: "50",
 };
 
+let configInputTypes = {
+    pageSize: "select",
+    firstDay: "radio",
+    textColor: "color",
+    weekendColor: "color",
+    daysXStep: "number",
+    daysXShift: "number",
+    daysYStep: "number",
+    daysYShift: "number",
+};
+
 let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
 
 function loadConfig(key) {
-    let value = localStorage.getItem(key);
+    var value = localStorage.getItem(key);
     if (value) {
         config[key] = value;
+
+        switch (configInputTypes[key]) {
+        case "select":
+            let select = document.getElementsByName(key)[0];
+            select.value = value;
+
+            if (key == "pageSize") {
+                updatePage();
+            }
+            break;
+
+        case "radio":
+            let option = document.querySelector("input[name='" + key + "'][value='" + value + "']");
+            option.checked = true;
+            break;
+
+        case "number":
+            let input = document.getElementsByName(key)[0];
+            input.value = value;
+            break;
+
+        case "color":
+            let button = document.getElementsByName(key)[0];
+            new ColorPicker(button, value);
+            button.addEventListener('colorChange', function (event) {
+                changeTextColor(event.detail.color.hexa);
+            });
+        }
     }
 }
 
 window.onload = function() {
     // read state from localStorage
 
-    let sizeID = localStorage.getItem("sizeID");
-    if (sizeID) {
-        config["pageSize"] = sizeID;
-        let sizeSelect = document.getElementsByName("size")[0];
-        sizeSelect.value = sizeID;
-    }
-
-    if (sizeID) {
-        updatePage();
-    }
-
-    let firstDay = localStorage.getItem("firstDay");
-    if (firstDay) {
-        config["firstDay"] = firstDay;
-        let firstDaySelect = document.querySelector("input[name='firstDay'][value='" + firstDay + "']");
-        firstDaySelect.checked = true;
-    }
-
+    loadConfig("sizeID");
+    loadConfig("firstDay");
     loadConfig("textColor");
     loadConfig("weekendColor");
     loadConfig("year");
     loadConfig("month");
-
-    let daysXStep = localStorage.getItem("daysXStep");
-    if (daysXStep) {
-        config["daysXStep"] = daysXStep;
-        let daysXStepInput = document.getElementsByName("daysXStep")[0];
-        daysXStepInput.value = daysXStep;
-    }
-
-    let daysXShift = localStorage.getItem("daysXShift");
-    if (daysXShift) {
-        config["daysXShift"] = daysXShift;
-        let daysXShiftInput = document.getElementsByName("daysXShift")[0];
-        daysXShiftInput.value = daysXShift;
-    }
-
-    let daysYStep = localStorage.getItem("daysYStep");
-    if (daysYStep) {
-        config["daysYStep"] = daysYStep;
-        let daysYStepInput = document.getElementsByName("daysYStep")[0];
-        daysYStepInput.value = daysYStep;
-    }
-
-    let daysYShift = localStorage.getItem("daysYShift");
-    if (daysYShift) {
-        config["daysYShift"] = daysYShift;
-        let daysYShiftInput = document.getElementsByName("daysYShift")[0];
-        daysYShiftInput.value = daysYShift;
-    }
+    loadConfig("daysXStep");
+    loadConfig("daysXShift");
+    loadConfig("daysXStep");
+    loadConfig("daysYStep");
+    loadConfig("daysYShift");
 
     updateCalendar();
-
-    // initialize color pickers
-    let pickerTextColor = document.getElementById('pickerTextColor');
-    new ColorPicker(pickerTextColor, config.textColor);
-    pickerTextColor.addEventListener('colorChange', function (event) {
-        changeTextColor(event.detail.color.hexa);
-    });
-
-    let pickerWeekendColor = document.getElementById('pickerWeekendColor');
-    new ColorPicker(pickerWeekendColor, config.weekendColor);
-    pickerWeekendColor.addEventListener('colorChange', function (event) {
-        changeWeekendColor(event.detail.color.hexa);
-    });
 };
 
 let yOffset = 0;
