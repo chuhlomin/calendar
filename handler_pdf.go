@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/jung-kurt/gofpdf"
@@ -20,12 +19,15 @@ import (
 
 type pdfRequest struct {
 	Size         string `json:"size"`
-	Orientation  string `json:"orientation"`
-	FirstDay     string `json:"firstDay"`
+	FirstDay     int    `json:"firstDay"` // 0 - Sunday, 1 - Monday, ...
 	TextColor    string `json:"textColor"`
 	WeekendColor string `json:"weekendColor"`
 	Year         int    `json:"year"`
 	Month        int    `json:"month"`
+	DaysXShift   int    `json:"daysXShift"`
+	DaysXStep    int    `json:"daysXStep"`
+	DaysYShift   int    `json:"daysYShift"`
+	DaysYStep    int    `json:"daysYStep"`
 
 	textColor    color.Color
 	weekendColor color.Color
@@ -104,7 +106,14 @@ func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 	year := req.Year
 	month := time.Month(req.Month + 1)
 
-	calendar := dates.GetCalendar(year, month)
+	calendar := dates.GetCalendar(
+		year,
+		month,
+		req.DaysXStep,
+		req.DaysXShift,
+		req.DaysYStep,
+		req.DaysYShift,
+	)
 
 	setTextColor(pdf, req.textColor)
 
@@ -164,74 +173,30 @@ func drawWeekNumbers(pdf *gofpdf.Fpdf, year int, month time.Month, lines int) {
 	}
 }
 
-func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]int) {
-	year := 2022
-	month := time.November
-	holidays := dates.GetHolidays(year, month)
-
-	var w float64 = 20
-	var h float64 = 20
-	var left float64 = 20
-	var top float64 = 35
-	var marginLeft float64 = 5
-	var marginTop float64 = 15
-
-	colorGray, _ := colorful.Hex("#c8c8c8")
-
-	prevDay := 0
-	useGrayColor := true
+func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]dates.DayInfo) {
 	pdf.SetFont("numbers", "", 36)
 
+	colorGray, _ := colorful.Hex("#c8c8c8")
 	var color color.Color
 
-	for line, row := range calendar {
-		for column, day := range row {
-			x := left + float64(column)*(w+marginLeft)
-			y := top + float64(line)*(h+marginTop)
-
-			if prevDay > day || (prevDay == 0 && day == 1) {
-				useGrayColor = !useGrayColor
-			}
-			prevDay = day
-
+	for _, row := range calendar {
+		for _, dayInfo := range row {
 			color = req.textColor
-			if useGrayColor {
+			if dayInfo.Inactive {
 				color = colorGray
 			} else {
-				if column > 4 {
+				if dayInfo.Weekend {
 					color = req.weekendColor
-				}
-			}
-
-			if holiday := holidays[day]; !useGrayColor && false {
-				// disable holiday rendering till this feature is on frontend
-				if holiday != "" {
-					color = req.weekendColor
-
-					holiday = strings.ReplaceAll(holiday, " Day", "")
-					holiday = strings.ReplaceAll(holiday, "'s", "")
-
-					align := "R"
-					if day > 9 {
-						align = "C"
-					}
-
-					setTextColor(pdf, color)
-					pdf.SetFont("numbers", "", 6)
-					pdf.MoveTo(x, y+20)
-					pdf.CellFormat(
-						w, 5, holiday,
-						"0", 0, align, false, 0, "",
-					)
-					// pdf.SetFont("numbers", "", 36)
 				}
 			}
 
 			setTextColor(pdf, color)
-			pdf.MoveTo(x, y)
+			pdf.MoveTo(float64(dayInfo.X), float64(dayInfo.Y))
 			pdf.CellFormat(
-				w, h, fmt.Sprintf("%d", day),
-				"0", 0, "RT", false, 0, "",
+				float64(req.DaysXStep),
+				float64(req.DaysYStep),
+				fmt.Sprintf("%d", dayInfo.Date.Day()),
+				"0", 0, "RB", false, 0, "",
 			)
 		}
 	}

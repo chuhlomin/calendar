@@ -3,12 +3,15 @@
 let today = new Date();
 
 let currentPageSize = "A4";
-let currentOrientation = "P";
 let currentFirstDay = "0";
 let currentTextColor = "#222222";
 let currentWeekendColor = "#aa5555";
 let currentYear = today.getFullYear();
 let currentMonth = today.getMonth();
+let currentDaysXStep = "25";
+let currentDaysXShift = "40";
+let currentDaysYStep = "35";
+let currentDaysYShift = "50";
 
 
 let body = document.getElementsByTagName("body")[0];
@@ -21,12 +24,6 @@ window.onload = function() {
         currentPageSize = sizeID;
         let sizeSelect = document.getElementsByName("size")[0];
         sizeSelect.value = sizeID;
-    }
-    let orientation = localStorage.getItem("orientation");
-    if (orientation) {
-        currentOrientation = orientation;
-        let orientationSelect = document.querySelector("input[name='orientation'][value='" + orientation + "']");
-        orientationSelect.checked = true;
     }
 
     if (sizeID || orientation) {
@@ -60,12 +57,33 @@ window.onload = function() {
         currentMonth = month;
     }
 
-    // let lineWidth = localStorage.getItem("patternLineWidth");
-    // if (lineWidth) {
-    //     currentLineWidth = lineWidth;
-    //     let lineWidthInput = document.getElementsByName("patternLineWidth")[0];
-    //     lineWidthInput.value = lineWidth;
-    // }
+    let daysXStep = localStorage.getItem("daysXStep");
+    if (daysXStep) {
+        currentDaysXStep = daysXStep;
+        let daysXStepInput = document.getElementsByName("daysXStep")[0];
+        daysXStepInput.value = daysXStep;
+    }
+
+    let daysXShift = localStorage.getItem("daysXShift");
+    if (daysXShift) {
+        currentDaysXShift = daysXShift;
+        let daysXShiftInput = document.getElementsByName("daysXShift")[0];
+        daysXShiftInput.value = daysXShift;
+    }
+
+    let daysYStep = localStorage.getItem("daysYStep");
+    if (daysYStep) {
+        currentDaysYStep = daysYStep;
+        let daysYStepInput = document.getElementsByName("daysYStep")[0];
+        daysYStepInput.value = daysYStep;
+    }
+
+    let daysYShift = localStorage.getItem("daysYShift");
+    if (daysYShift) {
+        currentDaysYShift = daysYShift;
+        let daysYShiftInput = document.getElementsByName("daysYShift")[0];
+        daysYShiftInput.value = daysYShift;
+    }
 
     updateCalendar();
 
@@ -100,39 +118,21 @@ panel.onscroll = function() {
 function updatePage() {
     let svg = document.getElementById("svg");
     let rect = document.getElementById("rect");
-    let pattern = document.getElementById("pattern");
 
     let pageData = document.getElementById("pageSize").querySelector("option[value='" + currentPageSize + "']").dataset;
 
     let width = pageData.width;
     let height = pageData.height;
-    if (currentOrientation === "L") {
-        width = pageData.height;
-        height = pageData.width;
-    }
 
     svg.setAttribute("viewBox", "0 0 " + width + " " + height);
     rect.setAttribute("width", width);
     rect.setAttribute("height", height);
-    // pattern.setAttribute("width", width);
-    // pattern.setAttribute("height", height);
 }
 
 function changePageSize(element) {
     currentPageSize = element.value;
     updatePage();
     localStorage.setItem("sizeID", currentPageSize);
-}
-
-function changeOrientation(element) {
-    if (element.value != "P" && element.value != "L") {
-        console.log("Unknown orientation: " + element.value);
-        return;
-    }
-
-    currentOrientation = element.value;
-    updatePage();
-    localStorage.setItem("orientation", element.value);
 }
 
 function changeFirstDay(element) {
@@ -175,6 +175,30 @@ function changeMonth(step) {
     localStorage.setItem("year", currentYear);
 }
 
+function changeDaysXStep(element) {
+    currentDaysXStep = element.value;
+    updateCalendar();
+    localStorage.setItem("daysXStep", currentDaysXStep);
+}
+
+function changeDaysXShift(element) {
+    currentDaysXShift = element.value;
+    updateCalendar();
+    localStorage.setItem("daysXShift", currentDaysXShift);
+}
+
+function changeDaysYStep(element) {
+    currentDaysYStep = element.value;
+    updateCalendar();
+    localStorage.setItem("daysYStep", currentDaysYStep);
+}
+
+function changeDaysYShift(element) {
+    currentDaysYShift = element.value;
+    updateCalendar();
+    localStorage.setItem("daysYShift", currentDaysYShift);
+}
+
 function updateCalendar() {
     let pageData = document.getElementById("pageSize").querySelector("option[value='" + currentPageSize + "']").dataset;
     let width = pageData.width;
@@ -197,7 +221,46 @@ function updateCalendar() {
         return;
     }
 
-    const [d, w] = days(year, month, currentFirstDay);
+    let firstDay = parseInt(currentFirstDay);
+    let lastDay = firstDay - 1;
+    if (lastDay < 0) {
+        lastDay = 6;
+    }
+
+    let daysXShift = parseInt(currentDaysXShift);
+    if (isNaN(daysXShift)) {
+        console.log("Invalid daysXShift: " + daysXShift);
+        return;
+    }
+
+    let daysXStep = parseInt(currentDaysXStep);
+    if (isNaN(daysXStep)) {
+        console.log("Invalid daysXStep: " + daysXStep);
+        return;
+    }
+
+    let daysYShift = parseInt(currentDaysYShift);
+    if (isNaN(daysYShift)) {
+        console.log("Invalid daysYShift: " + daysYShift);
+        return;
+    }
+
+    let daysYStep = parseInt(currentDaysYStep);
+    if (isNaN(daysYStep)) {
+        console.log("Invalid daysYStep: " + daysYStep);
+        return;
+    }
+
+    const [d, w] = days(
+        year,
+        month,
+        firstDay,
+        lastDay,
+        daysXStep,
+        daysXShift,
+        daysYStep,
+        daysYShift
+    );
 
     let templateMonth = document.getElementById('template_month').innerHTML;
     let renderedMonth = Mustache.render(
@@ -225,13 +288,7 @@ function updateCalendar() {
     document.getElementById('style').innerHTML = renderedStyles;
 }
 
-function days(year, month, firstDay) {
-    firstDay = parseInt(firstDay);
-    let lastDay = firstDay - 1;
-    if (lastDay < 0) {
-        lastDay = 6;
-    }
-
+function days(year, month, firstDay, lastDay, daysXStep, daysXShift, daysYStep, daysYShift) {
     let days = [];
     let date = new Date(year, month, 1);
     let end = new Date(year, month + 1, 0);
@@ -257,8 +314,8 @@ function days(year, month, firstDay) {
     while (date <= end) {
         days.push({
             day: date.getDate(),
-            x: column * 25 + 40,
-            y: row * 35 + 50,
+            x: column * daysXStep + daysXShift,
+            y: row * daysYStep + daysYShift,
             inactive: date.getMonth() != month,
             weekend: date.getDay() == 0 || date.getDay() == 6,
         });
@@ -279,11 +336,11 @@ function days(year, month, firstDay) {
     }
 
     // finish last row
-    while (date.getDay() != firstDay) {
+     while (date.getDay() != firstDay) {
         days.push({
             day: date.getDate(),
-            x: column * 25 + 40,
-            y: row * 35 + 50,
+            x: column * daysXStep + daysXShift,
+            y: row * daysYStep + daysYShift,
             inactive: true,
         });
 
@@ -388,12 +445,15 @@ function submitForm(element) {
         },
         body: JSON.stringify({
             size: currentPageSize,
-            orientation: currentOrientation,
             year: parseInt(currentYear),
             month: parseInt(currentMonth),
-            firstDay: currentFirstDay,
+            firstDay: parseInt(currentFirstDay),
             textColor: currentTextColor,
             weekendColor: currentWeekendColor,
+            daysXShift: parseInt(currentDaysXShift),
+            daysXStep: parseInt(currentDaysXStep),
+            daysYShift: parseInt(currentDaysYShift),
+            daysYStep: parseInt(currentDaysYStep),
         })
     }).then(response => {
         if (response.ok) {
