@@ -19,14 +19,16 @@ import (
 )
 
 type pdfRequest struct {
-	Size        string `json:"size"`
-	Orientation string `json:"orientation"`
-	FirstDay    string `json:"firstDay"`
-	TextColor   string `json:"textColor"`
-	Year        int    `json:"year"`
-	Month       int    `json:"month"`
+	Size         string `json:"size"`
+	Orientation  string `json:"orientation"`
+	FirstDay     string `json:"firstDay"`
+	TextColor    string `json:"textColor"`
+	WeekendColor string `json:"weekendColor"`
+	Year         int    `json:"year"`
+	Month        int    `json:"month"`
 
-	textColor color.Color
+	textColor    color.Color
+	weekendColor color.Color
 }
 
 func handlerPDF(w http.ResponseWriter, r *http.Request) {
@@ -59,6 +61,11 @@ func parsePDFRequest(r *http.Request) (*pdfRequest, error) {
 	req.textColor, err = colorful.Hex(req.TextColor)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing text color %q", req.TextColor)
+	}
+
+	req.weekendColor, err = colorful.Hex(req.WeekendColor)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error parsing weekend color %q", req.WeekendColor)
 	}
 
 	if req.Month < 0 || req.Month > 11 {
@@ -170,7 +177,6 @@ func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]int) {
 	var marginTop float64 = 15
 
 	colorGray, _ := colorful.Hex("#c8c8c8")
-	colorRed, _ := colorful.Hex("#aa5555")
 
 	prevDay := 0
 	useGrayColor := true
@@ -193,14 +199,14 @@ func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]int) {
 				color = colorGray
 			} else {
 				if column > 4 {
-					color = colorRed
+					color = req.weekendColor
 				}
 			}
 
 			if holiday := holidays[day]; !useGrayColor && false {
 				// disable holiday rendering till this feature is on frontend
 				if holiday != "" {
-					color = colorRed
+					color = req.weekendColor
 
 					holiday = strings.ReplaceAll(holiday, " Day", "")
 					holiday = strings.ReplaceAll(holiday, "'s", "")

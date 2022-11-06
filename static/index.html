@@ -58,7 +58,14 @@
                 <div class="field">
                     <label class="full-width-label">
                         <span>Text Color:</span>
-                        <button id="picker" type="button"></button>
+                        <button id="pickerTextColor" type="button"></button>
+                    </label>
+                </div>
+
+                <div class="field">
+                    <label class="full-width-label">
+                        <span>Weekend Color:</span>
+                        <button id="pickerWeekendColor" type="button"></button>
                     </label>
                 </div>
 
@@ -111,7 +118,7 @@
     fill: #ccc;
 }
 .weekend {
-    fill: #f00;
+    fill: {{ weekendColor }};
 }
 </script>
 <script id="template_month" type="x-tmpl-mustache">

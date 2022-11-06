@@ -5,7 +5,8 @@ let today = new Date();
 let currentPageSize = "A4";
 let currentOrientation = "P";
 let currentFirstDay = "0";
-let currentTextColor = "#000000";
+let currentTextColor = "#222222";
+let currentWeekendColor = "#aa5555";
 let currentYear = today.getFullYear();
 let currentMonth = today.getMonth();
 
@@ -44,6 +45,11 @@ window.onload = function() {
         currentTextColor = textColor;
     }
 
+    let weekendColor = localStorage.getItem("weekendColor");
+    if (weekendColor) {
+        currentWeekendColor = weekendColor;
+    }
+
     let year = localStorage.getItem("year");
     if (year) {
         currentYear = year;
@@ -63,11 +69,17 @@ window.onload = function() {
 
     updateCalendar();
 
-    // initialize color picker
-    let button = document.getElementById('picker');
-    let picker = new ColorPicker(button, currentTextColor);
-    button.addEventListener('colorChange', function (event) {
+    // initialize color pickers
+    let pickerTextColor = document.getElementById('pickerTextColor');
+    new ColorPicker(pickerTextColor, currentTextColor);
+    pickerTextColor.addEventListener('colorChange', function (event) {
         changeTextColor(event.detail.color.hexa);
+    });
+
+    let pickerWeekendColor = document.getElementById('pickerWeekendColor');
+    new ColorPicker(pickerWeekendColor, currentWeekendColor);
+    pickerWeekendColor.addEventListener('colorChange', function (event) {
+        changeWeekendColor(event.detail.color.hexa);
     });
 };
 
@@ -135,6 +147,12 @@ function changeTextColor(color) {
     localStorage.setItem("textColor", currentTextColor);
 }
 
+function changeWeekendColor(color) {
+    currentWeekendColor = color;
+    updateCalendar();
+    localStorage.setItem("weekendColor", currentWeekendColor);
+}
+
 function changeMonth(step) {
     let month = parseInt(currentMonth);
     let year = parseInt(currentYear);
@@ -199,6 +217,7 @@ function updateCalendar() {
         templateStyles,
         {
             textColor: currentTextColor,
+            weekendColor: currentWeekendColor
         }
     );
 
@@ -374,6 +393,7 @@ function submitForm(element) {
             month: parseInt(currentMonth),
             firstDay: currentFirstDay,
             textColor: currentTextColor,
+            weekendColor: currentWeekendColor,
         })
     }).then(response => {
         if (response.ok) {

@@ -305,7 +305,8 @@ input[type="number"]:disabled {
   box-shadow: 0 -5px 10px inset rgba(0, 0, 0, 0.1), 0 0 0 1px #0b7fff;
 }
 
-#picker {
+#pickerTextColor,
+#pickerWeekendColor {
   float: right;
   width: 8ch;
   font-size: var(--font-size);
