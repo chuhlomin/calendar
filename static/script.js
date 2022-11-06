@@ -58,15 +58,13 @@ function loadConfig(key) {
             let button = document.getElementsByName(key)[0];
             new ColorPicker(button, value);
             button.addEventListener('colorChange', function (event) {
-                changeTextColor(event.detail.color.hexa);
+                changeConfigKV(key, event.detail.color.hexa);
             });
         }
     }
 }
 
 window.onload = function() {
-    // read state from localStorage
-
     for (let key in config) {
         loadConfig(key);
     }
@@ -108,24 +106,6 @@ function changePageSize(element) {
     localStorage.setItem("sizeID", config.pageSize);
 }
 
-function changeFirstDay(element) {
-    config["firstDay"] = element.value;
-    updateCalendar();
-    localStorage.setItem("firstDay", config.firstDay);
-}
-
-function changeTextColor(color) {
-    config["textColor"] = color;
-    updateCalendar();
-    localStorage.setItem("textColor", config.textColor);
-}
-
-function changeWeekendColor(color) {
-    config["weekendColor"] = color;
-    updateCalendar();
-    localStorage.setItem("weekendColor", config.weekendColor);
-}
-
 function changeMonth(step) {
     let month = parseInt(config.month);
     let year = parseInt(config.year);
@@ -148,28 +128,14 @@ function changeMonth(step) {
     localStorage.setItem("year", config.year);
 }
 
-function changeDaysXStep(element) {
-    config["daysXStep"] = element.value;
-    updateCalendar();
-    localStorage.setItem("daysXStep", config.daysXStep);
+function changeConfig(element) {
+    changeConfigKV(element.name, element.value);
 }
 
-function changeDaysXShift(element) {
-    config["daysXShift"] = element.value;
+function changeConfigKV(key, value) {
+    config[key] = value;
     updateCalendar();
-    localStorage.setItem("daysXShift", config.daysXShift);
-}
-
-function changeDaysYStep(element) {
-    config["daysYStep"] = element.value;
-    updateCalendar();
-    localStorage.setItem("daysYStep", config.daysYStep);
-}
-
-function changeDaysYShift(element) {
-    config["daysYShift"] = element.value;
-    updateCalendar();
-    localStorage.setItem("daysYShift", config.daysYShift);
+    localStorage.setItem(key, value);
 }
 
 function updateCalendar() {

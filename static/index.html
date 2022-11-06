@@ -51,8 +51,8 @@
 
                 <div class="field">
                     <legend>First day of week:</legend>
-                    <label><input type="radio" name="firstDay" value="0" checked onchange="changeFirstDay(this)"> Sunday</label>
-                    <label><input type="radio" name="firstDay" value="1" onchange="changeFirstDay(this)"> Monday</label>
+                    <label><input type="radio" name="firstDay" value="0" checked onchange="changeConfig(this)"> Sunday</label>
+                    <label><input type="radio" name="firstDay" value="1" onchange="changeConfig(this)"> Monday</label>
                 </div>
 
                 <div class="field color">
@@ -72,28 +72,28 @@
                 <div class="field">
                     <label class="full-width-label">
                         <span>Days X step:</span>
-                        <input type="number" name="daysXStep" value="25" min="1" max="100" onchange="changeDaysXStep(this)" onkeyup="changeDaysXStep(this)">
+                        <input type="number" name="daysXStep" value="25" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                     </label>
                 </div>
 
                 <div class="field">
                     <label class="full-width-label">
                         <span>Days X shift:</span>
-                        <input type="number" name="daysXShift" value="40" min="0" max="100" onchange="changeDaysXShift(this)" onkeyup="changeDaysXShift(this)">
+                        <input type="number" name="daysXShift" value="40" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                     </label>
                 </div>
 
                 <div class="field">
                     <label class="full-width-label">
                         <span>Days Y step:</span>
-                        <input type="number" name="daysYStep" value="35" min="1" max="100" onchange="changeDaysYStep(this)" onkeyup="changeDaysYStep(this)">
+                        <input type="number" name="daysYStep" value="35" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                     </label>
                 </div>
 
                 <div class="field">
                     <label class="full-width-label">
                         <span>Days Y shift:</span>
-                        <input type="number" name="daysYShift" value="50" min="0" max="100" onchange="changeDaysYShift(this)" onkeyup="changeDaysYShift(this)">
+                        <input type="number" name="daysYShift" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                     </label>
                 </div>
             </form>
