@@ -38,7 +38,7 @@
             <form action="" onsubmit="return false">
                 <div class="field">
                     <legend>Paper Size</legend>
-                    <select name="size" id="pageSize" onchange="changePageSize(this)">
+                    <select name="pageSize" id="pageSize" onchange="changeConfig(this)">
                         <option value="Letter" data-width="216" data-height="279">US Letter (8.50" × 11.00")</span></option>
                         <option value="Legal" data-width="216" data-height="356">US Legal (8.50" × 14.00")</span></option>
                         <option value="A1" data-width="594" data-height="841">A1 (594 × 841 mm)</option>
@@ -67,7 +67,7 @@
 
                     <div class="field color">
                         <label class="full-width-label">
-                            <span>Text Color</span>
+                            <span>Color</span>
                             <button name="textColor" type="button"></button>
                         </label>
                     </div>
@@ -137,6 +137,27 @@
                         <label class="full-width-label">
                             <span>Font size</span>
                             <input type="number" name="fontSizeWeekNumbers" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>X shift</span>
+                            <input type="number" name="weeknumbersXShift" value="20" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Y step</span>
+                            <input type="number" name="weeknumbersYStep" value="35" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Y shift</span>
+                            <input type="number" name="weeknumbersYShift" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
                 </fieldset>

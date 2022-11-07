@@ -32,6 +32,9 @@ type pdfRequest struct {
 	DaysXStep           int    `json:"daysXStep"`
 	DaysYShift          int    `json:"daysYShift"`
 	DaysYStep           int    `json:"daysYStep"`
+	WeeknumbersXShift   int    `json:"weeknumbersXShift"`
+	WeeknumbersYStep    int    `json:"weeknumbersYStep"`
+	WeeknumbersYShift   int    `json:"weeknumbersYShift"`
 
 	textColor    color.Color
 	weekendColor color.Color
@@ -151,12 +154,6 @@ func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 }
 
 func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month, lines int) {
-	var w float64 = 10
-	var h float64 = 20
-	var left float64 = 9
-	var top float64 = 35
-	var marginTop float64 = 15
-
 	pdf.SetFont("numbers", "", float64(req.FontSizeWeekNumbers*3))
 	pdf.SetTextColor(200, 200, 200)
 
@@ -164,10 +161,10 @@ func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Mon
 	_, week := start.ISOWeek()
 
 	for line := 0; line < lines; line++ {
-		y := top + float64(line)*(h+marginTop)
+		y := line*req.WeeknumbersYStep + req.WeeknumbersYShift - req.WeeknumbersYStep
 
-		pdf.MoveTo(left, y)
-		pdf.CellFormat(w, h, strconv.Itoa(week), "0", 0, "RT", false, 0, "")
+		pdf.MoveTo(0, float64(y))
+		pdf.CellFormat(float64(req.WeeknumbersXShift), float64(req.WeeknumbersYStep), strconv.Itoa(week), "0", 0, "RB", false, 0, "")
 
 		week++
 

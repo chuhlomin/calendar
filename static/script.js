@@ -17,6 +17,9 @@ let config = {
     daysXShift: "40",
     daysYStep: "35",
     daysYShift: "50",
+    weeknumbersXShift: "20",
+    weeknumbersYStep: "35",
+    weeknumbersYShift: "42",
 };
 
 let configInputTypes = {
@@ -32,6 +35,9 @@ let configInputTypes = {
     daysXShift: "number",
     daysYStep: "number",
     daysYShift: "number",
+    weeknumbersXShift: "number",
+    weeknumbersYStep: "number",
+    weeknumbersYShift: "number",
 };
 
 let configIntegerFields = ["firstDay", "year", "month"];
@@ -110,12 +116,6 @@ function updatePage() {
     rect.setAttribute("height", height);
 }
 
-function changePageSize(element) {
-    config["pageSize"] = element.value;
-    updatePage();
-    localStorage.setItem("sizeID", config.pageSize);
-}
-
 function changeMonth(step) {
     let month = parseInt(config.month);
     let year = parseInt(config.year);
@@ -152,75 +152,24 @@ function updateCalendar() {
     let pageData = document.getElementById("pageSize").querySelector("option[value='" + config.pageSize + "']").dataset;
     let width = pageData.width;
 
-    // validate year
-    let year = parseInt(config.year);
-    if (isNaN(year)) {
-        console.log("Invalid year: " + year);
+    let [cfg, errors] = validateConfig(config);
+    if (errors.length > 0) {
+        console.error(errors);
         return;
     }
 
-    // validate month
-    let month = parseInt(config.month);
-    if (isNaN(month)) {
-        console.log("Invalid month: " + month);
-        return;
-    }
-    if (month < 0 || month > 11) {
-        console.log("Invalid month: " + month);
-        return;
-    }
-
-    let firstDay = parseInt(config.firstDay);
-    let lastDay = firstDay - 1;
-    if (lastDay < 0) {
-        lastDay = 6;
-    }
-
-    let daysXShift = parseInt(config.daysXShift);
-    if (isNaN(daysXShift)) {
-        console.log("Invalid daysXShift: " + daysXShift);
-        return;
-    }
-
-    let daysXStep = parseInt(config.daysXStep);
-    if (isNaN(daysXStep)) {
-        console.log("Invalid daysXStep: " + daysXStep);
-        return;
-    }
-
-    let daysYShift = parseInt(config.daysYShift);
-    if (isNaN(daysYShift)) {
-        console.log("Invalid daysYShift: " + daysYShift);
-        return;
-    }
-
-    let daysYStep = parseInt(config.daysYStep);
-    if (isNaN(daysYStep)) {
-        console.log("Invalid daysYStep: " + daysYStep);
-        return;
-    }
-
-    const [d, w] = days(
-        year,
-        month,
-        firstDay,
-        lastDay,
-        daysXStep,
-        daysXShift,
-        daysYStep,
-        daysYShift
-    );
+    const [d, w] = days(cfg);
 
     let templateMonth = document.getElementById('template_month').innerHTML;
     let renderedMonth = Mustache.render(
         templateMonth,
         {
             year: config.year,
-            month: getMonthName(month),
+            month: getMonthName(cfg.month),
             halfWidth: width/2,
             days: d,
             weekdays: weekdays(config.firstDay),
-            weeknumbers: weeknumbers(w)
+            weeknumbers: weeknumbers(cfg, w)
         }
     );
 
@@ -231,20 +180,25 @@ function updateCalendar() {
     document.getElementById('style').innerHTML = renderedStyles;
 }
 
-function days(year, month, firstDay, lastDay, daysXStep, daysXShift, daysYStep, daysYShift) {
+function days(cfg) {
+    let lastDay = cfg.firstDay - 1;
+    if (lastDay < 0) {
+        lastDay = 6;
+    }
+
     let days = [];
-    let date = new Date(year, month, 1);
-    let end = new Date(year, month + 1, 0);
+    let date = new Date(cfg.year, cfg.month, 1);
+    let end = new Date(cfg.year, cfg.month + 1, 0);
     if (end.getDay() === lastDay) {
         end.setDate(end.getDate() + 7);
     }
 
     // add days from previous month
-    if (date.getDay() != firstDay) {
+    if (date.getDay() != cfg.firstDay) {
         if (date.getDay() == lastDay) {
             date.setDate(date.getDate() - 6);
         } else {
-            date.setDate(date.getDate() - (date.getDay() - firstDay));
+            date.setDate(date.getDate() - (date.getDay() - cfg.firstDay));
         }
     }
 
@@ -257,13 +211,13 @@ function days(year, month, firstDay, lastDay, daysXStep, daysXShift, daysYStep, 
     while (date <= end) {
         days.push({
             day: date.getDate(),
-            x: column * daysXStep + daysXShift,
-            y: row * daysYStep + daysYShift,
-            inactive: date.getMonth() != month,
+            x: column * cfg.daysXStep + cfg.daysXShift,
+            y: row * cfg.daysYStep + cfg.daysYShift,
+            inactive: date.getMonth() != cfg.month,
             weekend: date.getDay() == 0 || date.getDay() == 6,
         });
 
-        if (date.getDay() == firstDay) {
+        if (date.getDay() == cfg.firstDay) {
             weeknumbers.push(weeknumber);
             weeknumber++;
         }
@@ -279,11 +233,11 @@ function days(year, month, firstDay, lastDay, daysXStep, daysXShift, daysYStep, 
     }
 
     // finish last row
-     while (date.getDay() != firstDay) {
+     while (date.getDay() != cfg.firstDay) {
         days.push({
             day: date.getDate(),
-            x: column * daysXStep + daysXShift,
-            y: row * daysYStep + daysYShift,
+            x: column * cfg.daysXStep + cfg.daysXShift,
+            y: row * cfg.daysYStep + cfg.daysYShift,
             inactive: true,
         });
 
@@ -327,14 +281,14 @@ function weekdays(firstDay) {
     return days;
 }
 
-function weeknumbers(w) {
+function weeknumbers(cfg, w) {
     let result = [];
 
     for (let i = 0; i < w.length; i++) {
         result.push({
             weeknumber: w[i],
-            x: 20,
-            y: i * 35 + 42,
+            x: cfg.weeknumbersXShift,
+            y: i * cfg.weeknumbersYStep + cfg.weeknumbersYShift,
         });
     }
 
@@ -428,9 +382,15 @@ function validateConfig(cfg) {
             let value = parseInt(cfg[key]);
             if (isNaN(value)) {
                 errors.push("Invalid value for " + key + ": " + cfg[key]);
-            } else {
-                cfg[key] = value;
+                continue;
             }
+
+            if (key == "month" && (value < 0 || value > 11)) {
+                errors.push("Invalid value for " + key + ": " + cfg[key]);
+                continue;
+            }
+
+            cfg[key] = value;
         }
     }
 
