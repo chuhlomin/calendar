@@ -37,7 +37,7 @@
             <h1>Calendar <a href="https://github.com/chuhlomin/calendar" class="github-icon"></a></h1>
             <form action="" onsubmit="return false">
                 <div class="field">
-                    <legend>Paper Size: </legend>
+                    <legend>Paper Size</legend>
                     <select name="size" id="pageSize" onchange="changePageSize(this)">
                         <option value="Letter" data-width="216" data-height="279">US Letter (8.50" × 11.00")</span></option>
                         <option value="Legal" data-width="216" data-height="356">US Legal (8.50" × 14.00")</span></option>
@@ -50,80 +50,96 @@
                 </div>
 
                 <div class="field">
-                    <legend>First day of week:</legend>
+                    <legend>First day of week</legend>
                     <label><input type="radio" name="firstDay" value="0" checked onchange="changeConfig(this)"> Sunday</label>
                     <label><input type="radio" name="firstDay" value="1" onchange="changeConfig(this)"> Monday</label>
                 </div>
 
-                <div class="field">
-                    <label class="full-width-label">
-                        <span>Days:</span>
-                        <input type="number" name="fontSizeDays" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
-                    </label>
-                </div>
+                <fieldset>
+                    <legend>Days</legend>
 
-                <div class="field">
-                    <label class="full-width-label">
-                        <span>Month:</span>
-                        <input type="number" name="fontSizeMonth" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
-                    </label>
-                </div>
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Font size</span>
+                            <input type="number" name="fontSizeDays" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
 
-                <div class="field">
-                    <label class="full-width-label">
-                        <span>Weekdays:</span>
-                        <input type="number" name="fontSizeWeekdays" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
-                    </label>
-                </div>
+                    <div class="field color">
+                        <label class="full-width-label">
+                            <span>Text Color</span>
+                            <button name="textColor" type="button"></button>
+                        </label>
+                    </div>
 
-                <div class="field">
-                    <label class="full-width-label">
-                        <span>Week numbers:</span>
-                        <input type="number" name="fontSizeWeekNumbers" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
-                    </label>
-                </div>
+                    <div class="field color">
+                        <label class="full-width-label">
+                            <span>Weekends</span>
+                            <button name="weekendColor" type="button"></button>
+                        </label>
+                    </div>
 
-                <div class="field color">
-                    <label class="full-width-label">
-                        <span>Text Color:</span>
-                        <button name="textColor" type="button"></button>
-                    </label>
-                </div>
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>X step</span>
+                            <input type="number" name="daysXStep" value="25" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
 
-                <div class="field color">
-                    <label class="full-width-label">
-                        <span>Weekend Color:</span>
-                        <button name="weekendColor" type="button"></button>
-                    </label>
-                </div>
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>X shift</span>
+                            <input type="number" name="daysXShift" value="40" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
 
-                <div class="field">
-                    <label class="full-width-label">
-                        <span>Days X step:</span>
-                        <input type="number" name="daysXStep" value="25" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
-                    </label>
-                </div>
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Y step</span>
+                            <input type="number" name="daysYStep" value="35" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
 
-                <div class="field">
-                    <label class="full-width-label">
-                        <span>Days X shift:</span>
-                        <input type="number" name="daysXShift" value="40" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
-                    </label>
-                </div>
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Y shift</span>
+                            <input type="number" name="daysYShift" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+                </fieldset>
 
-                <div class="field">
-                    <label class="full-width-label">
-                        <span>Days Y step:</span>
-                        <input type="number" name="daysYStep" value="35" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
-                    </label>
-                </div>
+                <fieldset>
+                    <legend>Month</legend>
 
-                <div class="field">
-                    <label class="full-width-label">
-                        <span>Days Y shift:</span>
-                        <input type="number" name="daysYShift" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
-                    </label>
-                </div>
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Font size</span>
+                            <input type="number" name="fontSizeMonth" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Weekdays</legend>
+
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Font size</span>
+                            <input type="number" name="fontSizeWeekdays" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Week numbers</legend>
+
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Font size</span>
+                            <input type="number" name="fontSizeWeekNumbers" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+                </fieldset>
             </form>
             <div class="actions">
                 <div class="buttons">

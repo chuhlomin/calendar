@@ -94,6 +94,13 @@ a:hover {
   border-color: var(--color-link-hover-underscore);
 }
 
+fieldset {
+  border-radius: var(--border-radius);
+  border-width: 2px;
+  border-style: solid;
+  border-color: #999;
+}
+
 .panel {
   position: fixed;
   left: 0;
