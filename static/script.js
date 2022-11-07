@@ -5,6 +5,10 @@ let today = new Date();
 let config = {
     pageSize: "A4",
     firstDay: "0",
+    fontSizeDays: "12",
+    fontSizeMonth: "12",
+    fontSizeWeekdays: "5",
+    fontSizeWeekNumbers: "5 ",
     textColor: "#222222",
     weekendColor: "#aa5555",
     year: today.getFullYear(),
@@ -18,6 +22,10 @@ let config = {
 let configInputTypes = {
     pageSize: "select",
     firstDay: "radio",
+    fontSizeDays: "number",
+    fontSizeMonth: "number",
+    fontSizeWeekdays: "number",
+    fontSizeWeekNumbers: "number",
     textColor: "color",
     weekendColor: "color",
     daysXStep: "number",
@@ -25,6 +33,8 @@ let configInputTypes = {
     daysYStep: "number",
     daysYShift: "number",
 };
+
+let configIntegerFields = ["firstDay", "year", "month"];
 
 let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
@@ -215,13 +225,7 @@ function updateCalendar() {
     );
 
     let templateStyles = document.getElementById('template_styles').innerHTML;
-    let renderedStyles = Mustache.render(
-        templateStyles,
-        {
-            textColor: config.textColor,
-            weekendColor: config.weekendColor
-        }
-    );
+    let renderedStyles = Mustache.render(templateStyles, config);
 
     document.getElementById('defs').innerHTML = renderedMonth;
     document.getElementById('style').innerHTML = renderedStyles;
@@ -419,48 +423,16 @@ function submitForm(element) {
 function validateConfig(cfg) {
     let errors = [];
 
-    let year = parseInt(cfg.year);
-    if (isNaN(year)) {
-        errors.push("Year is not a number");
+    for (let key in cfg) {
+        if (configInputTypes[key] == "number" || configIntegerFields.includes(key)) {
+            let value = parseInt(cfg[key]);
+            if (isNaN(value)) {
+                errors.push("Invalid value for " + key + ": " + cfg[key]);
+            } else {
+                cfg[key] = value;
+            }
+        }
     }
-
-    let month = parseInt(cfg.month);
-    if (isNaN(month)) {
-        errors.push("Month is not a number");
-    }
-
-    let firstDay = parseInt(cfg.firstDay);
-    if (isNaN(firstDay)) {
-        errors.push("First day is not a number");
-    }
-
-    let daysXStep = parseInt(cfg.daysXStep);
-    if (isNaN(daysXStep)) {
-        errors.push("Days X step is not a number");
-    }
-
-    let daysXShift = parseInt(cfg.daysXShift);
-    if (isNaN(daysXShift)) {
-        errors.push("Days X shift is not a number");
-    }
-
-    let daysYStep = parseInt(cfg.daysYStep);
-    if (isNaN(daysYStep)) {
-        errors.push("Days Y step is not a number");
-    }
-
-    let daysYShift = parseInt(cfg.daysYShift);
-    if (isNaN(daysYShift)) {
-        errors.push("Days Y shift is not a number");
-    }
-
-    cfg.year = year;
-    cfg.month = month;
-    cfg.firstDay = firstDay;
-    cfg.daysXStep = daysXStep;
-    cfg.daysXShift = daysXShift;
-    cfg.daysYStep = daysYStep;
-    cfg.daysYShift = daysYShift;
 
     return [cfg, errors];
 }

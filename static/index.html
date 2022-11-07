@@ -55,6 +55,34 @@
                     <label><input type="radio" name="firstDay" value="1" onchange="changeConfig(this)"> Monday</label>
                 </div>
 
+                <div class="field">
+                    <label class="full-width-label">
+                        <span>Days:</span>
+                        <input type="number" name="fontSizeDays" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                    </label>
+                </div>
+
+                <div class="field">
+                    <label class="full-width-label">
+                        <span>Month:</span>
+                        <input type="number" name="fontSizeMonth" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                    </label>
+                </div>
+
+                <div class="field">
+                    <label class="full-width-label">
+                        <span>Weekdays:</span>
+                        <input type="number" name="fontSizeWeekdays" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                    </label>
+                </div>
+
+                <div class="field">
+                    <label class="full-width-label">
+                        <span>Week numbers:</span>
+                        <input type="number" name="fontSizeWeekNumbers" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                    </label>
+                </div>
+
                 <div class="field color">
                     <label class="full-width-label">
                         <span>Text Color:</span>
@@ -125,7 +153,7 @@
 </div>
 <script src="script.js"></script>
 <script id="template_styles" type="x-tmpl-mustache">
-.year, .day {
+.month, .day {
     fill: {{ textColor }};
     text-align: center;
     transform: translate(100);
@@ -134,6 +162,18 @@
     font-size: 0.3em;
     font: Iosevka Web;
     fill: #999;
+}
+.day {
+    font-size: {{fontSizeDays}}pt;
+}
+.month {
+    font-size: {{fontSizeMonth}}pt;
+}
+.weekday {
+    font-size: {{fontSizeWeekdays}}pt;
+}
+.weeknumber {
+    font-size: {{fontSizeWeekNumbers}}pt;
 }
 .inactive {
     fill: #ccc;
@@ -144,7 +184,7 @@
 </script>
 <script id="template_month" type="x-tmpl-mustache">
     <g id="month">
-        <text id="month" x="{{ halfWidth }}" y="260" class="year">
+        <text id="month" x="{{ halfWidth }}" y="260" class="month">
             <tspan x="0" text-anchor="middle">{{ month }} {{ year }}</tspan>
         </text>
     </g>

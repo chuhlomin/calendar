@@ -18,16 +18,20 @@ import (
 )
 
 type pdfRequest struct {
-	Size         string `json:"size"`
-	FirstDay     int    `json:"firstDay"` // 0 - Sunday, 1 - Monday, ...
-	TextColor    string `json:"textColor"`
-	WeekendColor string `json:"weekendColor"`
-	Year         int    `json:"year"`
-	Month        int    `json:"month"`
-	DaysXShift   int    `json:"daysXShift"`
-	DaysXStep    int    `json:"daysXStep"`
-	DaysYShift   int    `json:"daysYShift"`
-	DaysYStep    int    `json:"daysYStep"`
+	Size                string `json:"size"`
+	FirstDay            int    `json:"firstDay"` // 0 - Sunday, 1 - Monday, ...
+	FontSizeDays        int    `json:"fontSizeDays"`
+	FontSizeWeekdays    int    `json:"fontSizeWeekdays"`
+	FontSizeWeekNumbers int    `json:"fontSizeWeekNumbers"`
+	FontSizeMonth       int    `json:"fontSizeMonth"`
+	TextColor           string `json:"textColor"`
+	WeekendColor        string `json:"weekendColor"`
+	Year                int    `json:"year"`
+	Month               int    `json:"month"`
+	DaysXShift          int    `json:"daysXShift"`
+	DaysXStep           int    `json:"daysXStep"`
+	DaysYShift          int    `json:"daysYShift"`
+	DaysYStep           int    `json:"daysYStep"`
 
 	textColor    color.Color
 	weekendColor color.Color
@@ -117,9 +121,9 @@ func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 
 	setTextColor(pdf, req.textColor)
 
-	drawMonth(pdf, year, month)
+	drawMonth(pdf, req, year, month)
 	drawWeekdays(pdf, req)
-	drawWeekNumbers(pdf, year, month, len(calendar))
+	drawWeekNumbers(pdf, req, year, month, len(calendar))
 	drawDays(pdf, req, calendar)
 
 	return nil
@@ -132,7 +136,7 @@ func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 	var top float64 = 21
 	var marginLeft float64 = 5
 
-	pdf.SetFont("month", "", 12)
+	pdf.SetFont("month", "", float64(req.FontSizeWeekdays*3))
 	pdf.SetTextColor(200, 200, 200)
 
 	for day := 0; day < 7; day++ {
@@ -146,14 +150,14 @@ func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 	}
 }
 
-func drawWeekNumbers(pdf *gofpdf.Fpdf, year int, month time.Month, lines int) {
+func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month, lines int) {
 	var w float64 = 10
 	var h float64 = 20
 	var left float64 = 9
 	var top float64 = 35
 	var marginTop float64 = 15
 
-	pdf.SetFont("numbers", "", 12)
+	pdf.SetFont("numbers", "", float64(req.FontSizeWeekNumbers*3))
 	pdf.SetTextColor(200, 200, 200)
 
 	start := dates.Date(year, int(month), 1)
@@ -174,7 +178,7 @@ func drawWeekNumbers(pdf *gofpdf.Fpdf, year int, month time.Month, lines int) {
 }
 
 func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]dates.DayInfo) {
-	pdf.SetFont("numbers", "", 36)
+	pdf.SetFont("numbers", "", float64(req.FontSizeDays*3))
 
 	colorGray, _ := colorful.Hex("#c8c8c8")
 	var color color.Color
@@ -202,13 +206,13 @@ func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]dates.DayInfo) {
 	}
 }
 
-func drawMonth(pdf *gofpdf.Fpdf, year int, month time.Month) {
+func drawMonth(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month) {
 	var x float64 = 5
 	var y float64 = 250
 	var w float64 = 200
 	var h float64 = 20
 
-	pdf.SetFont("month", "", 36)
+	pdf.SetFont("month", "", float64(req.FontSizeMonth*3))
 	pdf.MoveTo(x, y)
 	pdf.CellFormat(
 		// w, h, fmt.Sprintf("%s %d", i18n(month.String()), year),
