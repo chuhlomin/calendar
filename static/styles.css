@@ -177,7 +177,7 @@ fieldset {
 }
 
 .page {
-  position: relative;
+  /* position: relative; */
   text-align: center;
 }
 
@@ -186,6 +186,7 @@ fieldset {
   max-width: 100%;
   max-height: calc(100vh - 40px);
   height: -webkit-fill-available;
+  user-select: none;
 }
 
 .page svg .year,
@@ -199,6 +200,7 @@ fieldset {
 }
 
 .page-nav {
+  display: none;
   position: absolute;
   top: 50%;
   height: 45px;
@@ -478,6 +480,8 @@ input[type="number"]:disabled {
   @media screen and (max-width: 450px) { /* mobile */
     .content {
       padding-bottom: max(20px, env(safe-area-inset-bottom));
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
     }
   }
 }
