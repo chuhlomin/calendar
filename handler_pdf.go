@@ -13,8 +13,6 @@ import (
 	"github.com/jung-kurt/gofpdf"
 	"github.com/lucasb-eyer/go-colorful"
 	"github.com/pkg/errors"
-
-	"github.com/chuhlomin/calendar/dates"
 )
 
 type pdfRequest struct {
@@ -39,6 +37,7 @@ type pdfRequest struct {
 	MonthColor          string `json:"monthColor"`
 	WeekdaysColor       string `json:"weekdaysColor"`
 	InactiveColor       string `json:"inactiveColor"`
+	ShowInactiveDays    bool   `json:"showInactiveDays"`
 
 	textColor        color.Color
 	weekendColor     color.Color
@@ -136,19 +135,10 @@ func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 	pdf.AddUTF8Font("numbers", "", "static/iosevka-regular.ttf")
 	pdf.AddUTF8Font("month", "", "static/iosevka-aile-regular.ttf")
 
-	// w, h := pdf.GetPageSize()
-
 	year := req.Year
 	month := time.Month(req.Month + 1)
 
-	calendar := dates.GetCalendar(
-		year,
-		month,
-		req.DaysXStep,
-		req.DaysXShift,
-		req.DaysYStep,
-		req.DaysYShift,
-	)
+	calendar := getCalendar(req, year, month)
 
 	setTextColor(pdf, req.textColor)
 
@@ -185,7 +175,7 @@ func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Mon
 	setTextColor(pdf, req.weeknumbersColor)
 	pdf.SetFont("numbers", "", float64(req.FontSizeWeekNumbers*3))
 
-	start := dates.Date(year, int(month), 1)
+	start := date(year, int(month), 1)
 	_, week := start.ISOWeek()
 
 	for line := 0; line < lines; line++ {
@@ -202,7 +192,7 @@ func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Mon
 	}
 }
 
-func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]dates.DayInfo) {
+func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]dayInfo) {
 	pdf.SetFont("numbers", "", float64(req.FontSizeDays*3))
 
 	var color color.Color
@@ -216,6 +206,10 @@ func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]dates.DayInfo) {
 				if dayInfo.Weekend {
 					color = req.weekendColor
 				}
+			}
+
+			if dayInfo.Inactive && !req.ShowInactiveDays {
+				continue
 			}
 
 			setTextColor(pdf, color)
@@ -272,4 +266,82 @@ func convertColor(hex string) (int, int, int, float64) {
 	}
 
 	return 0, 0, 0, 0
+}
+
+func date(year, month, day int) time.Time {
+	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
+}
+
+type dayInfo struct {
+	Date     time.Time
+	X        int
+	Y        int
+	Weekend  bool
+	Inactive bool
+}
+
+func getCalendar(req *pdfRequest, year int, month time.Month) [][7]dayInfo {
+	var calendar [][7]dayInfo
+
+	start := date(year, int(month), 1) // 2020 October 1
+	end := start.AddDate(0, 1, 0)      // 2020 November 1
+
+	firstDay := time.Weekday(req.FirstDay)
+	weekday := start.Weekday() // Thursday
+	daysSinceWeekStartToBeginningOfMonth := int(weekday) - int(firstDay)
+	if daysSinceWeekStartToBeginningOfMonth == -1 {
+		// Sun (0) - Mon (1) = -1
+		daysSinceWeekStartToBeginningOfMonth = 6
+	}
+
+	sheetStart := start.AddDate(0, 0, -daysSinceWeekStartToBeginningOfMonth)
+	t := sheetStart
+
+	rowData := [7]dayInfo{}
+	row := 0
+	column := 0
+
+	for t.Unix() < end.Unix() {
+		rowData[column] = dayInfo{
+			Date:     t,
+			X:        column*req.DaysXStep + req.DaysXShift - req.DaysXStep,
+			Y:        row*req.DaysYStep + req.DaysYShift - req.DaysYStep,
+			Weekend:  t.Weekday() == time.Saturday || t.Weekday() == time.Sunday,
+			Inactive: t.Month() != month,
+		}
+
+		if column == 6 {
+			row++
+			column = 0
+			calendar = append(calendar, rowData)
+			rowData = [7]dayInfo{}
+		} else {
+			column++
+		}
+
+		t = t.AddDate(0, 0, 1)
+	}
+
+	if !req.ShowInactiveDays {
+		if column > 0 { // todo: refactor
+			calendar = append(calendar, rowData)
+		}
+		return calendar
+	}
+
+	// finish
+	for column < 7 {
+		rowData[column] = dayInfo{
+			Date:     t,
+			X:        column*req.DaysXStep + req.DaysXShift - req.DaysXStep,
+			Y:        row*req.DaysYStep + req.DaysYShift - req.DaysYStep,
+			Weekend:  t.Weekday() == time.Saturday || t.Weekday() == time.Sunday,
+			Inactive: t.Month() != month,
+		}
+		column++
+		t = t.AddDate(0, 0, 1)
+	}
+	calendar = append(calendar, rowData)
+
+	return calendar
 }

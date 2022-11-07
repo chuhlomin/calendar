@@ -23,6 +23,7 @@ let config = {
     weeknumbersYStep: "35",
     weeknumbersYShift: "42",
     weekdaysColor: "#999999",
+    showInactiveDays: "true",
     inactiveColor: "#c8c8c8",
 };
 
@@ -45,6 +46,7 @@ let configInputTypes = {
     weeknumbersYShift: "number",
     monthColor: "color",
     weekdaysColor: "color",
+    showInactiveDays: "checkbox",
     inactiveColor: "color",
 };
 
@@ -77,8 +79,40 @@ function loadConfig(key) {
             let input = document.getElementsByName(key)[0];
             input.value = value;
             break;
+
+        case "checkbox":
+            let checkbox = document.getElementsByName(key)[0];
+            checkbox.checked = value == "true";
+            break;
         }
     }
+}
+
+function validateConfig(cfg) {
+    let errors = [];
+
+    for (let key in cfg) {
+        if (configInputTypes[key] == "number" || configIntegerFields.includes(key)) {
+            let value = parseInt(cfg[key]);
+            if (isNaN(value)) {
+                errors.push("Invalid value for " + key + ": " + cfg[key]);
+                continue;
+            }
+
+            if (key == "month" && (value < 0 || value > 11)) {
+                errors.push("Invalid value for " + key + ": " + cfg[key]);
+                continue;
+            }
+
+            cfg[key] = value;
+        }
+
+        if (configInputTypes[key] == "checkbox") {
+            cfg[key] = cfg[key] == "true";
+        }
+    }
+
+    return [cfg, errors];
 }
 
 window.onload = function() {
@@ -148,7 +182,18 @@ function changeMonth(step) {
 }
 
 function changeConfig(element) {
-    changeConfigKV(element.name, element.value);
+    let key = element.name;
+    let value = element.value;
+
+    if (configInputTypes[key] == "checkbox") {
+        if (element.checked) {
+            value = "true";
+        } else {
+            value = "false";
+        }
+    }
+
+    changeConfigKV(key, value);
 }
 
 function changeConfigKV(key, value) {
@@ -198,7 +243,7 @@ function days(cfg) {
     let days = [];
     let date = new Date(cfg.year, cfg.month, 1);
     let end = new Date(cfg.year, cfg.month + 1, 0);
-    if (end.getDay() === lastDay) {
+    if (end.getDay() === lastDay && cfg.showInactiveDays) {
         end.setDate(end.getDate() + 7);
     }
 
@@ -218,13 +263,7 @@ function days(cfg) {
     let weeknumber = getWeekNumber(date);
 
     while (date <= end) {
-        days.push({
-            day: date.getDate(),
-            x: column * cfg.daysXStep + cfg.daysXShift,
-            y: row * cfg.daysYStep + cfg.daysYShift,
-            inactive: date.getMonth() != cfg.month,
-            weekend: date.getDay() == 0 || date.getDay() == 6,
-        });
+        let inactive = date.getMonth() != cfg.month;
 
         if (date.getDay() == cfg.firstDay) {
             weeknumbers.push(weeknumber);
@@ -234,6 +273,20 @@ function days(cfg) {
                 weeknumber = 1;
             }
         }
+
+        if (inactive && !cfg.showInactiveDays) {
+            date.setDate(date.getDate() + 1);
+            column++;
+            continue;
+        }
+
+        days.push({
+            day: date.getDate(),
+            x: column * cfg.daysXStep + cfg.daysXShift,
+            y: row * cfg.daysYStep + cfg.daysYShift,
+            inactive: inactive,
+            weekend: date.getDay() == 0 || date.getDay() == 6,
+        });
 
         date.setDate(date.getDate() + 1);
 
@@ -246,7 +299,7 @@ function days(cfg) {
     }
 
     // finish last row
-     while (date.getDay() != cfg.firstDay) {
+     while (date.getDay() != cfg.firstDay && cfg.showInactiveDays) {
         days.push({
             day: date.getDate(),
             x: column * cfg.daysXStep + cfg.daysXShift,
@@ -385,27 +438,4 @@ function submitForm(element) {
         element.removeAttribute("disabled");
         element.value = defaultLabel;
     });
-}
-
-function validateConfig(cfg) {
-    let errors = [];
-
-    for (let key in cfg) {
-        if (configInputTypes[key] == "number" || configIntegerFields.includes(key)) {
-            let value = parseInt(cfg[key]);
-            if (isNaN(value)) {
-                errors.push("Invalid value for " + key + ": " + cfg[key]);
-                continue;
-            }
-
-            if (key == "month" && (value < 0 || value > 11)) {
-                errors.push("Invalid value for " + key + ": " + cfg[key]);
-                continue;
-            }
-
-            cfg[key] = value;
-        }
-    }
-
-    return [cfg, errors];
 }
