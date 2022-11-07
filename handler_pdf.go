@@ -36,10 +36,16 @@ type pdfRequest struct {
 	WeeknumbersXShift   int    `json:"weeknumbersXShift"`
 	WeeknumbersYStep    int    `json:"weeknumbersYStep"`
 	WeeknumbersYShift   int    `json:"weeknumbersYShift"`
+	MonthColor          string `json:"monthColor"`
+	WeekdaysColor       string `json:"weekdaysColor"`
+	InactiveColor       string `json:"inactiveColor"`
 
 	textColor        color.Color
 	weekendColor     color.Color
 	weeknumbersColor color.Color
+	monthColor       color.Color
+	weekdaysColor    color.Color
+	inactiveColor    color.Color
 }
 
 func handlerPDF(w http.ResponseWriter, r *http.Request) {
@@ -82,6 +88,21 @@ func parsePDFRequest(r *http.Request) (*pdfRequest, error) {
 	req.weeknumbersColor, err = colorful.Hex(req.WeeknumbersColor)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing weeknumbers color %q", req.WeeknumbersColor)
+	}
+
+	req.monthColor, err = colorful.Hex(req.MonthColor)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error parsing month color %q", req.MonthColor)
+	}
+
+	req.weekdaysColor, err = colorful.Hex(req.WeekdaysColor)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error parsing weekdays color %q", req.WeekdaysColor)
+	}
+
+	req.inactiveColor, err = colorful.Hex(req.InactiveColor)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error parsing inactive color %q", req.InactiveColor)
 	}
 
 	if req.Month < 0 || req.Month > 11 {
@@ -146,8 +167,8 @@ func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 	var top float64 = 21
 	var marginLeft float64 = 5
 
+	setTextColor(pdf, req.weekdaysColor)
 	pdf.SetFont("month", "", float64(req.FontSizeWeekdays*3))
-	pdf.SetTextColor(200, 200, 200)
 
 	for day := 0; day < 7; day++ {
 		x := left + float64(day)*(w+marginLeft)
@@ -184,14 +205,13 @@ func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Mon
 func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]dates.DayInfo) {
 	pdf.SetFont("numbers", "", float64(req.FontSizeDays*3))
 
-	colorGray, _ := colorful.Hex("#c8c8c8")
 	var color color.Color
 
 	for _, row := range calendar {
 		for _, dayInfo := range row {
 			color = req.textColor
 			if dayInfo.Inactive {
-				color = colorGray
+				color = req.inactiveColor
 			} else {
 				if dayInfo.Weekend {
 					color = req.weekendColor
@@ -216,7 +236,9 @@ func drawMonth(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month) {
 	var w float64 = 200
 	var h float64 = 20
 
+	setTextColor(pdf, req.monthColor)
 	pdf.SetFont("month", "", float64(req.FontSizeMonth*3))
+
 	pdf.MoveTo(x, y)
 	pdf.CellFormat(
 		// w, h, fmt.Sprintf("%s %d", i18n(month.String()), year),

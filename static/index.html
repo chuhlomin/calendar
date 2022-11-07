@@ -106,6 +106,13 @@
                             <input type="number" name="daysYShift" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
+
+                    <div class="field color">
+                        <label class="full-width-label">
+                            <span>Inactive</span>
+                            <button name="inactiveColor" type="button"></button>
+                        </label>
+                    </div>
                 </fieldset>
 
                 <fieldset>
@@ -115,6 +122,13 @@
                         <label class="full-width-label">
                             <span>Font size</span>
                             <input type="number" name="fontSizeMonth" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+
+                    <div class="field color">
+                        <label class="full-width-label">
+                            <span>Color</span>
+                            <button name="monthColor" type="button"></button>
                         </label>
                     </div>
                 </fieldset>
@@ -128,22 +142,29 @@
                             <input type="number" name="fontSizeWeekdays" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
+
+                    <div class="field color">
+                        <label class="full-width-label">
+                            <span>Color</span>
+                            <button name="weekdaysColor" type="button"></button>
+                        </label>
+                    </div>
                 </fieldset>
 
                 <fieldset>
                     <legend>Week numbers</legend>
 
-                    <div class="field color">
-                        <label class="full-width-label">
-                            <span>Color</span>
-                            <button name="weeknumbersColor" type="button"></button>
-                        </label>
-                    </div>
-
                     <div class="field">
                         <label class="full-width-label">
                             <span>Font size</span>
                             <input type="number" name="fontSizeWeekNumbers" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+
+                    <div class="field color">
+                        <label class="full-width-label">
+                            <span>Color</span>
+                            <button name="weeknumbersColor" type="button"></button>
                         </label>
                     </div>
 
@@ -198,7 +219,6 @@
 <script src="script.js"></script>
 <script id="template_styles" type="x-tmpl-mustache">
 .month, .day {
-    fill: {{ textColor }};
     text-align: center;
     transform: translate(100);
 }
@@ -208,20 +228,23 @@
     fill: #999;
 }
 .day {
-    font-size: {{fontSizeDays}}pt;
+    fill: {{ textColor }};
+    font-size: {{ fontSizeDays }}pt;
 }
 .month {
-    font-size: {{fontSizeMonth}}pt;
+    fill: {{ monthColor }};
+    font-size: {{ fontSizeMonth }}pt;
 }
 .weekday {
-    font-size: {{fontSizeWeekdays}}pt;
+    fill: {{ weekdaysColor }};
+    font-size: {{ fontSizeWeekdays }}pt;
 }
 .weeknumber {
-    fill: {{weeknumbersColor}};
-    font-size: {{fontSizeWeekNumbers}}pt;
+    fill: {{ weeknumbersColor }};
+    font-size: {{ fontSizeWeekNumbers }}pt;
 }
 .inactive {
-    fill: #ccc;
+    fill: {{ inactiveColor }};
 }
 .weekend {
     fill: {{ weekendColor }};

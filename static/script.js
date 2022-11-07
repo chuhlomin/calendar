@@ -13,6 +13,7 @@ let config = {
     weekendColor: "#aa5555",
     year: today.getFullYear(),
     month: today.getMonth(),
+    monthColor: "#222222",
     daysXStep: "25",
     daysXShift: "40",
     daysYStep: "35",
@@ -21,6 +22,8 @@ let config = {
     weeknumbersXShift: "20",
     weeknumbersYStep: "35",
     weeknumbersYShift: "42",
+    weekdaysColor: "#999999",
+    inactiveColor: "#c8c8c8",
 };
 
 let configInputTypes = {
@@ -40,6 +43,9 @@ let configInputTypes = {
     weeknumbersXShift: "number",
     weeknumbersYStep: "number",
     weeknumbersYShift: "number",
+    monthColor: "color",
+    weekdaysColor: "color",
+    inactiveColor: "color",
 };
 
 let configIntegerFields = ["firstDay", "year", "month"];
