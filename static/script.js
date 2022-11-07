@@ -220,6 +220,10 @@ function days(cfg) {
         if (date.getDay() == cfg.firstDay) {
             weeknumbers.push(weeknumber);
             weeknumber++;
+
+            if (weeknumber > 52) {
+                weeknumber = 1;
+            }
         }
 
         date.setDate(date.getDate() + 1);
