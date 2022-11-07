@@ -32,12 +32,14 @@ type pdfRequest struct {
 	DaysXStep           int    `json:"daysXStep"`
 	DaysYShift          int    `json:"daysYShift"`
 	DaysYStep           int    `json:"daysYStep"`
+	WeeknumbersColor    string `json:"weeknumbersColor"`
 	WeeknumbersXShift   int    `json:"weeknumbersXShift"`
 	WeeknumbersYStep    int    `json:"weeknumbersYStep"`
 	WeeknumbersYShift   int    `json:"weeknumbersYShift"`
 
-	textColor    color.Color
-	weekendColor color.Color
+	textColor        color.Color
+	weekendColor     color.Color
+	weeknumbersColor color.Color
 }
 
 func handlerPDF(w http.ResponseWriter, r *http.Request) {
@@ -75,6 +77,11 @@ func parsePDFRequest(r *http.Request) (*pdfRequest, error) {
 	req.weekendColor, err = colorful.Hex(req.WeekendColor)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing weekend color %q", req.WeekendColor)
+	}
+
+	req.weeknumbersColor, err = colorful.Hex(req.WeeknumbersColor)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error parsing weeknumbers color %q", req.WeeknumbersColor)
 	}
 
 	if req.Month < 0 || req.Month > 11 {
@@ -154,8 +161,8 @@ func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 }
 
 func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month, lines int) {
+	setTextColor(pdf, req.weeknumbersColor)
 	pdf.SetFont("numbers", "", float64(req.FontSizeWeekNumbers*3))
-	pdf.SetTextColor(200, 200, 200)
 
 	start := dates.Date(year, int(month), 1)
 	_, week := start.ISOWeek()

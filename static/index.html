@@ -133,6 +133,13 @@
                 <fieldset>
                     <legend>Week numbers</legend>
 
+                    <div class="field color">
+                        <label class="full-width-label">
+                            <span>Color</span>
+                            <button name="weeknumbersColor" type="button"></button>
+                        </label>
+                    </div>
+
                     <div class="field">
                         <label class="full-width-label">
                             <span>Font size</span>
@@ -210,6 +217,7 @@
     font-size: {{fontSizeWeekdays}}pt;
 }
 .weeknumber {
+    fill: {{weeknumbersColor}};
     font-size: {{fontSizeWeekNumbers}}pt;
 }
 .inactive {

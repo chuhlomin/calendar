@@ -17,6 +17,7 @@ let config = {
     daysXShift: "40",
     daysYStep: "35",
     daysYShift: "50",
+    weeknumbersColor: "#999999",
     weeknumbersXShift: "20",
     weeknumbersYStep: "35",
     weeknumbersYShift: "42",
@@ -35,6 +36,7 @@ let configInputTypes = {
     daysXShift: "number",
     daysYStep: "number",
     daysYShift: "number",
+    weeknumbersColor: "color",
     weeknumbersXShift: "number",
     weeknumbersYStep: "number",
     weeknumbersYShift: "number",
@@ -69,13 +71,6 @@ function loadConfig(key) {
             let input = document.getElementsByName(key)[0];
             input.value = value;
             break;
-
-        case "color":
-            let button = document.getElementsByName(key)[0];
-            new ColorPicker(button, value);
-            button.addEventListener('colorChange', function (event) {
-                changeConfigKV(key, event.detail.color.hexa);
-            });
         }
     }
 }
@@ -83,6 +78,14 @@ function loadConfig(key) {
 window.onload = function() {
     for (let key in config) {
         loadConfig(key);
+
+        if (configInputTypes[key] == "color") {
+            let button = document.getElementsByName(key)[0];
+            new ColorPicker(button, config[key]);
+            button.addEventListener('colorChange', function (event) {
+                changeConfigKV(key, event.detail.color.hexa);
+            });
+        }
     }
 
     updateCalendar();
