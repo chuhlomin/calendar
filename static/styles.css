@@ -241,7 +241,10 @@ label.full-width-label {
   cursor: default;
 }
 
-.field + .field {
+.field + .field,
+.field + fieldset,
+fieldset + fieldset,
+fieldset + .field {
   margin-top: 10px;
 }
 
