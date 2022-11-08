@@ -42,7 +42,10 @@
   --color-link-hover: #0969da;
   --color-link-hover-underscore: rgba(9, 105, 218, var(--underline-opacity));
 
+  --color-fieldset-border: rgba(0,0,0,0.1);
+
   --border-radius: 4px;
+  --border-radius-big: 8px;
 }
 
 /* Use a more-intuitive box-sizing model. */
@@ -95,10 +98,10 @@ a:hover {
 }
 
 fieldset {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-big);
   border-width: 2px;
   border-style: solid;
-  border-color: #999;
+  border-color: var(--color-fieldset-border);
 }
 
 .panel {
@@ -171,7 +174,7 @@ fieldset {
   right: 0;
   top: 0;
   bottom: 0;
-  padding: 20px 50px;
+  padding: 20px;
   overflow: hidden;
   background: var(--color-content-background);
 }
@@ -260,61 +263,14 @@ input[type="number"]:disabled {
   color: #999999;
 }
 
+input[type="checkbox"] + span {
+  display: inline-block;
+  vertical-align: top;
+  width: calc(100% - 20px);
+}
+
 .field.disabled {
   opacity: 0.5;
-}
-
-.patterns {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  column-gap: 10px;
-  row-gap: 10px;
-}
-
-.pattern input {
-  display: none;
-}
-
-.pattern label {
-  display: block;
-}
-
-/* class that starts with pattern-*/
-[class^="pattern-"] {
-  display: block;
-  background: url("patterns.png?t=20221104") no-repeat;
-  background-size: 600% 100%;
-  border: 1px solid #d3d3d3;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  width: 100%;
-  aspect-ratio: 1;
-  box-shadow: 0 -5px 10px inset rgba(0, 0, 0, 0.1);
-}
-
-.pattern-lines {
-  background-position: 20% 0;
-}
-
-.pattern-dot {
-  background-position: 40% 0;
-}
-
-.pattern-rhombus {
-  background-position: 60% 0;
-}
-
-.pattern-triangles {
-  background-position: 80% 0;
-}
-
-.pattern-hexdot {
-  background-position: 100% 0;
-}
-
-.patterns input:checked + div {
-  border-color: #0b7fff;
-  box-shadow: 0 -5px 10px inset rgba(0, 0, 0, 0.1), 0 0 0 1px #0b7fff;
 }
 
 .field.color button {
@@ -356,6 +312,7 @@ input[type="number"]:disabled {
       131,
       var(--underline-opacity)
     );
+    --color-fieldset-border: rgba(255,255,255,0.1);
   }
   .github-icon {
     background-image: url(GitHub-Mark-Light-32px.png);
