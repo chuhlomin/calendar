@@ -111,7 +111,7 @@
                         <label class="label">
                             <label>
                                 <input type="checkbox" name="showInactiveDays" checked="true" onchange="changeConfig(this)">
-                                <span>Show inactive days</span>
+                                <span>Show days outside current month</span>
                             </label>
                         </label>
                     </div>
@@ -125,7 +125,11 @@
                 </fieldset>
 
                 <fieldset>
-                    <legend>Month</legend>
+                    <legend>
+                        <label>
+                            <input type="checkbox" name="showMonth" checked="true" onchange="changeConfig(this)"> Month
+                        </label>
+                    </legend>
 
                     <div class="field">
                         <label class="full-width-label">
@@ -143,7 +147,11 @@
                 </fieldset>
 
                 <fieldset>
-                    <legend>Weekdays</legend>
+                    <legend>
+                        <label>
+                            <input type="checkbox" name="showWeekdays" checked="true" onchange="changeConfig(this)"> Weekdays
+                        </label>
+                    </legend>
 
                     <div class="field">
                         <label class="full-width-label">
@@ -161,7 +169,11 @@
                 </fieldset>
 
                 <fieldset>
-                    <legend>Week numbers</legend>
+                    <legend>
+                        <label>
+                            <input type="checkbox" name="showWeekNumbers" checked="true" onchange="changeConfig(this)"> Week numbers
+                        </label>
+                    </legend>
 
                     <div class="field">
                         <label class="full-width-label">
@@ -262,7 +274,7 @@
 <script id="template_month" type="x-tmpl-mustache">
     <g id="month">
         <text id="month" x="{{ halfWidth }}" y="260" class="month">
-            <tspan x="0" text-anchor="middle">{{ month }} {{ year }}</tspan>
+            <tspan x="0" text-anchor="middle">{{ month }}</tspan>
         </text>
     </g>
     <g id="days">

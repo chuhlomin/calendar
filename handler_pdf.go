@@ -16,28 +16,39 @@ import (
 )
 
 type pdfRequest struct {
-	Size                string `json:"size"`
-	FirstDay            int    `json:"firstDay"` // 0 - Sunday, 1 - Monday, ...
-	FontSizeDays        int    `json:"fontSizeDays"`
-	FontSizeWeekdays    int    `json:"fontSizeWeekdays"`
+	Size     string `json:"size"`
+	FirstDay int    `json:"firstDay"` // 0 - Sunday, 1 - Monday, ...
+	Year     int    `json:"year"`
+	Month    int    `json:"month"`
+
+	// Days
+	FontSizeDays     int    `json:"fontSizeDays"`
+	TextColor        string `json:"textColor"`
+	WeekendColor     string `json:"weekendColor"`
+	DaysXShift       int    `json:"daysXShift"`
+	DaysXStep        int    `json:"daysXStep"`
+	DaysYShift       int    `json:"daysYShift"`
+	DaysYStep        int    `json:"daysYStep"`
+	ShowInactiveDays bool   `json:"showInactiveDays"`
+	InactiveColor    string `json:"inactiveColor"`
+
+	// Month
+	ShowMonth     bool   `json:"showMonth"`
+	FontSizeMonth int    `json:"fontSizeMonth"`
+	MonthColor    string `json:"monthColor"`
+
+	// Weekdays
+	ShowWeekdays     bool   `json:"showWeekdays"`
+	FontSizeWeekdays int    `json:"fontSizeWeekdays"`
+	WeekdaysColor    string `json:"weekdaysColor"`
+
+	// WeekNumbers
+	ShowWeekNumbers     bool   `json:"showWeekNumbers"`
 	FontSizeWeekNumbers int    `json:"fontSizeWeekNumbers"`
-	FontSizeMonth       int    `json:"fontSizeMonth"`
-	TextColor           string `json:"textColor"`
-	WeekendColor        string `json:"weekendColor"`
-	Year                int    `json:"year"`
-	Month               int    `json:"month"`
-	DaysXShift          int    `json:"daysXShift"`
-	DaysXStep           int    `json:"daysXStep"`
-	DaysYShift          int    `json:"daysYShift"`
-	DaysYStep           int    `json:"daysYStep"`
 	WeeknumbersColor    string `json:"weeknumbersColor"`
 	WeeknumbersXShift   int    `json:"weeknumbersXShift"`
 	WeeknumbersYStep    int    `json:"weeknumbersYStep"`
 	WeeknumbersYShift   int    `json:"weeknumbersYShift"`
-	MonthColor          string `json:"monthColor"`
-	WeekdaysColor       string `json:"weekdaysColor"`
-	InactiveColor       string `json:"inactiveColor"`
-	ShowInactiveDays    bool   `json:"showInactiveDays"`
 
 	textColor        color.Color
 	weekendColor     color.Color
@@ -138,14 +149,23 @@ func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 	year := req.Year
 	month := time.Month(req.Month + 1)
 
-	calendar := getCalendar(req, year, month)
+	days, weekNumbers := getDays(req, year, month)
 
 	setTextColor(pdf, req.textColor)
 
-	drawMonth(pdf, req, year, month)
-	drawWeekdays(pdf, req)
-	drawWeekNumbers(pdf, req, year, month, len(calendar))
-	drawDays(pdf, req, calendar)
+	if req.ShowMonth {
+		drawMonth(pdf, req, year, month)
+	}
+
+	if req.ShowWeekdays {
+		drawWeekdays(pdf, req)
+	}
+
+	if req.ShowWeekNumbers {
+		drawWeekNumbers(pdf, req, weekNumbers)
+	}
+
+	drawDays(pdf, req, days)
 
 	return nil
 }
@@ -171,56 +191,48 @@ func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 	}
 }
 
-func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month, lines int) {
+func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, weekNumbers []int) {
 	setTextColor(pdf, req.weeknumbersColor)
 	pdf.SetFont("numbers", "", float64(req.FontSizeWeekNumbers*3))
 
-	start := date(year, int(month), 1)
-	_, week := start.ISOWeek()
-
-	for line := 0; line < lines; line++ {
+	line := 0
+	for _, weekNumber := range weekNumbers {
 		y := line*req.WeeknumbersYStep + req.WeeknumbersYShift - req.WeeknumbersYStep
 
 		pdf.MoveTo(0, float64(y))
-		pdf.CellFormat(float64(req.WeeknumbersXShift), float64(req.WeeknumbersYStep), strconv.Itoa(week), "0", 0, "RB", false, 0, "")
+		pdf.CellFormat(float64(req.WeeknumbersXShift), float64(req.WeeknumbersYStep), strconv.Itoa(weekNumber), "0", 0, "RB", false, 0, "")
 
-		week++
-
-		if week > 52 {
-			week = 1
-		}
+		line++
 	}
 }
 
-func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, calendar [][7]dayInfo) {
+func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, days []dayInfo) {
 	pdf.SetFont("numbers", "", float64(req.FontSizeDays*3))
 
 	var color color.Color
 
-	for _, row := range calendar {
-		for _, dayInfo := range row {
-			color = req.textColor
-			if dayInfo.Inactive {
-				color = req.inactiveColor
-			} else {
-				if dayInfo.Weekend {
-					color = req.weekendColor
-				}
+	for _, dayInfo := range days {
+		color = req.textColor
+		if dayInfo.Inactive {
+			color = req.inactiveColor
+		} else {
+			if dayInfo.Weekend {
+				color = req.weekendColor
 			}
-
-			if dayInfo.Inactive && !req.ShowInactiveDays {
-				continue
-			}
-
-			setTextColor(pdf, color)
-			pdf.MoveTo(float64(dayInfo.X), float64(dayInfo.Y))
-			pdf.CellFormat(
-				float64(req.DaysXStep),
-				float64(req.DaysYStep),
-				fmt.Sprintf("%d", dayInfo.Date.Day()),
-				"0", 0, "RB", false, 0, "",
-			)
 		}
+
+		if dayInfo.Inactive && !req.ShowInactiveDays {
+			continue
+		}
+
+		setTextColor(pdf, color)
+		pdf.MoveTo(float64(dayInfo.X), float64(dayInfo.Y))
+		pdf.CellFormat(
+			float64(req.DaysXStep),
+			float64(req.DaysYStep),
+			fmt.Sprintf("%d", dayInfo.Date.Day()),
+			"0", 0, "RB", false, 0, "",
+		)
 	}
 }
 
@@ -280,9 +292,7 @@ type dayInfo struct {
 	Inactive bool
 }
 
-func getCalendar(req *pdfRequest, year int, month time.Month) [][7]dayInfo {
-	var calendar [][7]dayInfo
-
+func getDays(req *pdfRequest, year int, month time.Month) (days []dayInfo, weekNumbers []int) {
 	start := date(year, int(month), 1) // 2020 October 1
 	end := start.AddDate(0, 1, 0)      // 2020 November 1
 
@@ -297,24 +307,28 @@ func getCalendar(req *pdfRequest, year int, month time.Month) [][7]dayInfo {
 	sheetStart := start.AddDate(0, 0, -daysSinceWeekStartToBeginningOfMonth)
 	t := sheetStart
 
-	rowData := [7]dayInfo{}
 	row := 0
 	column := 0
+	_, weekNumber := t.ISOWeek()
 
 	for t.Unix() < end.Unix() {
-		rowData[column] = dayInfo{
+		days = append(days, dayInfo{
 			Date:     t,
 			X:        column*req.DaysXStep + req.DaysXShift - req.DaysXStep,
 			Y:        row*req.DaysYStep + req.DaysYShift - req.DaysYStep,
 			Weekend:  t.Weekday() == time.Saturday || t.Weekday() == time.Sunday,
 			Inactive: t.Month() != month,
+		})
+
+		weekNumbers = append(weekNumbers, weekNumber)
+		weekNumber++
+		if weekNumber > 52 {
+			weekNumber = 1
 		}
 
 		if column == 6 {
 			row++
 			column = 0
-			calendar = append(calendar, rowData)
-			rowData = [7]dayInfo{}
 		} else {
 			column++
 		}
@@ -323,25 +337,21 @@ func getCalendar(req *pdfRequest, year int, month time.Month) [][7]dayInfo {
 	}
 
 	if !req.ShowInactiveDays {
-		if column > 0 { // todo: refactor
-			calendar = append(calendar, rowData)
-		}
-		return calendar
+		return
 	}
 
 	// finish
 	for column < 7 {
-		rowData[column] = dayInfo{
+		days = append(days, dayInfo{
 			Date:     t,
 			X:        column*req.DaysXStep + req.DaysXShift - req.DaysXStep,
 			Y:        row*req.DaysYStep + req.DaysYShift - req.DaysYStep,
 			Weekend:  t.Weekday() == time.Saturday || t.Weekday() == time.Sunday,
 			Inactive: t.Month() != month,
-		}
+		})
 		column++
 		t = t.AddDate(0, 0, 1)
 	}
-	calendar = append(calendar, rowData)
 
-	return calendar
+	return
 }

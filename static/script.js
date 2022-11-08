@@ -5,49 +5,71 @@ let today = new Date();
 let config = {
     pageSize: "A4",
     firstDay: "0",
-    fontSizeDays: "12",
-    fontSizeMonth: "12",
-    fontSizeWeekdays: "5",
-    fontSizeWeekNumbers: "5 ",
-    textColor: "#222222",
-    weekendColor: "#aa5555",
     year: today.getFullYear(),
     month: today.getMonth(),
-    monthColor: "#222222",
+
+    // days
+    fontSizeDays: "12",
+    textColor: "#222222",
+    weekendColor: "#aa5555",
     daysXStep: "25",
     daysXShift: "40",
     daysYStep: "35",
     daysYShift: "50",
+    showInactiveDays: "true",
+    inactiveColor: "#c8c8c8",
+
+    // month
+    showMonth: "true",
+    fontSizeMonth: "12",
+    monthColor: "#222222",
+
+    // weekdays
+    showWeekdays: "true",
+    fontSizeWeekdays: "5",
+    weekdaysColor: "#999999",
+
+    // week numbers
+    showWeekNumbers: "true",
+    fontSizeWeekNumbers: "5 ",
     weeknumbersColor: "#999999",
     weeknumbersXShift: "20",
     weeknumbersYStep: "35",
     weeknumbersYShift: "42",
-    weekdaysColor: "#999999",
-    showInactiveDays: "true",
-    inactiveColor: "#c8c8c8",
 };
 
 let configInputTypes = {
     pageSize: "select",
     firstDay: "radio",
+
+    // days
     fontSizeDays: "number",
-    fontSizeMonth: "number",
-    fontSizeWeekdays: "number",
-    fontSizeWeekNumbers: "number",
     textColor: "color",
     weekendColor: "color",
     daysXStep: "number",
     daysXShift: "number",
     daysYStep: "number",
     daysYShift: "number",
+    showInactiveDays: "checkbox",
+    inactiveColor: "color",
+
+    // month
+    showMonth: "checkbox",
+    fontSizeMonth: "number",
+    monthColor: "color",
+    
+    // weekdays
+    showWeekdays: "checkbox",
+    fontSizeWeekdays: "number",
+    weekdaysColor: "color",
+
+    // week numbers
+    showWeekNumbers: "checkbox",
+    fontSizeWeekNumbers: "number",
     weeknumbersColor: "color",
     weeknumbersXShift: "number",
     weeknumbersYStep: "number",
     weeknumbersYShift: "number",
-    monthColor: "color",
-    weekdaysColor: "color",
-    showInactiveDays: "checkbox",
-    inactiveColor: "color",
 };
 
 let configIntegerFields = ["firstDay", "year", "month"];
@@ -88,28 +110,34 @@ function loadConfig(key) {
     }
 }
 
-function validateConfig(cfg) {
+function validateConfig(config) {
     let errors = [];
 
-    for (let key in cfg) {
+    let cfg = {};
+
+    for (let key in config) {
         if (configInputTypes[key] == "number" || configIntegerFields.includes(key)) {
-            let value = parseInt(cfg[key]);
+            let value = parseInt(config[key]);
             if (isNaN(value)) {
-                errors.push("Invalid value for " + key + ": " + cfg[key]);
+                errors.push("Invalid value for " + key + ": " + config[key]);
                 continue;
             }
 
             if (key == "month" && (value < 0 || value > 11)) {
-                errors.push("Invalid value for " + key + ": " + cfg[key]);
+                errors.push("Invalid value for " + key + ": " + config[key]);
                 continue;
             }
 
             cfg[key] = value;
+            continue;
         }
 
         if (configInputTypes[key] == "checkbox") {
-            cfg[key] = cfg[key] == "true";
+            cfg[key] = config[key] == "true";
+            continue;
         }
+
+        cfg[key] = config[key];
     }
 
     return [cfg, errors];
@@ -218,11 +246,10 @@ function updateCalendar() {
     let renderedMonth = Mustache.render(
         templateMonth,
         {
-            year: config.year,
-            month: getMonthName(cfg.month),
+            month: getMonth(cfg),
             halfWidth: width/2,
             days: d,
-            weekdays: weekdays(config.firstDay),
+            weekdays: weekdays(cfg),
             weeknumbers: weeknumbers(cfg, w)
         }
     );
@@ -265,7 +292,7 @@ function days(cfg) {
     while (date <= end) {
         let inactive = date.getMonth() != cfg.month;
 
-        if (date.getDay() == cfg.firstDay) {
+        if (date.getDay() == cfg.firstDay && cfg.showWeekNumbers) {
             weeknumbers.push(weeknumber);
             weeknumber++;
 
@@ -314,7 +341,11 @@ function days(cfg) {
     return [days, weeknumbers];
 }
 
-function weekdays(firstDay) {
+function weekdays(cfg) {
+    if (!cfg.showWeekdays) {
+        return [];
+    }
+
     let weekdays = [
         // "Sunday",
         // "Monday",
@@ -332,13 +363,10 @@ function weekdays(firstDay) {
         "Sat",
     ];
 
-    // parse int
-    firstDay = parseInt(firstDay);
-    
     let days = [];
     for (let i = 0; i < 7; i++) {
         days.push({
-            day: weekdays[(firstDay + i) % 7],
+            day: weekdays[(cfg.firstDay + i) % 7],
             x: i * 25 + 40,
             y: 30,
         });
@@ -376,8 +404,12 @@ let months = [
     "December",
 ];
 
-function getMonthName(month) {
-    return months[month];
+function getMonth(cfg) {
+    if (!cfg.showMonth) {
+        return "";
+    }
+
+    return months[cfg.month] + " " + cfg.year;
 }
 
 function getWeekNumber(d) {
