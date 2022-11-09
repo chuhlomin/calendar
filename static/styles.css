@@ -253,6 +253,11 @@ fieldset + .field {
   margin-top: 10px;
 }
 
+fieldset.disabled .field {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 input[type="number"] {
   font-size: var(--font-size);
   text-align: right;

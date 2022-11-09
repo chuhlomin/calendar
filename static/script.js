@@ -111,6 +111,9 @@ function loadConfig(key) {
         case "checkbox":
             let checkbox = document.getElementsByName(key)[0];
             checkbox.checked = value == "true";
+            if (checkbox.dataset.fieldset) {
+                toggleFieldset(checkbox.dataset.fieldset, checkbox.checked);
+            }
             break;
         }
     }
@@ -225,6 +228,10 @@ function changeConfig(element) {
         } else {
             value = "false";
         }
+
+        if (element.dataset.fieldset) {
+            toggleFieldset(element.dataset.fieldset, element.checked);
+        }
     }
 
     changeConfigKV(key, value);
@@ -234,6 +241,24 @@ function changeConfigKV(key, value) {
     config[key] = value;
     updateCalendar();
     localStorage.setItem(key, value);
+}
+
+function toggleFieldset(fieldsetName, enabled) {
+    let fieldset = document.getElementById("fs-" + fieldsetName);
+    // query every input and button inside .field block
+    let inputs = fieldset.querySelectorAll(".field input, .field button");
+
+    if (enabled) {
+        fieldset.classList.remove("disabled");
+        for (let i = 0; i < inputs.length; i++) {
+            inputs[i].disabled = false;
+        }
+    } else {
+        fieldset.classList.add("disabled");
+        for (let i = 0; i < inputs.length; i++) {
+            inputs[i].disabled = true;
+        }
+    }
 }
 
 function updateCalendar() {
