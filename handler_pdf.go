@@ -41,14 +41,17 @@ type pdfRequest struct {
 	ShowWeekdays     bool   `json:"showWeekdays"`
 	FontSizeWeekdays int    `json:"fontSizeWeekdays"`
 	WeekdaysColor    string `json:"weekdaysColor"`
+	WeekdaysXShift   int    `json:"weekdaysXShift"`
+	WeekdaysXStep    int    `json:"weekdaysXStep"`
+	WeekdaysYShift   int    `json:"weekdaysYShift"`
 
 	// WeekNumbers
 	ShowWeekNumbers     bool   `json:"showWeekNumbers"`
 	FontSizeWeekNumbers int    `json:"fontSizeWeekNumbers"`
 	WeeknumbersColor    string `json:"weeknumbersColor"`
 	WeeknumbersXShift   int    `json:"weeknumbersXShift"`
-	WeeknumbersYStep    int    `json:"weeknumbersYStep"`
 	WeeknumbersYShift   int    `json:"weeknumbersYShift"`
+	WeeknumbersYStep    int    `json:"weeknumbersYStep"`
 
 	textColor        color.Color
 	weekendColor     color.Color
@@ -171,23 +174,17 @@ func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 }
 
 func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
-	var w float64 = 20
-	var h float64 = 20
-	var left float64 = 20
-	var top float64 = 21
-	var marginLeft float64 = 5
-
 	setTextColor(pdf, req.weekdaysColor)
 	pdf.SetFont("month", "", float64(req.FontSizeWeekdays*3))
 
 	for day := 0; day < 7; day++ {
-		x := left + float64(day)*(w+marginLeft)
+		x := day*req.WeekdaysXStep + req.WeekdaysYShift - req.WeekdaysXStep
 
 		day := time.Weekday((day + 1) % 7).String()
 		day = day[:3]
 
-		pdf.MoveTo(x, top)
-		pdf.CellFormat(w, h, day, "0", 0, "RT", false, 0, "")
+		pdf.MoveTo(float64(x), 0)
+		pdf.CellFormat(float64(req.WeekdaysXShift), float64(req.WeekdaysYShift), day, "0", 0, "RB", false, 0, "")
 	}
 }
 

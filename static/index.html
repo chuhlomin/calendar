@@ -81,13 +81,6 @@
 
                     <div class="field">
                         <label class="full-width-label">
-                            <span>X step</span>
-                            <input type="number" name="daysXStep" value="25" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
-                        </label>
-                    </div>
-
-                    <div class="field">
-                        <label class="full-width-label">
                             <span>X shift</span>
                             <input type="number" name="daysXShift" value="40" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
@@ -95,8 +88,8 @@
 
                     <div class="field">
                         <label class="full-width-label">
-                            <span>Y step</span>
-                            <input type="number" name="daysYStep" value="35" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <span>X step</span>
+                            <input type="number" name="daysXStep" value="25" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
 
@@ -104,6 +97,13 @@
                         <label class="full-width-label">
                             <span>Y shift</span>
                             <input type="number" name="daysYShift" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Y step</span>
+                            <input type="number" name="daysYStep" value="35" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
 
@@ -166,6 +166,27 @@
                             <button name="weekdaysColor" type="button"></button>
                         </label>
                     </div>
+
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>X shift</span>
+                            <input type="number" name="weekdaysXShift" value="40" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>X step</span>
+                            <input type="number" name="weekdaysXStep" value="25" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
+
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Y shift</span>
+                            <input type="number" name="weekdaysYShift" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
                 </fieldset>
 
                 <fieldset>
@@ -198,15 +219,15 @@
 
                     <div class="field">
                         <label class="full-width-label">
-                            <span>Y step</span>
-                            <input type="number" name="weeknumbersYStep" value="35" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <span>Y shift</span>
+                            <input type="number" name="weeknumbersYShift" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
 
                     <div class="field">
                         <label class="full-width-label">
-                            <span>Y shift</span>
-                            <input type="number" name="weeknumbersYShift" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <span>Y step</span>
+                            <input type="number" name="weeknumbersYStep" value="35" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
                 </fieldset>

@@ -12,10 +12,10 @@ let config = {
     fontSizeDays: "12",
     textColor: "#222222",
     weekendColor: "#aa5555",
-    daysXStep: "25",
     daysXShift: "40",
-    daysYStep: "35",
+    daysXStep: "25",
     daysYShift: "50",
+    daysYStep: "35",
     showInactiveDays: "true",
     inactiveColor: "#c8c8c8",
 
@@ -28,14 +28,17 @@ let config = {
     showWeekdays: "true",
     fontSizeWeekdays: "5",
     weekdaysColor: "#999999",
+    weekdaysXShift: "40",
+    weekdaysXStep: "25",
+    weekdaysYShift: "30",
 
     // week numbers
     showWeekNumbers: "true",
     fontSizeWeekNumbers: "5 ",
     weeknumbersColor: "#999999",
     weeknumbersXShift: "20",
-    weeknumbersYStep: "35",
     weeknumbersYShift: "42",
+    weeknumbersYStep: "35",
 };
 
 let configInputTypes = {
@@ -46,10 +49,10 @@ let configInputTypes = {
     fontSizeDays: "number",
     textColor: "color",
     weekendColor: "color",
-    daysXStep: "number",
     daysXShift: "number",
-    daysYStep: "number",
+    daysXStep: "number",
     daysYShift: "number",
+    daysYStep: "number",
     showInactiveDays: "checkbox",
     inactiveColor: "color",
 
@@ -62,14 +65,17 @@ let configInputTypes = {
     showWeekdays: "checkbox",
     fontSizeWeekdays: "number",
     weekdaysColor: "color",
+    weekdaysXShift: "number",
+    weekdaysXStep: "number",
+    weekdaysYShift: "number",
 
     // week numbers
     showWeekNumbers: "checkbox",
     fontSizeWeekNumbers: "number",
     weeknumbersColor: "color",
     weeknumbersXShift: "number",
-    weeknumbersYStep: "number",
     weeknumbersYShift: "number",
+    weeknumbersYStep: "number",
 };
 
 let configIntegerFields = ["firstDay", "year", "month"];
@@ -367,8 +373,8 @@ function weekdays(cfg) {
     for (let i = 0; i < 7; i++) {
         days.push({
             day: weekdays[(cfg.firstDay + i) % 7],
-            x: i * 25 + 40,
-            y: 30,
+            x: i * cfg.weekdaysXStep + cfg.weekdaysXShift,
+            y: cfg.weekdaysYShift,
         });
     }
 
