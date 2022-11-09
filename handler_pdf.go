@@ -175,36 +175,36 @@ func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 
 func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 	setTextColor(pdf, req.weekdaysColor)
-	pdf.SetFont("month", "", float64(req.FontSizeWeekdays*3))
+	pdf.SetFont("month", "", float64(req.FontSizeWeekdays))
 
 	for day := 0; day < 7; day++ {
-		x := day*req.WeekdaysXStep + req.WeekdaysYShift - req.WeekdaysXStep
+		x := day*req.WeekdaysXStep + req.WeekdaysXShift - req.WeekdaysXStep
 
 		day := time.Weekday((day + 1) % 7).String()
 		day = day[:3]
 
 		pdf.MoveTo(float64(x), 0)
-		pdf.CellFormat(float64(req.WeekdaysXShift), float64(req.WeekdaysYShift), day, "0", 0, "RB", false, 0, "")
+		pdf.CellFormat(float64(req.WeekdaysXStep), float64(req.WeekdaysYShift), day, "0", 0, "RA", false, 0, "")
 	}
 }
 
 func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, weekNumbers []int) {
 	setTextColor(pdf, req.weeknumbersColor)
-	pdf.SetFont("numbers", "", float64(req.FontSizeWeekNumbers*3))
+	pdf.SetFont("numbers", "", float64(req.FontSizeWeekNumbers))
 
 	line := 0
 	for _, weekNumber := range weekNumbers {
 		y := line*req.WeeknumbersYStep + req.WeeknumbersYShift - req.WeeknumbersYStep
 
 		pdf.MoveTo(0, float64(y))
-		pdf.CellFormat(float64(req.WeeknumbersXShift), float64(req.WeeknumbersYStep), strconv.Itoa(weekNumber), "0", 0, "RB", false, 0, "")
+		pdf.CellFormat(float64(req.WeeknumbersXShift), float64(req.WeeknumbersYStep), strconv.Itoa(weekNumber), "0", 0, "RA", false, 0, "")
 
 		line++
 	}
 }
 
 func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, days []dayInfo) {
-	pdf.SetFont("numbers", "", float64(req.FontSizeDays*3))
+	pdf.SetFont("numbers", "", float64(req.FontSizeDays))
 
 	var color color.Color
 
@@ -228,7 +228,7 @@ func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, days []dayInfo) {
 			float64(req.DaysXStep),
 			float64(req.DaysYStep),
 			fmt.Sprintf("%d", dayInfo.Date.Day()),
-			"0", 0, "RB", false, 0, "",
+			"0", 0, "RA", false, 0, "",
 		)
 	}
 }
@@ -240,13 +240,13 @@ func drawMonth(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month) {
 	var h float64 = 20
 
 	setTextColor(pdf, req.monthColor)
-	pdf.SetFont("month", "", float64(req.FontSizeMonth*3))
+	pdf.SetFont("month", "", float64(req.FontSizeMonth))
 
 	pdf.MoveTo(x, y)
 	pdf.CellFormat(
 		// w, h, fmt.Sprintf("%s %d", i18n(month.String()), year),
 		w, h, fmt.Sprintf("%s %d", month.String(), year),
-		"0", 0, "C", false, 0, "",
+		"0", 0, "CA", false, 0, "",
 	)
 }
 
@@ -317,10 +317,12 @@ func getDays(req *pdfRequest, year int, month time.Month) (days []dayInfo, weekN
 			Inactive: t.Month() != month,
 		})
 
-		weekNumbers = append(weekNumbers, weekNumber)
-		weekNumber++
-		if weekNumber > 52 {
-			weekNumber = 1
+		if int(t.Weekday()) == req.FirstDay {
+			weekNumbers = append(weekNumbers, weekNumber)
+			weekNumber++
+			if weekNumber > 52 {
+				weekNumber = 1
+			}
 		}
 
 		if column == 6 {

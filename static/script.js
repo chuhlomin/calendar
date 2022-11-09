@@ -9,7 +9,7 @@ let config = {
     month: today.getMonth(),
 
     // days
-    fontSizeDays: "12",
+    fontSizeDays: "45",
     textColor: "#222222",
     weekendColor: "#aa5555",
     daysXShift: "40",
@@ -21,12 +21,12 @@ let config = {
 
     // month
     showMonth: "true",
-    fontSizeMonth: "12",
+    fontSizeMonth: "50",
     monthColor: "#222222",
 
     // weekdays
     showWeekdays: "true",
-    fontSizeWeekdays: "5",
+    fontSizeWeekdays: "19",
     weekdaysColor: "#999999",
     weekdaysXShift: "40",
     weekdaysXStep: "25",
@@ -34,7 +34,7 @@ let config = {
 
     // week numbers
     showWeekNumbers: "true",
-    fontSizeWeekNumbers: "5 ",
+    fontSizeWeekNumbers: "16",
     weeknumbersColor: "#999999",
     weeknumbersXShift: "20",
     weeknumbersYShift: "42",
@@ -285,8 +285,15 @@ function updateCalendar() {
         }
     );
 
+    let k = 3.7795;
+
+    cfg.fontSizeDays /= k;
+    cfg.fontSizeMonth /= k;
+    cfg.fontSizeWeekdays /= k;
+    cfg.fontSizeWeekNumbers /= k;
+    
     let templateStyles = document.getElementById('template_styles').innerHTML;
-    let renderedStyles = Mustache.render(templateStyles, config);
+    let renderedStyles = Mustache.render(templateStyles, cfg);
 
     document.getElementById('defs').innerHTML = renderedMonth;
     document.getElementById('style').innerHTML = renderedStyles;
