@@ -10,6 +10,7 @@ let config = {
 
     // days
     daysFontSize: "45",
+    daysFontFamily: "iosevka-regular",
     textColor: "#222222",
     weekendColor: "#aa5555",
     daysX: "40",
@@ -21,12 +22,14 @@ let config = {
 
     // month
     showMonth: "true",
+    monthFontFamily: "iosevka-aile-regular",
     monthFontSize: "50",
     monthColor: "#222222",
     monthY: "260",
 
     // weekdays
     showWeekdays: "true",
+    weekdaysFontFamily: "iosevka-aile-regular",
     weekdaysFontSize: "18",
     weekdaysColor: "#999999",
     weekdaysX: "40",
@@ -34,6 +37,7 @@ let config = {
 
     // week numbers
     showWeekNumbers: "true",
+    weeknumbersFontFamily: "iosevka-regular",
     weeknumbersFontSize: "16",
     weeknumbersColor: "#999999",
     weeknumbersX: "20",
@@ -46,6 +50,7 @@ let configInputTypes = {
 
     // days
     daysFontSize: "number",
+    daysFontFamily: "select",
     textColor: "color",
     weekendColor: "color",
     daysX: "number",
@@ -57,12 +62,14 @@ let configInputTypes = {
 
     // month
     showMonth: "checkbox",
+    monthFontFamily: "select",
     monthFontSize: "number",
     monthColor: "color",
     monthY: "number",
     
     // weekdays
     showWeekdays: "checkbox",
+    weekdaysFontFamily: "select",
     weekdaysFontSize: "number",
     weekdaysColor: "color",
     weekdaysX: "number",
@@ -70,6 +77,7 @@ let configInputTypes = {
 
     // week numbers
     showWeekNumbers: "checkbox",
+    weeknumbersFontFamily: "select",
     weeknumbersFontSize: "number",
     weeknumbersColor: "color",
     weeknumbersX: "number",

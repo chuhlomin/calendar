@@ -23,6 +23,7 @@ type pdfRequest struct {
 
 	// Days
 	DaysFontSize     int    `json:"daysFontSize"`
+	DaysFontFamily   string `json:"daysFontFamily"`
 	TextColor        string `json:"textColor"`
 	WeekendColor     string `json:"weekendColor"`
 	DaysX            int    `json:"daysX"`
@@ -33,24 +34,27 @@ type pdfRequest struct {
 	InactiveColor    string `json:"inactiveColor"`
 
 	// Month
-	ShowMonth     bool   `json:"showMonth"`
-	MonthFontSize int    `json:"monthFontSize"`
-	MonthColor    string `json:"monthColor"`
-	MonthY        int    `json:"monthY"`
+	ShowMonth       bool   `json:"showMonth"`
+	MonthFontFamily string `json:"monthFontFamily"`
+	MonthFontSize   int    `json:"monthFontSize"`
+	MonthColor      string `json:"monthColor"`
+	MonthY          int    `json:"monthY"`
 
 	// Weekdays
-	ShowWeekdays     bool   `json:"showWeekdays"`
-	WeekdaysFontSize int    `json:"weekdaysFontSize"`
-	WeekdaysColor    string `json:"weekdaysColor"`
-	WeekdaysX        int    `json:"weekdaysX"`
-	WeekdaysY        int    `json:"weekdaysY"`
+	ShowWeekdays       bool   `json:"showWeekdays"`
+	WeekdaysFontFamily string `json:"weekdaysFontFamily"`
+	WeekdaysFontSize   int    `json:"weekdaysFontSize"`
+	WeekdaysColor      string `json:"weekdaysColor"`
+	WeekdaysX          int    `json:"weekdaysX"`
+	WeekdaysY          int    `json:"weekdaysY"`
 
 	// WeekNumbers
-	ShowWeekNumbers     bool   `json:"showWeekNumbers"`
-	WeeknumbersFontSize int    `json:"weeknumbersFontSize"`
-	WeeknumbersColor    string `json:"weeknumbersColor"`
-	WeeknumbersX        int    `json:"weeknumbersX"`
-	WeeknumbersY        int    `json:"weeknumbersY"`
+	ShowWeekNumbers       bool   `json:"showWeekNumbers"`
+	WeeknumbersFontFamily string `json:"weeknumbersFontFamily"`
+	WeeknumbersFontSize   int    `json:"weeknumbersFontSize"`
+	WeeknumbersColor      string `json:"weeknumbersColor"`
+	WeeknumbersX          int    `json:"weeknumbersX"`
+	WeeknumbersY          int    `json:"weeknumbersY"`
 
 	textColor        color.Color
 	weekendColor     color.Color
@@ -145,8 +149,10 @@ func createPDF(writer io.Writer, req *pdfRequest) error {
 func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 	pdf.SetFillColor(255, 255, 255)
 
-	pdf.AddUTF8Font("numbers", "", "static/iosevka-regular.ttf")
-	pdf.AddUTF8Font("month", "", "static/iosevka-aile-regular.ttf")
+	pdf.AddUTF8Font("daysFontFamily", "", fmt.Sprint("fonts/", req.DaysFontFamily, ".ttf"))
+	pdf.AddUTF8Font("monthFontFamily", "", fmt.Sprint("fonts/", req.MonthFontFamily, ".ttf"))
+	pdf.AddUTF8Font("weekdaysFontFamily", "", fmt.Sprint("fonts/", req.WeekdaysFontFamily, ".ttf"))
+	pdf.AddUTF8Font("weeknumbersFontFamily", "", fmt.Sprint("fonts/", req.WeeknumbersFontFamily, ".ttf"))
 
 	year := req.Year
 	month := time.Month(req.Month + 1)
@@ -174,7 +180,7 @@ func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 
 func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 	setTextColor(pdf, req.weekdaysColor)
-	pdf.SetFont("month", "", float64(req.WeekdaysFontSize))
+	pdf.SetFont("weekdaysFontFamily", "", float64(req.WeekdaysFontSize))
 
 	for day := 0; day < 7; day++ {
 		x := day*req.DaysXStep + req.WeekdaysX - req.DaysXStep
@@ -189,7 +195,7 @@ func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 
 func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, weekNumbers []int) {
 	setTextColor(pdf, req.weeknumbersColor)
-	pdf.SetFont("numbers", "", float64(req.WeeknumbersFontSize))
+	pdf.SetFont("weeknumbersFontFamily", "", float64(req.WeeknumbersFontSize))
 
 	line := 0
 	for _, weekNumber := range weekNumbers {
@@ -203,7 +209,7 @@ func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, weekNumbers []int) {
 }
 
 func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, days []dayInfo) {
-	pdf.SetFont("numbers", "", float64(req.DaysFontSize))
+	pdf.SetFont("daysFontFamily", "", float64(req.DaysFontSize))
 
 	var color color.Color
 
@@ -234,7 +240,7 @@ func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, days []dayInfo) {
 
 func drawMonth(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month) {
 	setTextColor(pdf, req.monthColor)
-	pdf.SetFont("month", "", float64(req.MonthFontSize))
+	pdf.SetFont("monthFontFamily", "", float64(req.MonthFontSize))
 
 	pdf.MoveTo(0, float64(req.MonthY))
 	pdf.CellFormat(

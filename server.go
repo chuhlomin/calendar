@@ -20,14 +20,18 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (s *server) routes() {
 	s.router.Use(middleware.StripSlashes)
 
-	s.router.Get("/", handlerStatic("index.html"))
+	s.router.Get("/", handlerStatic("static", "index.html"))
 
-	files, err := ioutil.ReadDir("./static")
-	if err != nil {
-		log.Fatalf("could not read static files: %v", err)
-	}
-	for _, file := range files {
-		s.router.Get("/"+file.Name(), handlerStatic(file.Name()))
+	staticFilesDirs := []string{"static", "fonts"}
+
+	for _, dir := range staticFilesDirs {
+		files, err := ioutil.ReadDir(dir)
+		if err != nil {
+			log.Fatalf("could not read static files: %v", err)
+		}
+		for _, file := range files {
+			s.router.Get("/"+file.Name(), handlerStatic(dir, file.Name()))
+		}
 	}
 
 	s.router.Post("/pdf", handlerPDF)

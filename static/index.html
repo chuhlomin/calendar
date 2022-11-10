@@ -39,8 +39,8 @@
                 <div class="field">
                     <legend>Paper Size</legend>
                     <select name="pageSize" id="pageSize" onchange="changeConfig(this)">
-                        <option value="Letter" data-width="216" data-height="279">US Letter (8.50" × 11.00")</span></option>
-                        <option value="Legal" data-width="216" data-height="356">US Legal (8.50" × 14.00")</span></option>
+                        <option value="Letter" data-width="216" data-height="279">US Letter (8.50" × 11.00")</option>
+                        <option value="Legal" data-width="216" data-height="356">US Legal (8.50" × 14.00")</option>
                         <option value="A1" data-width="594" data-height="841">A1 (594 × 841 mm)</option>
                         <option value="A2" data-width="420" data-height="594">A2 (420 × 594 mm)</option>
                         <option value="A3" data-width="297" data-height="420">A3 (297 × 420 mm)</option>
@@ -57,6 +57,14 @@
 
                 <fieldset>
                     <legend>Days</legend>
+
+                    <div class="field">
+                        <label class="full-width-label">Font family</label>
+                        <select name="daysFontFamily" onchange="changeConfig(this)">
+                            <option value="iosevka-regular">Iosevka Regular</option>
+                            <option value="iosevka-aile-regular">Iosevka Aile Regular</option>
+                        </select>
+                    </div>
 
                     <div class="field">
                         <label class="full-width-label">
@@ -132,6 +140,14 @@
                     </legend>
 
                     <div class="field">
+                        <label class="full-width-label">Font family</label>
+                        <select name="monthFontFamily" onchange="changeConfig(this)">
+                            <option value="iosevka-regular">Iosevka Regular</option>
+                            <option value="iosevka-aile-regular">Iosevka Aile Regular</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
                         <label class="full-width-label">
                             <span>Font size, pt</span>
                             <input type="number" name="monthFontSize" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
@@ -159,6 +175,14 @@
                             <input type="checkbox" name="showWeekdays" checked="true" onchange="changeConfig(this)" data-fieldset="weekdays"> Weekdays
                         </label>
                     </legend>
+
+                    <div class="field">
+                        <label class="full-width-label">Font family</label>
+                        <select name="weekdaysFontFamily" onchange="changeConfig(this)">
+                            <option value="iosevka-regular">Iosevka Regular</option>
+                            <option value="iosevka-aile-regular">Iosevka Aile Regular</option>
+                        </select>
+                    </div>
 
                     <div class="field">
                         <label class="full-width-label">
@@ -195,6 +219,14 @@
                             <input type="checkbox" name="showWeekNumbers" checked="true" onchange="changeConfig(this)" data-fieldset="weeknumbers"> Week numbers
                         </label>
                     </legend>
+
+                    <div class="field">
+                        <label class="full-width-label">Font family</label>
+                        <select name="weeknumbersFontFamily" onchange="changeConfig(this)">
+                            <option value="iosevka-regular">Iosevka Regular</option>
+                            <option value="iosevka-aile-regular">Iosevka Aile Regular</option>
+                        </select>
+                    </div>
 
                     <div class="field">
                         <label class="full-width-label">
@@ -258,23 +290,27 @@
     transform: translate(100);
 }
 .weekday, .weeknumber {
-    font: Iosevka Web;
+    font-family: "iosevka-regular";
     fill: #999;
 }
 .day {
     fill: {{ textColor }};
+    font-family: "{{ daysFontFamily }}";
     font-size: {{ daysFontSize }}pt;
 }
 .month {
     fill: {{ monthColor }};
+    font-family: "{{ monthFontFamily }}";
     font-size: {{ monthFontSize }}pt;
 }
 .weekday {
     fill: {{ weekdaysColor }};
+    font-family: "{{ weekdaysFontFamily }}";
     font-size: {{ weekdaysFontSize }}pt;
 }
 .weeknumber {
     fill: {{ weeknumbersColor }};
+    font-family: "{{ weeknumbersFontFamily }}";
     font-size: {{ weeknumbersFontSize }}pt;
 }
 .inactive {
