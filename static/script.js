@@ -15,7 +15,7 @@ let config = {
     daysX: "40",
     daysY: "50",
     daysXStep: "25",
-    daysYStep: "35",
+    daysYStep: "32",
     showInactiveDays: "true",
     inactiveColor: "#c8c8c8",
 
@@ -23,20 +23,21 @@ let config = {
     showMonth: "true",
     fontSizeMonth: "50",
     monthColor: "#222222",
+    monthY: "260",
 
     // weekdays
     showWeekdays: "true",
-    fontSizeWeekdays: "19",
+    fontSizeWeekdays: "18",
     weekdaysColor: "#999999",
     weekdaysX: "40",
-    weekdaysY: "30",
+    weekdaysY: "50",
 
     // week numbers
     showWeekNumbers: "true",
     fontSizeWeekNumbers: "16",
     weeknumbersColor: "#999999",
     weeknumbersX: "20",
-    weeknumbersY: "42",
+    weeknumbersY: "32",
 };
 
 let configInputTypes = {
@@ -58,6 +59,7 @@ let configInputTypes = {
     showMonth: "checkbox",
     fontSizeMonth: "number",
     monthColor: "color",
+    monthY: "number",
     
     // weekdays
     showWeekdays: "checkbox",
@@ -269,11 +271,12 @@ function updateCalendar() {
 
     const [d, w] = days(cfg);
 
-    let templateMonth = document.getElementById('template_month').innerHTML;
-    let renderedMonth = Mustache.render(
-        templateMonth,
+    let templatePage = document.getElementById('template_page').innerHTML;
+    let renderedPage = Mustache.render(
+        templatePage,
         {
             month: getMonth(cfg),
+            monthY: cfg.monthY,
             halfWidth: width/2,
             days: d,
             weekdays: weekdays(cfg),
@@ -291,7 +294,7 @@ function updateCalendar() {
     let templateStyles = document.getElementById('template_styles').innerHTML;
     let renderedStyles = Mustache.render(templateStyles, cfg);
 
-    document.getElementById('defs').innerHTML = renderedMonth;
+    document.getElementById('defs').innerHTML = renderedPage;
     document.getElementById('style').innerHTML = renderedStyles;
 }
 

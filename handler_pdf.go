@@ -36,6 +36,7 @@ type pdfRequest struct {
 	ShowMonth     bool   `json:"showMonth"`
 	FontSizeMonth int    `json:"fontSizeMonth"`
 	MonthColor    string `json:"monthColor"`
+	MonthY        int    `json:"monthY"`
 
 	// Weekdays
 	ShowWeekdays     bool   `json:"showWeekdays"`
@@ -232,18 +233,13 @@ func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, days []dayInfo) {
 }
 
 func drawMonth(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month) {
-	var x float64 = 5
-	var y float64 = 250
-	var w float64 = 200
-	var h float64 = 20
-
 	setTextColor(pdf, req.monthColor)
 	pdf.SetFont("month", "", float64(req.FontSizeMonth))
 
-	pdf.MoveTo(x, y)
+	pdf.MoveTo(0, float64(req.MonthY))
 	pdf.CellFormat(
 		// w, h, fmt.Sprintf("%s %d", i18n(month.String()), year),
-		w, h, fmt.Sprintf("%s %d", month.String(), year),
+		200, 0, fmt.Sprintf("%s %d", month.String(), year),
 		"0", 0, "CA", false, 0, "",
 	)
 }

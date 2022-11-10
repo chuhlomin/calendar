@@ -144,6 +144,13 @@
                             <button name="monthColor" type="button"></button>
                         </label>
                     </div>
+
+                    <div class="field">
+                        <label class="full-width-label">
+                            <span>Y, mm</span>
+                            <input type="number" name="monthY" value="260" min="0" max="500" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                        </label>
+                    </div>
                 </fieldset>
 
                 <fieldset id="fs-weekdays">
@@ -277,9 +284,9 @@
     fill: {{ weekendColor }};
 }
 </script>
-<script id="template_month" type="x-tmpl-mustache">
+<script id="template_page" type="x-tmpl-mustache">
     <g id="month">
-        <text id="month" x="{{ halfWidth }}" y="260" class="month">
+        <text id="month" x="{{ halfWidth }}" y="{{ monthY }}" class="month">
             <tspan x="0" text-anchor="middle">{{ month }}</tspan>
         </text>
     </g>
