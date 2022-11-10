@@ -12,9 +12,9 @@ let config = {
     fontSizeDays: "45",
     textColor: "#222222",
     weekendColor: "#aa5555",
-    daysXShift: "40",
+    daysX: "40",
+    daysY: "50",
     daysXStep: "25",
-    daysYShift: "50",
     daysYStep: "35",
     showInactiveDays: "true",
     inactiveColor: "#c8c8c8",
@@ -28,17 +28,15 @@ let config = {
     showWeekdays: "true",
     fontSizeWeekdays: "19",
     weekdaysColor: "#999999",
-    weekdaysXShift: "40",
-    weekdaysXStep: "25",
-    weekdaysYShift: "30",
+    weekdaysX: "40",
+    weekdaysY: "30",
 
     // week numbers
     showWeekNumbers: "true",
     fontSizeWeekNumbers: "16",
     weeknumbersColor: "#999999",
-    weeknumbersXShift: "20",
-    weeknumbersYShift: "42",
-    weeknumbersYStep: "35",
+    weeknumbersX: "20",
+    weeknumbersY: "42",
 };
 
 let configInputTypes = {
@@ -49,9 +47,9 @@ let configInputTypes = {
     fontSizeDays: "number",
     textColor: "color",
     weekendColor: "color",
-    daysXShift: "number",
+    daysX: "number",
+    daysY: "number",
     daysXStep: "number",
-    daysYShift: "number",
     daysYStep: "number",
     showInactiveDays: "checkbox",
     inactiveColor: "color",
@@ -65,17 +63,15 @@ let configInputTypes = {
     showWeekdays: "checkbox",
     fontSizeWeekdays: "number",
     weekdaysColor: "color",
-    weekdaysXShift: "number",
-    weekdaysXStep: "number",
-    weekdaysYShift: "number",
+    weekdaysX: "number",
+    weekdaysY: "number",
 
     // week numbers
     showWeekNumbers: "checkbox",
     fontSizeWeekNumbers: "number",
     weeknumbersColor: "color",
-    weeknumbersXShift: "number",
-    weeknumbersYShift: "number",
-    weeknumbersYStep: "number",
+    weeknumbersX: "number",
+    weeknumbersY: "number",
 };
 
 let configIntegerFields = ["firstDay", "year", "month"];
@@ -347,8 +343,8 @@ function days(cfg) {
 
         days.push({
             day: date.getDate(),
-            x: column * cfg.daysXStep + cfg.daysXShift,
-            y: row * cfg.daysYStep + cfg.daysYShift,
+            x: column * cfg.daysXStep + cfg.daysX,
+            y: row * cfg.daysYStep + cfg.daysY,
             inactive: inactive,
             weekend: date.getDay() == 0 || date.getDay() == 6,
         });
@@ -367,8 +363,8 @@ function days(cfg) {
      while (date.getDay() != cfg.firstDay && cfg.showInactiveDays) {
         days.push({
             day: date.getDate(),
-            x: column * cfg.daysXStep + cfg.daysXShift,
-            y: row * cfg.daysYStep + cfg.daysYShift,
+            x: column * cfg.daysXStep + cfg.daysX,
+            y: row * cfg.daysYStep + cfg.daysY,
             inactive: true,
         });
 
@@ -405,8 +401,8 @@ function weekdays(cfg) {
     for (let i = 0; i < 7; i++) {
         days.push({
             day: weekdays[(cfg.firstDay + i) % 7],
-            x: i * cfg.weekdaysXStep + cfg.weekdaysXShift,
-            y: cfg.weekdaysYShift,
+            x: i * cfg.daysXStep + cfg.weekdaysX,
+            y: cfg.weekdaysY,
         });
     }
 
@@ -419,8 +415,8 @@ function weeknumbers(cfg, w) {
     for (let i = 0; i < w.length; i++) {
         result.push({
             weeknumber: w[i],
-            x: cfg.weeknumbersXShift,
-            y: i * cfg.weeknumbersYStep + cfg.weeknumbersYShift,
+            x: cfg.weeknumbersX,
+            y: i * cfg.daysYStep + cfg.weeknumbersY,
         });
     }
 
