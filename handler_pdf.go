@@ -22,7 +22,7 @@ type pdfRequest struct {
 	Month    int    `json:"month"`
 
 	// Days
-	FontSizeDays     int    `json:"fontSizeDays"`
+	DaysFontSize     int    `json:"daysFontSize"`
 	TextColor        string `json:"textColor"`
 	WeekendColor     string `json:"weekendColor"`
 	DaysX            int    `json:"daysX"`
@@ -34,20 +34,20 @@ type pdfRequest struct {
 
 	// Month
 	ShowMonth     bool   `json:"showMonth"`
-	FontSizeMonth int    `json:"fontSizeMonth"`
+	MonthFontSize int    `json:"monthFontSize"`
 	MonthColor    string `json:"monthColor"`
 	MonthY        int    `json:"monthY"`
 
 	// Weekdays
 	ShowWeekdays     bool   `json:"showWeekdays"`
-	FontSizeWeekdays int    `json:"fontSizeWeekdays"`
+	WeekdaysFontSize int    `json:"weekdaysFontSize"`
 	WeekdaysColor    string `json:"weekdaysColor"`
 	WeekdaysX        int    `json:"weekdaysX"`
 	WeekdaysY        int    `json:"weekdaysY"`
 
 	// WeekNumbers
 	ShowWeekNumbers     bool   `json:"showWeekNumbers"`
-	FontSizeWeekNumbers int    `json:"fontSizeWeekNumbers"`
+	WeeknumbersFontSize int    `json:"weeknumbersFontSize"`
 	WeeknumbersColor    string `json:"weeknumbersColor"`
 	WeeknumbersX        int    `json:"weeknumbersX"`
 	WeeknumbersY        int    `json:"weeknumbersY"`
@@ -174,7 +174,7 @@ func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 
 func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 	setTextColor(pdf, req.weekdaysColor)
-	pdf.SetFont("month", "", float64(req.FontSizeWeekdays))
+	pdf.SetFont("month", "", float64(req.WeekdaysFontSize))
 
 	for day := 0; day < 7; day++ {
 		x := day*req.DaysXStep + req.WeekdaysX - req.DaysXStep
@@ -189,7 +189,7 @@ func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
 
 func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, weekNumbers []int) {
 	setTextColor(pdf, req.weeknumbersColor)
-	pdf.SetFont("numbers", "", float64(req.FontSizeWeekNumbers))
+	pdf.SetFont("numbers", "", float64(req.WeeknumbersFontSize))
 
 	line := 0
 	for _, weekNumber := range weekNumbers {
@@ -203,7 +203,7 @@ func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, weekNumbers []int) {
 }
 
 func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, days []dayInfo) {
-	pdf.SetFont("numbers", "", float64(req.FontSizeDays))
+	pdf.SetFont("numbers", "", float64(req.DaysFontSize))
 
 	var color color.Color
 
@@ -234,7 +234,7 @@ func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, days []dayInfo) {
 
 func drawMonth(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month) {
 	setTextColor(pdf, req.monthColor)
-	pdf.SetFont("month", "", float64(req.FontSizeMonth))
+	pdf.SetFont("month", "", float64(req.MonthFontSize))
 
 	pdf.MoveTo(0, float64(req.MonthY))
 	pdf.CellFormat(

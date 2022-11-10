@@ -9,7 +9,7 @@ let config = {
     month: today.getMonth(),
 
     // days
-    fontSizeDays: "45",
+    daysFontSize: "45",
     textColor: "#222222",
     weekendColor: "#aa5555",
     daysX: "40",
@@ -21,20 +21,20 @@ let config = {
 
     // month
     showMonth: "true",
-    fontSizeMonth: "50",
+    monthFontSize: "50",
     monthColor: "#222222",
     monthY: "260",
 
     // weekdays
     showWeekdays: "true",
-    fontSizeWeekdays: "18",
+    weekdaysFontSize: "18",
     weekdaysColor: "#999999",
     weekdaysX: "40",
     weekdaysY: "50",
 
     // week numbers
     showWeekNumbers: "true",
-    fontSizeWeekNumbers: "16",
+    weeknumbersFontSize: "16",
     weeknumbersColor: "#999999",
     weeknumbersX: "20",
     weeknumbersY: "32",
@@ -45,7 +45,7 @@ let configInputTypes = {
     firstDay: "radio",
 
     // days
-    fontSizeDays: "number",
+    daysFontSize: "number",
     textColor: "color",
     weekendColor: "color",
     daysX: "number",
@@ -57,20 +57,20 @@ let configInputTypes = {
 
     // month
     showMonth: "checkbox",
-    fontSizeMonth: "number",
+    monthFontSize: "number",
     monthColor: "color",
     monthY: "number",
     
     // weekdays
     showWeekdays: "checkbox",
-    fontSizeWeekdays: "number",
+    weekdaysFontSize: "number",
     weekdaysColor: "color",
     weekdaysX: "number",
     weekdaysY: "number",
 
     // week numbers
     showWeekNumbers: "checkbox",
-    fontSizeWeekNumbers: "number",
+    weeknumbersFontSize: "number",
     weeknumbersColor: "color",
     weeknumbersX: "number",
     weeknumbersY: "number",
@@ -286,10 +286,10 @@ function updateCalendar() {
 
     let k = 3.7795;
 
-    cfg.fontSizeDays /= k;
-    cfg.fontSizeMonth /= k;
-    cfg.fontSizeWeekdays /= k;
-    cfg.fontSizeWeekNumbers /= k;
+    cfg.daysFontSize /= k;
+    cfg.monthFontSize /= k;
+    cfg.weekdaysFontSize /= k;
+    cfg.weeknumbersFontSize /= k;
     
     let templateStyles = document.getElementById('template_styles').innerHTML;
     let renderedStyles = Mustache.render(templateStyles, cfg);

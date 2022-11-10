@@ -61,7 +61,7 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>Font size, pt</span>
-                            <input type="number" name="fontSizeDays" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="daysFontSize" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
 
@@ -134,7 +134,7 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>Font size, pt</span>
-                            <input type="number" name="fontSizeMonth" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="monthFontSize" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
 
@@ -163,7 +163,7 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>Font size, pt</span>
-                            <input type="number" name="fontSizeWeekdays" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="weekdaysFontSize" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
 
@@ -199,7 +199,7 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>Font size, pt</span>
-                            <input type="number" name="fontSizeWeekNumbers" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="weeknumbersFontSize" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
                         </label>
                     </div>
 
@@ -263,19 +263,19 @@
 }
 .day {
     fill: {{ textColor }};
-    font-size: {{ fontSizeDays }}pt;
+    font-size: {{ daysFontSize }}pt;
 }
 .month {
     fill: {{ monthColor }};
-    font-size: {{ fontSizeMonth }}pt;
+    font-size: {{ monthFontSize }}pt;
 }
 .weekday {
     fill: {{ weekdaysColor }};
-    font-size: {{ fontSizeWeekdays }}pt;
+    font-size: {{ weekdaysFontSize }}pt;
 }
 .weeknumber {
     fill: {{ weeknumbersColor }};
-    font-size: {{ fontSizeWeekNumbers }}pt;
+    font-size: {{ weeknumbersFontSize }}pt;
 }
 .inactive {
     fill: {{ inactiveColor }};
