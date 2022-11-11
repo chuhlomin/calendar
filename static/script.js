@@ -251,8 +251,8 @@ function changeConfigKV(key, value) {
 
 function toggleFieldset(fieldsetName, enabled) {
     let fieldset = document.getElementById("fs-" + fieldsetName);
-    // query every input and button inside .field block
-    let inputs = fieldset.querySelectorAll(".field input, .field button");
+    // query every input, button and select inside .field block
+    let inputs = fieldset.querySelectorAll(".field input, .field button, .field select");
 
     if (enabled) {
         fieldset.classList.remove("disabled");
