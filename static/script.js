@@ -159,6 +159,11 @@ function validateConfig(config) {
 }
 
 window.onload = function() {
+    let panelOffset = localStorage.getItem("panelOffset");
+    if (panelOffset) {
+        panel.scrollTop = panelOffset;
+    }
+
     for (let key in config) {
         loadConfig(key);
 
@@ -175,11 +180,20 @@ window.onload = function() {
 };
 
 let yOffset = 0;
+let timerForYOffset = null;
 
 panel.onscroll = function() {
     if (!body.classList.contains("preview")) {
         yOffset = panel.scrollTop;
     }
+
+    // start timer if not already running
+    if (timerForYOffset) {
+        clearTimeout(timerForYOffset);
+    }
+    timerForYOffset = setTimeout(function() {
+        localStorage.setItem("panelOffset", yOffset);
+    }, 1000);
 
     if (window.innerHeight + yOffset >= panel.scrollHeight) {
         body.classList.add("scrolled");
