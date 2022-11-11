@@ -89,6 +89,35 @@ let configIntegerFields = ["firstDay", "year", "month"];
 let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
 
+let availableFonts = {
+    "iosevka-regular": "Iosevka",
+    "iosevka-aile-regular": "Iosevka Aile",
+    "iosevka-etoile-regular": "Iosevka Etoile",
+    "iosevka-curly-regular": "Iosevka Curly",
+    "iosevka-curly-slab-regular": "Iosevka Curly Slab",
+};
+let loadedFonts = {};
+let loadingFonts = {};
+
+function loadFont(fontName) {
+    if (loadedFonts[fontName] || loadingFonts[fontName]) {
+        return;
+    }
+
+    loadingFonts[fontName] = true;
+
+    const font = new FontFace(fontName, "url('/" + fontName + ".ttf') format('truetype'), url('/" + fontName + ".woff') format('woff2')");
+    font.load()
+        .then(function(loadedFace) {
+            document.fonts.add(loadedFace);
+            loadedFonts[fontName] = true;
+            delete loadingFonts[fontName];
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+}
+
 function loadConfig(key) {
     var value = localStorage.getItem(key);
     if (value) {
@@ -98,6 +127,9 @@ function loadConfig(key) {
         case "select":
             let select = document.getElementsByName(key)[0];
             select.value = value;
+            if (select.classList.contains("font")) {
+                loadFont(value);
+            }
 
             if (key == "pageSize") {
                 updatePage();
@@ -159,11 +191,30 @@ function validateConfig(config) {
 }
 
 window.onload = function() {
+    // restore panel scroll position
     let panelOffset = localStorage.getItem("panelOffset");
     if (panelOffset) {
         panel.scrollTop = panelOffset;
     }
 
+    // update select.font options
+    let fontSelects = document.querySelectorAll("select.font");
+    for (let i = 0; i < fontSelects.length; i++) {
+        let select = fontSelects[i];
+        // remove all options
+        while (select.firstChild) {
+            select.removeChild(select.firstChild);
+        }
+        // add options
+        for (let font in availableFonts) {
+            let option = document.createElement("option");
+            option.value = font;
+            option.text = availableFonts[font];
+            select.add(option);
+        }
+    }
+
+    // load config from local storage
     for (let key in config) {
         loadConfig(key);
 
@@ -252,6 +303,10 @@ function changeConfig(element) {
         if (element.dataset.fieldset) {
             toggleFieldset(element.dataset.fieldset, element.checked);
         }
+    }
+
+    if (configInputTypes[key] == "select" && element.classList.contains("font")) {
+        loadFont(value);
     }
 
     changeConfigKV(key, value);

@@ -60,9 +60,8 @@
 
                     <div class="field">
                         <label class="full-width-label">Font family</label>
-                        <select name="daysFontFamily" onchange="changeConfig(this)">
-                            <option value="iosevka-regular">Iosevka Regular</option>
-                            <option value="iosevka-aile-regular">Iosevka Aile Regular</option>
+                        <select class="font" name="daysFontFamily" onchange="changeConfig(this)">
+                            <option disabled value="">Loading...</option>
                         </select>
                     </div>
 
@@ -141,9 +140,8 @@
 
                     <div class="field">
                         <label class="full-width-label">Font family</label>
-                        <select name="monthFontFamily" onchange="changeConfig(this)">
-                            <option value="iosevka-regular">Iosevka Regular</option>
-                            <option value="iosevka-aile-regular">Iosevka Aile Regular</option>
+                        <select class="font" name="monthFontFamily" onchange="changeConfig(this)">
+                            <option disabled value="">Loading...</option>
                         </select>
                     </div>
 
@@ -178,9 +176,8 @@
 
                     <div class="field">
                         <label class="full-width-label">Font family</label>
-                        <select name="weekdaysFontFamily" onchange="changeConfig(this)">
-                            <option value="iosevka-regular">Iosevka Regular</option>
-                            <option value="iosevka-aile-regular">Iosevka Aile Regular</option>
+                        <select class="font" name="weekdaysFontFamily" onchange="changeConfig(this)">
+                            <option disabled value="">Loading...</option>
                         </select>
                     </div>
 
@@ -222,9 +219,8 @@
 
                     <div class="field">
                         <label class="full-width-label">Font family</label>
-                        <select name="weeknumbersFontFamily" onchange="changeConfig(this)">
-                            <option value="iosevka-regular">Iosevka Regular</option>
-                            <option value="iosevka-aile-regular">Iosevka Aile Regular</option>
+                        <select class="font" name="weeknumbersFontFamily" onchange="changeConfig(this)">
+                            <option disabled value="">Loading...</option>
                         </select>
                     </div>
 
@@ -288,10 +284,6 @@
 .month, .day {
     text-align: center;
     transform: translate(100);
-}
-.weekday, .weeknumber {
-    font-family: "iosevka-regular";
-    fill: #999;
 }
 .day {
     fill: {{ textColor }};
