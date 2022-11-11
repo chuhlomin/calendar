@@ -249,7 +249,6 @@ fieldset + .field {
 
 fieldset.disabled .field {
   opacity: 0.5;
-  cursor: not-allowed;
 }
 
 input[type="number"] {
@@ -277,6 +276,7 @@ input[type="checkbox"] + span {
   width: 8ch;
   font-size: var(--font-size);
   border: 1px solid #d3d3d3;
+  cursor: pointer;
 }
 
 .github-icon {
@@ -294,7 +294,7 @@ input[type="checkbox"] + span {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-text: #eaf3f2;
+    --color-text: #d6dede;
     --color-background: #1e1f2b;
     --color-content-background: #282a3a;
 
@@ -315,6 +315,28 @@ input[type="checkbox"] + span {
   }
   .github-icon {
     background-image: url(GitHub-Mark-Light-32px.png);
+  }
+  select {
+    background: #282a3a;
+    color: #eaf3f2;
+    border: none;
+  }
+  input[type="number"] {
+    background: #3a3d4b;
+    color: #d6dede;
+    border: 1px solid #6d717b;
+  }
+  .field.color button {
+    border: 1px solid #6d717b;
+  }
+  .btn {
+    color: var(--color-text);
+    border-color: #6d717b;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
   }
 }
 
