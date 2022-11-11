@@ -69,7 +69,7 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>Font size, pt</span>
-                            <input type="number" name="daysFontSize" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="daysFontSize" value="36" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
 
@@ -90,28 +90,28 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>X, mm</span>
-                            <input type="number" name="daysX" value="40" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="daysX" value="40" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
 
                     <div class="field">
                         <label class="full-width-label">
                             <span>Y, mm</span>
-                            <input type="number" name="daysY" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="daysY" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
 
                     <div class="field">
                         <label class="full-width-label">
                             <span>X step, mm</span>
-                            <input type="number" name="daysXStep" value="25" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="daysXStep" value="25" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
 
                     <div class="field">
                         <label class="full-width-label">
                             <span>Y step, mm</span>
-                            <input type="number" name="daysYStep" value="35" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="daysYStep" value="35" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
 
@@ -150,7 +150,7 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>Font size, pt</span>
-                            <input type="number" name="monthFontSize" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="monthFontSize" value="36" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
 
@@ -164,7 +164,7 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>Y, mm</span>
-                            <input type="number" name="monthY" value="260" min="0" max="500" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="monthY" value="260" min="0" max="500" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
                 </fieldset>
@@ -187,7 +187,7 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>Font size, pt</span>
-                            <input type="number" name="weekdaysFontSize" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="weekdaysFontSize" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
 
@@ -201,14 +201,14 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>X, mm</span>
-                            <input type="number" name="weekdaysX" value="40" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="weekdaysX" value="40" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
 
                     <div class="field">
                         <label class="full-width-label">
                             <span>Y, mm</span>
-                            <input type="number" name="weekdaysY" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="weekdaysY" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
                 </fieldset>
@@ -231,7 +231,7 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>Font size, pt</span>
-                            <input type="number" name="weeknumbersFontSize" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="weeknumbersFontSize" value="12" min="1" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
 
@@ -245,14 +245,14 @@
                     <div class="field">
                         <label class="full-width-label">
                             <span>X, mm</span>
-                            <input type="number" name="weeknumbersX" value="20" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="weeknumbersX" value="20" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
 
                     <div class="field">
                         <label class="full-width-label">
                             <span>Y, mm</span>
-                            <input type="number" name="weeknumbersY" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)">
+                            <input type="number" name="weeknumbersY" value="50" min="0" max="100" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
                         </label>
                     </div>
                 </fieldset>
