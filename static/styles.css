@@ -200,6 +200,7 @@ form {
 select {
   font-size: var(--font-size);
   width: 100%;
+  overflow: hidden;
 }
 
 label {
