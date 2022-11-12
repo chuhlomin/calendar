@@ -285,7 +285,7 @@ panel.onscroll = function() {
     }
     timerForYOffset = setTimeout(function() {
         localStorage.setItem("panelOffset", yOffset);
-    }, 1000);
+    }, 250);
 
     if (window.innerHeight + yOffset >= panel.scrollHeight) {
         body.classList.add("scrolled");
