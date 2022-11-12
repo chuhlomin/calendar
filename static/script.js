@@ -95,6 +95,24 @@ let availableFonts = {
     "iosevka-etoile-regular": "Iosevka Etoile",
     "iosevka-curly-regular": "Iosevka Curly",
     "iosevka-curly-slab-regular": "Iosevka Curly Slab",
+    "iosevka-ss01-regular": "Iosevka SS01 (Andale Mono Style)",
+    "iosevka-ss02-regular": "Iosevka SS02 (Anonymous Pro Style)",
+    "iosevka-ss03-regular": "Iosevka SS03 (Consolas Style)",
+    "iosevka-ss04-regular": "Iosevka SS04 (Menlo Style)",
+    "iosevka-ss05-regular": "Iosevka SS05 (Fira Mono Style)",
+    "iosevka-ss06-regular": "Iosevka SS06 (Liberation Mono Style)",
+    "iosevka-ss07-regular": "Iosevka SS07 (Monaco Style)",
+    "iosevka-ss08-regular": "Iosevka SS08 (Pragmata Pro Style)",
+    "iosevka-ss09-regular": "Iosevka SS09 (Source Code Pro Style)",
+    "iosevka-ss10-regular": "Iosevka SS10 (Envy Code R Style)",
+    "iosevka-ss11-regular": "Iosevka SS11 (X Windows Style)",
+    "iosevka-ss12-regular": "Iosevka SS12 (Ubuntu Mono Style)",
+    "iosevka-ss13-regular": "Iosevka SS13 (Lucida Style)",
+    "iosevka-ss14-regular": "Iosevka SS14 (JetBrains Mono Style)",
+    "iosevka-ss15-regular": "Iosevka SS15 (IMB Plex Mono Style)",
+    "iosevka-ss16-regular": "Iosevka SS16 (PT Mono Style)",
+    "iosevka-ss17-regular": "Iosevka SS17 (Recursive Mono Style)",
+    "iosevka-ss18-regular": "Iosevka SS18 (Input Mono Style)",
 };
 let loadedFonts = {};
 let loadingFonts = {};
@@ -112,6 +130,7 @@ function loadFont(fontName) {
             document.fonts.add(loadedFace);
             loadedFonts[fontName] = true;
             delete loadingFonts[fontName];
+            updateCalendar();
         })
         .catch(function(error) {
             console.log(error);
@@ -364,7 +383,11 @@ function updateCalendar() {
             halfWidth: width/2,
             days: d,
             weekdays: weekdays(cfg),
-            weeknumbers: weeknumbers(cfg, w)
+            weeknumbers: weeknumbers(cfg, w),
+            daysFontFamilyLoading: (cfg.daysFontFamily in loadingFonts),
+            monthFontFamilyLoading: (cfg.monthFontFamily in loadingFonts),
+            weekdaysFontFamilyLoading: (cfg.weekdaysFontFamily in loadingFonts),
+            weeknumbersFontFamilyLoading: (cfg.weeknumbersFontFamily in loadingFonts),
         }
     );
 
@@ -374,7 +397,7 @@ function updateCalendar() {
     cfg.monthFontSize /= k;
     cfg.weekdaysFontSize /= k;
     cfg.weeknumbersFontSize /= k;
-    
+
     let templateStyles = document.getElementById('template_styles').innerHTML;
     let renderedStyles = Mustache.render(templateStyles, cfg);
 

@@ -281,9 +281,8 @@
 </div>
 <script src="script.js"></script>
 <script id="template_styles" type="x-tmpl-mustache">
-.month, .day {
-    text-align: center;
-    transform: translate(100);
+.loading {
+    filter: url(#blur);
 }
 .day {
     fill: {{ textColor }};
@@ -313,28 +312,31 @@
 }
 </script>
 <script id="template_page" type="x-tmpl-mustache">
+    <filter id="blur" x="0" y="0">
+      <feGaussianBlur stdDeviation="1,2" />
+    </filter>
     <g id="month">
-        <text id="month" x="{{ halfWidth }}" y="{{ monthY }}" class="month">
+        <text id="month" x="{{ halfWidth }}" y="{{ monthY }}" class="month{{#monthFontFamilyLoading}} loading{{/monthFontFamilyLoading}}">
             <tspan x="0" text-anchor="middle">{{ month }}</tspan>
         </text>
     </g>
     <g id="days">
         {{#days}}
-            <text x="{{ x }}" y="{{ y }}" class="day{{#inactive}} inactive{{/inactive}}{{ ^inactive}}{{#weekend}} weekend{{/weekend}}{{/inactive}}">
+            <text x="{{ x }}" y="{{ y }}" class="day{{#inactive}} inactive{{/inactive}}{{ ^inactive}}{{#weekend}} weekend{{/weekend}}{{/inactive}}{{#daysFontFamilyLoading}} loading{{/daysFontFamilyLoading}}">
                 <tspan x="{{ x }}" text-anchor="end">{{ day }}</tspan>
             </text>
         {{/days}}
     </g>
     <g id="weekdays">
         {{#weekdays}}
-            <text x="{{ x }}" y="{{ y }}" class="weekday">
+            <text x="{{ x }}" y="{{ y }}" class="weekday{{#weekdaysFontFamilyLoading}} loading{{/weekdaysFontFamilyLoading}}">
                 <tspan x="{{ x }}" text-anchor="end">{{ day }}</tspan>
             </text>
         {{/weekdays}}
     </g>
     <g id="weeknumbers">
         {{#weeknumbers}}
-            <text x="{{ x }}" y="{{ y }}" class="weeknumber">
+            <text x="{{ x }}" y="{{ y }}" class="weeknumber{{#weeknumbersFontFamilyLoading}} loading{{/weeknumbersFontFamilyLoading}}">
                 <tspan x="{{ x }}" text-anchor="end">{{ weeknumber }}</tspan>
             </text>
         {{/weeknumbers}}
