@@ -47,6 +47,8 @@ let config = {
 let configInputTypes = {
     pageSize: "select",
     firstDay: "radio",
+    month: "select",
+    year: "number",
 
     // days
     daysFontSize: "number",
