@@ -162,7 +162,6 @@ fieldset {
 }
 
 .page {
-  /* position: relative; */
   text-align: center;
 }
 
@@ -231,6 +230,11 @@ fieldset + .field {
 
 fieldset.disabled .field {
   opacity: 0.5;
+}
+
+.field.monthYear {
+  display: flex;
+  column-gap: 10px;
 }
 
 input[type="number"] {

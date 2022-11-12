@@ -6,7 +6,7 @@ let config = {
     pageSize: "A4",
     firstDay: "0",
     year: today.getFullYear(),
-    month: today.getMonth(),
+    month: today.getMonth(), // changed by loadConfig if not found in localStorage
 
     // days
     daysFontSize: "45",
@@ -179,6 +179,21 @@ function loadConfig(key) {
             if (select.classList.contains("font")) {
                 loadFont(config[key]);
             }
+        }
+        if (key == "year") {
+            // set year to current year
+            let input = document.getElementsByName(key)[0];
+            input.value = config.year;
+        }
+        if (key == "month") {
+            // make sure the month by default is the next month
+            let date = new Date();
+            config[key] = date.getMonth() + 1;
+            if (config[key] == 12) {
+                config.year++;
+            }
+            let select = document.getElementsByName(key)[0];
+            select.value = config[key];
         }
     }
 }
