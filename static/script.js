@@ -33,7 +33,7 @@ let config = {
     weekdaysFontSize: "18",
     weekdaysColor: "#999999",
     weekdaysX: "40",
-    weekdaysY: "50",
+    weekdaysY: "32",
 
     // week numbers
     showWeekNumbers: "true",
@@ -41,7 +41,7 @@ let config = {
     weeknumbersFontSize: "16",
     weeknumbersColor: "#999999",
     weeknumbersX: "20",
-    weeknumbersY: "32",
+    weeknumbersY: "43",
 };
 
 let configInputTypes = {
@@ -153,6 +153,13 @@ function loadConfig(key) {
                 toggleFieldset(checkbox.dataset.fieldset, checkbox.checked);
             }
             break;
+        }
+    } else { // value not found in localStorage
+        if (configInputTypes[key] == "select") {
+            let select = document.getElementsByName(key)[0];
+            if (select.classList.contains("font")) {
+                loadFont(config[key]);
+            }
         }
     }
 }
