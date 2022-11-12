@@ -355,6 +355,9 @@ function changeConfig(element) {
 
 function changeConfigKV(key, value) {
     config[key] = value;
+    if (key == "pageSize") {
+        updatePage();
+    }
     updateCalendar();
     localStorage.setItem(key, value);
 }
