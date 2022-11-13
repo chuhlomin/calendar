@@ -90,6 +90,14 @@ let configIntegerFields = ["firstDay", "year", "month"];
 
 let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
+let svg = document.getElementById("svg");
+let rect = document.getElementById("rect");
+let templateStyles = document.getElementById('template_styles').innerHTML;
+let templateDays = document.getElementById('template_days').innerHTML;
+let templateMonth = document.getElementById('template_month').innerHTML;
+let templateWeekdays = document.getElementById('template_weekdays').innerHTML;
+let templateWeeknumbers = document.getElementById('template_weeknumbers').innerHTML;
+let calendar = document.getElementById("calendar");
 
 let availableFonts = {
     "iosevka-regular": "Iosevka",
@@ -297,9 +305,6 @@ panel.onscroll = function() {
 };
 
 function updatePage() {
-    let svg = document.getElementById("svg");
-    let rect = document.getElementById("rect");
-
     let pageData = document.getElementById("pageSize").querySelector("option[value='" + config.pageSize + "']").dataset;
 
     let width = pageData.width;
@@ -522,62 +527,29 @@ function weekdays(cfg, xShift, yShift) {
 }
 
 function drawMonth(cfg, width, height) {
-    let templateDays = document.getElementById('template_days').innerHTML;
-    let templateMonth = document.getElementById('template_month').innerHTML;
-    let templateWeekdays = document.getElementById('template_weekdays').innerHTML;
-    let templateWeeknumbers = document.getElementById('template_weeknumbers').innerHTML;
-
-    // update SVG canvas
-    let svg = document.getElementById("svg");
     svg.setAttribute("viewBox", "0 0 " + width + " " + height);
-
-    let calendar = document.getElementById("calendar");
     calendar.innerHTML = "";
-
-    addMonthToPage(
-        calendar,
-        cfg,
-        width,
-        cfg.month,
-        templateDays,
-        templateMonth,
-        templateWeekdays,
-        templateWeeknumbers
-    );
+    addMonthToPage(calendar, cfg, width, cfg.month);
 }
 
 function drawYear(cfg, width, height) {
-    let templateDays = document.getElementById('template_days').innerHTML;
-    let templateMonth = document.getElementById('template_month').innerHTML;
-    let templateWeekdays = document.getElementById('template_weekdays').innerHTML;
-    let templateWeeknumbers = document.getElementById('template_weeknumbers').innerHTML;
+    let rows = 3;
+    let columns = 12 / rows;
+    let gap = 10;
 
-    // update SVG canvas
-    let svg = document.getElementById("svg");
-    svg.setAttribute("viewBox", "0 0 " + (width * 4 + 30) + " " + (height * 3 + 20));
-
-    let calendar = document.getElementById("calendar");
+    svg.setAttribute("viewBox", "0 0 " + (width * columns + gap * (columns - 1)) + " " + (height * rows + gap * (rows - 1)));
     calendar.innerHTML = "";
 
     let month = 0;
-    for (let y = 0; y < 3; y++) {
-        for (let x = 0; x < 4; x++) {
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < columns; x++) {
             let page = document.createElementNS("http://www.w3.org/2000/svg", "g");
             page.setAttribute("id", "page_" + month);
             page.setAttribute("transform", "translate(" + (x * (width + 10)) + "," + (y * (height + 10)) + ")");
             page.setAttribute("width", width);
             page.setAttribute("height", height);
 
-            addMonthToPage(
-                page,
-                cfg,
-                width,
-                month,
-                templateDays,
-                templateMonth,
-                templateWeekdays,
-                templateWeeknumbers
-            );
+            addMonthToPage(page, cfg, width, month);
 
             calendar.appendChild(page);
 
@@ -586,16 +558,7 @@ function drawYear(cfg, width, height) {
     }
 }
 
-function addMonthToPage(
-    page,
-    cfg,
-    width,
-    month, 
-    templateDays,
-    templateMonth,
-    templateWeekdays,
-    templateWeeknumbers
-) {
+function addMonthToPage(page, cfg, width, month) {
     let rect = document.createElementNS("http://www.w3.org/2000/svg", "use");
     rect.setAttribute("href", "#rect");
     rect.setAttribute("x", "0");
@@ -655,10 +618,7 @@ function updateSVGStyles(cfg) {
     cfg.weekdaysFontSize /= k;
     cfg.weeknumbersFontSize /= k;
 
-    let templateStyles = document.getElementById('template_styles').innerHTML;
-    let renderedStyles = Mustache.render(templateStyles, cfg);
-
-    document.getElementById('style').innerHTML = renderedStyles;
+    document.getElementById('style').innerHTML = Mustache.render(templateStyles, cfg);
 }
 
 let months = [

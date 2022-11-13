@@ -281,7 +281,7 @@
             </div>
         </div>
         <div class="content">
-            <div class="page">
+            <div class="canvas" id="canvas">
                 <button class="btn page-nav left" onclick="changeMonth(-1)">←</button>
                 <svg id="svg" viewBox="0 0 210 297" preserveAspectRatio="xMidYMid meet">
                     <style id="style"></style>
@@ -298,7 +298,6 @@
         </div>
     </div>
 </div>
-<script src="script.js"></script>
 <script id="template_styles" type="x-tmpl-mustache">
 .loading {
     filter: url(#blur);
@@ -356,6 +355,7 @@
     </text>
 {{/weeknumbers}}
 </script>
+<script src="script.js"></script>
 <script src="colr_pickr.min.js"></script>
 <script src="mustache.min.js"></script>
 </body>

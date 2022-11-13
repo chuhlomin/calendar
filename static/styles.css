@@ -161,18 +161,18 @@ fieldset {
   background: var(--color-content-background);
 }
 
-.page {
+.canvas {
   text-align: center;
 }
 
-.page svg {
+.canvas svg {
   max-width: 100%;
   max-height: calc(100vh - 40px);
   height: -webkit-fill-available;
   user-select: none;
 }
 
-.page svg rect {
+.canvas svg rect {
   stroke-width: 0.25;
   stroke: #999999;
 }
@@ -347,7 +347,7 @@ input[type="checkbox"] + span {
   .content {
     padding: 0;
   }
-  .page {
+  .canvas {
     margin: 0;
     width: 100%;
     height: 100%;
@@ -435,7 +435,7 @@ input[type="checkbox"] + span {
     top: 0;
     height: auto;
   }
-  .preview .page svg {
+  .preview .canvas svg {
     height: auto;
     max-height: calc(100% - 40px);
     position: absolute;
