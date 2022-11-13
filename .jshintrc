@@ -1,5 +1,12 @@
 {
     "esversion": 6,
     "node": false,
-    "browser": true
+    "browser": true,
+    "globals": {
+        "console": true,
+        "alert": true,
+        "Mustache": true,
+        "ColorPicker": true,
+        "FontFace": true
+    }
 }
