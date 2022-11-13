@@ -607,7 +607,7 @@ function addMonthToPage(
     const [d, w] = days(cfg, month);
     let renderedDays = Mustache.render(templateDays, {
         days: d,
-        daysFontFamilyLoading: cfg.daysFontFamilyLoading,
+        daysFontFamilyLoading: (cfg.daysFontFamily in loadingFonts)
     });
     let daysGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
     daysGroup.classList.add("days");
@@ -624,7 +624,7 @@ function addMonthToPage(
         y: cfg.monthY,
         year: cfg.year,
         halfWidth: width/2,
-        monthFontFamilyLoading: cfg.monthFontFamilyLoading,
+        monthFontFamilyLoading: (cfg.monthFontFamily in loadingFonts)
     });
     page.appendChild(monthGroup);
 
@@ -633,7 +633,7 @@ function addMonthToPage(
     weekdaysGroup.classList.add("weekdays");
     weekdaysGroup.innerHTML = Mustache.render(templateWeekdays, {
         weekdays: weekdays(cfg, 0, 0),
-        weekdaysFontFamilyLoading: cfg.weekdaysFontFamilyLoading,
+        weekdaysFontFamilyLoading: (cfg.weekdaysFontFamily in loadingFonts)
     });
     page.appendChild(weekdaysGroup);
 
@@ -642,7 +642,7 @@ function addMonthToPage(
     weeknumbersGroup.classList.add("weeknumbers");
     weeknumbersGroup.innerHTML = Mustache.render(templateWeeknumbers, {
         weeknumbers: w,
-        weeknumbersFontFamilyLoading: cfg.weeknumbersFontFamilyLoading,
+        weeknumbersFontFamilyLoading: (cfg.weeknumbersFontFamily in loadingFonts)
     });
     page.appendChild(weeknumbersGroup);
 }
