@@ -233,7 +233,7 @@ fieldset.disabled .field {
   opacity: 0.5;
 }
 
-.field.monthYear {
+.monthYear {
   display: flex;
   column-gap: 10px;
 }
@@ -455,7 +455,7 @@ input[type="checkbox"] + span {
   }
 }
 
-@media screen and (max-width: 350px) { /* ? */
+@media screen and (max-width: 355px) { /* ? */
   .may-hide {
     display: none;
   }
