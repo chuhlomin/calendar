@@ -45,23 +45,26 @@
                     </select>
                 </div>
 
-                <div class="field monthYear">
-                    <select name="month" onchange="changeConfig(this)">
-                        <!--option value="all">All</option-->
-                        <option value="0" selected>January</option>
-                        <option value="1">February</option>
-                        <option value="2">March</option>
-                        <option value="3">April</option>
-                        <option value="4">May</option>
-                        <option value="5">June</option>
-                        <option value="6">July</option>
-                        <option value="7">August</option>
-                        <option value="8">September</option>
-                        <option value="9">October</option>
-                        <option value="10">November</option>
-                        <option value="11">December</option>
-                    </select>
-                    <input type="number" name="year" value="2023" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
+                <div class="field">
+                    <legend>Month & year</legend>
+                    <div class="monthYear">
+                        <select name="month" onchange="changeConfig(this)">
+                            <option value="-1">All</option>
+                            <option value="0" selected>January</option>
+                            <option value="1">February</option>
+                            <option value="2">March</option>
+                            <option value="3">April</option>
+                            <option value="4">May</option>
+                            <option value="5">June</option>
+                            <option value="6">July</option>
+                            <option value="7">August</option>
+                            <option value="8">September</option>
+                            <option value="9">October</option>
+                            <option value="10">November</option>
+                            <option value="11">December</option>
+                        </select>
+                        <input type="number" name="year" value="2023" onchange="changeConfig(this)" onkeyup="changeConfig(this)" inputmode="numeric" pattern="[0-9]*">
+                    </div>
                 </div>
 
                 <div class="field">
@@ -282,12 +285,13 @@
                 <button class="btn page-nav left" onclick="changeMonth(-1)">←</button>
                 <svg id="svg" viewBox="0 0 210 297" preserveAspectRatio="xMidYMid meet">
                     <style id="style"></style>
-                    <rect id="rect" fill="white" width="210" height="297"/>
-                    <defs id="defs"></defs>
-                    <use x="50%" y="0" href="#month" fill="url('#month')" />
-                    <use x="0" y="0" href="#days" fill="url('#days')" />
-                    <use x="0" y="0" href="#weekdays" fill="url('#weekdays')" />
-                    <use x="0" y="0" href="#weeknumbers" fill="url('#weeknumbers')" />
+                    <defs>
+                        <filter id="blur" x="0" y="0">
+                            <feGaussianBlur stdDeviation="1,2" />
+                        </filter>
+                        <rect id="rect" fill="white" width="210" height="297"/>
+                    </defs>
+                    <g id="calendar"></g>
                 </svg>
                 <button class="btn page-nav right" onclick="changeMonth(1)">→</button>
             </div>
@@ -326,36 +330,31 @@
     fill: {{ weekendColor }};
 }
 </script>
-<script id="template_page" type="x-tmpl-mustache">
-    <filter id="blur" x="0" y="0">
-      <feGaussianBlur stdDeviation="1,2" />
-    </filter>
-    <g id="month">
-        <text id="month" x="{{ halfWidth }}" y="{{ monthY }}" class="month{{#monthFontFamilyLoading}} loading{{/monthFontFamilyLoading}}">
-            <tspan x="0" text-anchor="middle">{{ month }}</tspan>
-        </text>
-    </g>
-    <g id="days">
-        {{#days}}
-            <text x="{{ x }}" y="{{ y }}" class="day{{#inactive}} inactive{{/inactive}}{{ ^inactive}}{{#weekend}} weekend{{/weekend}}{{/inactive}}{{#daysFontFamilyLoading}} loading{{/daysFontFamilyLoading}}">
-                <tspan x="{{ x }}" text-anchor="end">{{ day }}</tspan>
-            </text>
-        {{/days}}
-    </g>
-    <g id="weekdays">
-        {{#weekdays}}
-            <text x="{{ x }}" y="{{ y }}" class="weekday{{#weekdaysFontFamilyLoading}} loading{{/weekdaysFontFamilyLoading}}">
-                <tspan x="{{ x }}" text-anchor="end">{{ day }}</tspan>
-            </text>
-        {{/weekdays}}
-    </g>
-    <g id="weeknumbers">
-        {{#weeknumbers}}
-            <text x="{{ x }}" y="{{ y }}" class="weeknumber{{#weeknumbersFontFamilyLoading}} loading{{/weeknumbersFontFamilyLoading}}">
-                <tspan x="{{ x }}" text-anchor="end">{{ weeknumber }}</tspan>
-            </text>
-        {{/weeknumbers}}
-    </g>
+<script id="template_days" type="x-tmpl-mustache">
+{{#days}}
+    <text x="{{ x }}" y="{{ y }}" class="day{{#inactive}} inactive{{/inactive}}{{ ^inactive}}{{#weekend}} weekend{{/weekend}}{{/inactive}}{{#daysFontFamilyLoading}} loading{{/daysFontFamilyLoading}}" text-anchor="end">
+        {{ day }}
+    </text>
+{{/days}}
+</script>
+<script id="template_month" type="x-tmpl-mustache">
+<text id="month" x="{{ x }}" y="{{ y }}" class="month{{#monthFontFamilyLoading}} loading{{/monthFontFamilyLoading}}" dominant-baseline="middle" text-anchor="middle">
+    {{ month }}
+</text>
+</script>
+<script id="template_weekdays" type="x-tmpl-mustache">
+{{#weekdays}}
+    <text x="{{ x }}" y="{{ y }}" class="weekday{{#weekdaysFontFamilyLoading}} loading{{/weekdaysFontFamilyLoading}}" text-anchor="end">
+        {{ day }}
+    </text>
+{{/weekdays}}
+</script>
+<script id="template_weeknumbers" type="x-tmpl-mustache">
+{{#weeknumbers}}
+    <text x="{{ x }}" y="{{ y }}" class="weeknumber{{#weeknumbersFontFamilyLoading}} loading{{/weeknumbersFontFamilyLoading}}" text-anchor="end">
+        {{ weeknumber }}
+    </text>
+{{/weeknumbers}}
 </script>
 <script src="colr_pickr.min.js"></script>
 <script src="mustache.min.js"></script>

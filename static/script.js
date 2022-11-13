@@ -213,7 +213,7 @@ function validateConfig(config) {
                 continue;
             }
 
-            if (key == "month" && (value < 0 || value > 11)) {
+            if (key == "month" && (value < -1 || value > 11)) { // -1 is for all months
                 errors.push("Invalid value for " + key + ": " + config[key]);
                 continue;
             }
@@ -384,7 +384,8 @@ function toggleFieldset(fieldsetName, enabled) {
 
 function updateCalendar() {
     let pageData = document.getElementById("pageSize").querySelector("option[value='" + config.pageSize + "']").dataset;
-    let width = pageData.width;
+    let width = parseInt(pageData.width);
+    let height = parseInt(pageData.height);
 
     let [cfg, errors] = validateConfig(config);
     if (errors.length > 0) {
@@ -392,48 +393,26 @@ function updateCalendar() {
         return;
     }
 
-    const [d, w] = days(cfg);
+    updateSVGStyles(cfg);
 
-    let templatePage = document.getElementById('template_page').innerHTML;
-    let renderedPage = Mustache.render(
-        templatePage,
-        {
-            month: getMonth(cfg),
-            monthY: cfg.monthY,
-            halfWidth: width/2,
-            days: d,
-            weekdays: weekdays(cfg),
-            weeknumbers: weeknumbers(cfg, w),
-            daysFontFamilyLoading: (cfg.daysFontFamily in loadingFonts),
-            monthFontFamilyLoading: (cfg.monthFontFamily in loadingFonts),
-            weekdaysFontFamilyLoading: (cfg.weekdaysFontFamily in loadingFonts),
-            weeknumbersFontFamilyLoading: (cfg.weeknumbersFontFamily in loadingFonts),
-        }
-    );
+    if (cfg.month == -1) {
+        drawYear(cfg, width, height);
+        return;
+    }
 
-    let k = 3.7795;
-
-    cfg.daysFontSize /= k;
-    cfg.monthFontSize /= k;
-    cfg.weekdaysFontSize /= k;
-    cfg.weeknumbersFontSize /= k;
-
-    let templateStyles = document.getElementById('template_styles').innerHTML;
-    let renderedStyles = Mustache.render(templateStyles, cfg);
-
-    document.getElementById('defs').innerHTML = renderedPage;
-    document.getElementById('style').innerHTML = renderedStyles;
+    drawMonth(cfg, width, height);
 }
 
-function days(cfg) {
+function days(cfg, month) {
     let lastDay = cfg.firstDay - 1;
     if (lastDay < 0) {
         lastDay = 6;
     }
 
     let days = [];
-    let date = new Date(cfg.year, cfg.month, 1);
-    let end = new Date(cfg.year, cfg.month + 1, 0);
+    let weekNumbers = [];
+    let date = new Date(cfg.year, month, 1);
+    let end = new Date(cfg.year, month + 1, 0);
     if (end.getDay() === lastDay && cfg.showInactiveDays) {
         end.setDate(end.getDate() + 7);
     }
@@ -449,15 +428,18 @@ function days(cfg) {
 
     let row = 0;
     let column = 0;
-    let weeknumbers = [];
 
     let weeknumber = getWeekNumber(date);
 
     while (date <= end) {
-        let inactive = date.getMonth() != cfg.month;
+        let inactive = date.getMonth() != month;
 
         if (date.getDay() == cfg.firstDay && cfg.showWeekNumbers) {
-            weeknumbers.push(weeknumber);
+            weekNumbers.push({
+                weeknumber: weeknumber,
+                x: cfg.weeknumbersX,
+                y: row * cfg.daysYStep + cfg.weeknumbersY,
+            });
             weeknumber++;
 
             if (weeknumber > 52) {
@@ -502,10 +484,10 @@ function days(cfg) {
         column++;
     }
 
-    return [days, weeknumbers];
+    return [days, weekNumbers];
 }
 
-function weekdays(cfg) {
+function weekdays(cfg, xShift, yShift) {
     if (!cfg.showWeekdays) {
         return [];
     }
@@ -531,26 +513,152 @@ function weekdays(cfg) {
     for (let i = 0; i < 7; i++) {
         days.push({
             day: weekdays[(cfg.firstDay + i) % 7],
-            x: i * cfg.daysXStep + cfg.weekdaysX,
-            y: cfg.weekdaysY,
+            x: i * cfg.daysXStep + cfg.weekdaysX + xShift,
+            y: cfg.weekdaysY + yShift,
         });
     }
 
     return days;
 }
 
-function weeknumbers(cfg, w) {
-    let result = [];
+function drawMonth(cfg, width, height) {
+    let templateDays = document.getElementById('template_days').innerHTML;
+    let templateMonth = document.getElementById('template_month').innerHTML;
+    let templateWeekdays = document.getElementById('template_weekdays').innerHTML;
+    let templateWeeknumbers = document.getElementById('template_weeknumbers').innerHTML;
 
-    for (let i = 0; i < w.length; i++) {
-        result.push({
-            weeknumber: w[i],
-            x: cfg.weeknumbersX,
-            y: i * cfg.daysYStep + cfg.weeknumbersY,
-        });
+    // update SVG canvas
+    let svg = document.getElementById("svg");
+    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+
+    let calendar = document.getElementById("calendar");
+    calendar.innerHTML = "";
+
+    addMonthToPage(
+        calendar,
+        cfg,
+        width,
+        cfg.month,
+        templateDays,
+        templateMonth,
+        templateWeekdays,
+        templateWeeknumbers
+    );
+}
+
+function drawYear(cfg, width, height) {
+    let templateDays = document.getElementById('template_days').innerHTML;
+    let templateMonth = document.getElementById('template_month').innerHTML;
+    let templateWeekdays = document.getElementById('template_weekdays').innerHTML;
+    let templateWeeknumbers = document.getElementById('template_weeknumbers').innerHTML;
+
+    // update SVG canvas
+    let svg = document.getElementById("svg");
+    svg.setAttribute("viewBox", "0 0 " + (width * 4 + 30) + " " + (height * 3 + 20));
+
+    let calendar = document.getElementById("calendar");
+    calendar.innerHTML = "";
+
+    let month = 0;
+    for (let y = 0; y < 3; y++) {
+        for (let x = 0; x < 4; x++) {
+            let page = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            page.setAttribute("id", "page_" + month);
+            page.setAttribute("transform", "translate(" + (x * (width + 10)) + "," + (y * (height + 10)) + ")");
+            page.setAttribute("width", width);
+            page.setAttribute("height", height);
+
+            addMonthToPage(
+                page,
+                cfg,
+                width,
+                month,
+                templateDays,
+                templateMonth,
+                templateWeekdays,
+                templateWeeknumbers
+            );
+
+            calendar.appendChild(page);
+
+            month++;
+        }
     }
+}
 
-    return result;
+function addMonthToPage(
+    page,
+    cfg,
+    width,
+    month, 
+    templateDays,
+    templateMonth,
+    templateWeekdays,
+    templateWeeknumbers
+) {
+    let rect = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    rect.setAttribute("href", "#rect");
+    rect.setAttribute("x", "0");
+    rect.setAttribute("y", "0");
+    rect.setAttribute("fill", "url('#rect')");
+    page.appendChild(rect);
+
+    // days
+    const [d, w] = days(cfg, month);
+    let renderedDays = Mustache.render(templateDays, {
+        days: d,
+        daysFontFamilyLoading: cfg.daysFontFamilyLoading,
+    });
+    let daysGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    daysGroup.classList.add("days");
+    daysGroup.innerHTML = renderedDays;
+    page.appendChild(daysGroup);
+
+    // month
+    let monthGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    monthGroup.setAttribute("transform", "translateX(50%)");
+    monthGroup.classList.add("month");
+    monthGroup.innerHTML = Mustache.render(templateMonth, {
+        month: getMonth(cfg, month),
+        x: width/2,
+        y: cfg.monthY,
+        year: cfg.year,
+        halfWidth: width/2,
+        monthFontFamilyLoading: cfg.monthFontFamilyLoading,
+    });
+    page.appendChild(monthGroup);
+
+    // weekdays
+    let weekdaysGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    weekdaysGroup.classList.add("weekdays");
+    weekdaysGroup.innerHTML = Mustache.render(templateWeekdays, {
+        weekdays: weekdays(cfg, 0, 0),
+        weekdaysFontFamilyLoading: cfg.weekdaysFontFamilyLoading,
+    });
+    page.appendChild(weekdaysGroup);
+
+    // week numbers
+    let weeknumbersGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    weeknumbersGroup.classList.add("weeknumbers");
+    weeknumbersGroup.innerHTML = Mustache.render(templateWeeknumbers, {
+        weeknumbers: w,
+        weeknumbersFontFamilyLoading: cfg.weeknumbersFontFamilyLoading,
+    });
+    page.appendChild(weeknumbersGroup);
+}
+
+function updateSVGStyles(cfg) {
+    let k = 3.7795;
+
+    cfg.daysFontSize /= k;
+    cfg.monthFontSize /= k;
+    cfg.weekdaysFontSize /= k;
+    cfg.weeknumbersFontSize /= k;
+
+    let templateStyles = document.getElementById('template_styles').innerHTML;
+    let renderedStyles = Mustache.render(templateStyles, cfg);
+
+    document.getElementById('style').innerHTML = renderedStyles;
 }
 
 let months = [
@@ -568,12 +676,12 @@ let months = [
     "December",
 ];
 
-function getMonth(cfg) {
+function getMonth(cfg, month) {
     if (!cfg.showMonth) {
         return "";
     }
 
-    return months[cfg.month] + " " + cfg.year;
+    return months[month] + " " + cfg.year;
 }
 
 function getWeekNumber(d) {

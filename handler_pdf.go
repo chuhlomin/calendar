@@ -121,7 +121,7 @@ func parsePDFRequest(r *http.Request) (*pdfRequest, error) {
 		return nil, errors.Wrapf(err, "error parsing inactive color %q", req.InactiveColor)
 	}
 
-	if req.Month < 0 || req.Month > 11 {
+	if req.Month < -1 || req.Month > 11 {
 		return nil, errors.Errorf("invalid month %d", req.Month)
 	}
 
@@ -131,22 +131,6 @@ func parsePDFRequest(r *http.Request) (*pdfRequest, error) {
 func createPDF(writer io.Writer, req *pdfRequest) error {
 	pdf := gofpdf.New("P", "mm", req.Size, "")
 	pdf.SetAutoPageBreak(false, 0)
-	pdf.AddPage()
-
-	err := drawPage(pdf, req)
-	if err != nil {
-		return errors.Wrap(err, "error drawing month")
-	}
-
-	err = pdf.Output(writer)
-	if err != nil {
-		return errors.Wrap(err, "error writing pdf")
-	}
-
-	return nil
-}
-
-func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 	pdf.SetFillColor(255, 255, 255)
 
 	pdf.AddUTF8Font("daysFontFamily", "", fmt.Sprint("fonts/", req.DaysFontFamily, ".ttf"))
@@ -154,15 +138,37 @@ func drawPage(pdf *gofpdf.Fpdf, req *pdfRequest) error {
 	pdf.AddUTF8Font("weekdaysFontFamily", "", fmt.Sprint("fonts/", req.WeekdaysFontFamily, ".ttf"))
 	pdf.AddUTF8Font("weeknumbersFontFamily", "", fmt.Sprint("fonts/", req.WeeknumbersFontFamily, ".ttf"))
 
-	year := req.Year
-	month := time.Month(req.Month + 1)
+	if req.Month == -1 {
+		for month := 0; month < 12; month++ {
+			err := createPDFMonth(writer, pdf, req, time.Month(month+1))
+			if err != nil {
+				return errors.Wrapf(err, "error creating PDF for month %d", month)
+			}
+		}
+	} else {
+		err := createPDFMonth(writer, pdf, req, time.Month(req.Month+1))
+		if err != nil {
+			return errors.Wrapf(err, "error creating PDF for month %d", req.Month)
+		}
+	}
 
-	days, weekNumbers := getDays(req, year, month)
+	err := pdf.Output(writer)
+	if err != nil {
+		return errors.Wrap(err, "error writing pdf")
+	}
+
+	return nil
+}
+
+func createPDFMonth(writer io.Writer, pdf *gofpdf.Fpdf, req *pdfRequest, month time.Month) error {
+	pdf.AddPage()
+
+	days, weekNumbers := getDays(req, req.Year, month)
 
 	setTextColor(pdf, req.textColor)
 
 	if req.ShowMonth {
-		drawMonth(pdf, req, year, month)
+		drawMonth(pdf, req, req.Year, month)
 	}
 
 	if req.ShowWeekdays {
