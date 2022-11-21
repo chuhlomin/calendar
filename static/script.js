@@ -134,7 +134,11 @@ function loadFont(fontName) {
 
     loadingFonts[fontName] = true;
 
-    const font = new FontFace(fontName, "url('/" + fontName + ".ttf') format('truetype'), url('/" + fontName + ".woff') format('woff2')");
+    const font = new FontFace(
+        fontName,
+        "url('/" + fontName + ".ttf') format('truetype'), url('/" + fontName + ".woff') format('woff2')",
+        { unicodeRange: "U+0020-007E" }
+    );
     font.load()
         .then(function(loadedFace) {
             document.fonts.add(loadedFace);
