@@ -86,10 +86,15 @@ let configInputTypes = {
     weeknumbersY: "number",
 };
 
+const gap = 10; // mm
+
 let configIntegerFields = ["firstDay", "year", "month"];
 
 let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
+let pageSize = document.getElementById("pageSize");
+let canvas = document.getElementById("canvas");
+let calendar = document.getElementById("calendar");
 let svg = document.getElementById("svg");
 let rect = document.getElementById("rect");
 let templateStyles = document.getElementById('template_styles').innerHTML;
@@ -97,7 +102,10 @@ let templateDays = document.getElementById('template_days').innerHTML;
 let templateMonth = document.getElementById('template_month').innerHTML;
 let templateWeekdays = document.getElementById('template_weekdays').innerHTML;
 let templateWeeknumbers = document.getElementById('template_weeknumbers').innerHTML;
-let calendar = document.getElementById("calendar");
+
+// calendarThresholds calculated based on page size (see `updatePage`)
+// and affects optimal number of rows and columns
+let calendarThresholds = [];
 
 let availableFonts = {
     "iosevka-regular": "Iosevka",
@@ -152,7 +160,7 @@ function loadFont(fontName) {
 }
 
 function loadConfig(key) {
-    var value = localStorage.getItem(key);
+    let value = localStorage.getItem(key);
     if (value) {
         config[key] = value;
 
@@ -285,6 +293,22 @@ window.onload = function() {
     updateCalendar();
 };
 
+let prevRows = 0;
+
+function maybeResizeCalendar() {
+    let pageData = pageSize.querySelector("option[value='" + config.pageSize + "']").dataset;
+    let width = parseInt(pageData.width);
+    let height = parseInt(pageData.height);
+
+    let rows = getOptimalNumberOfRows(width, height);
+    if (rows != prevRows) {
+        prevRows = rows;
+        resizeCalendar(rows, width, height);
+    }
+}
+
+window.onresize = maybeResizeCalendar;
+
 let yOffset = 0;
 let timerForYOffset = null;
 
@@ -308,11 +332,26 @@ panel.onscroll = function() {
     }
 };
 
+const possibleRows = [2, 3, 4, 6];
+
 function updatePage() {
-    let pageData = document.getElementById("pageSize").querySelector("option[value='" + config.pageSize + "']").dataset;
+    let pageData = pageSize.querySelector("option[value='" + config.pageSize + "']").dataset;
 
     let width = pageData.width;
     let height = pageData.height;
+
+    let prevCalendarAR;
+    for (const rows of possibleRows) {
+        let columns = 12 / rows;
+        let calendarWidth = width * columns + gap * (columns - 1);
+        let calendarHeight = height * rows + gap * (rows - 1);
+        let calendarAR = (calendarWidth / calendarHeight);
+
+        if (prevCalendarAR !== undefined) {
+            calendarThresholds[rows] = (prevCalendarAR + calendarAR) / 2;
+        }
+        prevCalendarAR = calendarAR;
+    }
 
     svg.setAttribute("viewBox", "0 0 " + width + " " + height);
     rect.setAttribute("width", width);
@@ -392,7 +431,7 @@ function toggleFieldset(fieldsetName, enabled) {
 }
 
 function updateCalendar() {
-    let pageData = document.getElementById("pageSize").querySelector("option[value='" + config.pageSize + "']").dataset;
+    let pageData = pageSize.querySelector("option[value='" + config.pageSize + "']").dataset;
     let width = parseInt(pageData.width);
     let height = parseInt(pageData.height);
 
@@ -536,10 +575,24 @@ function drawMonth(cfg, width, height) {
     addMonthToPage(calendar, cfg, width, cfg.month);
 }
 
+function getOptimalNumberOfRows(width, height) {
+    let canvasAR = (canvas.offsetWidth / canvas.offsetHeight).toFixed(2);
+
+    // check calendarThresholds in possibleRows
+    // iterate over possibleRows from last to first
+    for (let i = possibleRows.length - 1; i >= 0; i--) {
+        if (canvasAR < calendarThresholds[possibleRows[i]]) {
+            return possibleRows[i];
+        }
+    }
+
+    return 2;
+}
+
 function drawYear(cfg, width, height) {
-    let rows = 3;
+    let rows = getOptimalNumberOfRows(width, height);
+    prevRows = rows;
     let columns = 12 / rows;
-    let gap = 10;
 
     svg.setAttribute("viewBox", "0 0 " + (width * columns + gap * (columns - 1)) + " " + (height * rows + gap * (rows - 1)));
     calendar.innerHTML = "";
@@ -548,8 +601,8 @@ function drawYear(cfg, width, height) {
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < columns; x++) {
             let page = document.createElementNS("http://www.w3.org/2000/svg", "g");
-            page.setAttribute("id", "page_" + month);
-            page.setAttribute("transform", "translate(" + (x * (width + 10)) + "," + (y * (height + 10)) + ")");
+            page.setAttribute("id", "month_" + month);
+            page.setAttribute("transform", "translate(" + (x * (width + gap)) + "," + (y * (height + gap)) + ")");
             page.setAttribute("width", width);
             page.setAttribute("height", height);
 
@@ -557,6 +610,21 @@ function drawYear(cfg, width, height) {
 
             calendar.appendChild(page);
 
+            month++;
+        }
+    }
+}
+
+function resizeCalendar(rows, width, height) {
+    let columns = 12 / rows;
+
+    svg.setAttribute("viewBox", "0 0 " + (width * columns + gap * (columns - 1)) + " " + (height * rows + gap * (rows - 1)));
+
+    let month = 0;
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < columns; x++) {
+            let page = document.getElementById("month_" + month);
+            page.setAttribute("transform", "translate(" + (x * (width + gap)) + "," + (y * (height + gap)) + ")");
             month++;
         }
     }
@@ -661,6 +729,7 @@ function togglePreview(element) {
         panel.scrollTop = yOffset;
     } else {
         body.classList.add("preview");
+        maybeResizeCalendar();
     }
 }
 

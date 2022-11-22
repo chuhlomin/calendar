@@ -435,6 +435,9 @@ input[type="checkbox"] + span {
     top: 0;
     height: auto;
   }
+  .preview .canvas {
+    height: 100%;
+  }
   .preview .canvas svg {
     height: auto;
     max-height: calc(100% - 40px);
