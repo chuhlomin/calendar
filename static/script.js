@@ -296,6 +296,10 @@ window.onload = function() {
 let prevRows = 0;
 
 function maybeResizeCalendar() {
+    if (config.month != "-1") { // year
+        return;
+    }
+
     let pageData = pageSize.querySelector("option[value='" + config.pageSize + "']").dataset;
     let width = parseInt(pageData.width);
     let height = parseInt(pageData.height);
