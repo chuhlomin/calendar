@@ -8,7 +8,7 @@ require (
 	github.com/lucasb-eyer/go-colorful v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/rickar/cal/v2 v2.1.7
-	gotest.tools v2.2.0+incompatible
+	google.golang.org/protobuf v1.28.1
 )
 
 require github.com/google/go-cmp v0.5.9 // indirect

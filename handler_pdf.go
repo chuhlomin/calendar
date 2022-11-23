@@ -15,47 +15,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-type pdfRequest struct {
-	Size     string `json:"size"`
-	FirstDay int    `json:"firstDay"` // 0 - Sunday, 1 - Monday, ...
-	Year     int    `json:"year"`
-	Month    int    `json:"month"`
-
-	// Days
-	DaysFontSize     int    `json:"daysFontSize"`
-	DaysFontFamily   string `json:"daysFontFamily"`
-	TextColor        string `json:"textColor"`
-	WeekendColor     string `json:"weekendColor"`
-	DaysX            int    `json:"daysX"`
-	DaysY            int    `json:"daysY"`
-	DaysXStep        int    `json:"daysXStep"`
-	DaysYStep        int    `json:"daysYStep"`
-	ShowInactiveDays bool   `json:"showInactiveDays"`
-	InactiveColor    string `json:"inactiveColor"`
-
-	// Month
-	ShowMonth       bool   `json:"showMonth"`
-	MonthFontFamily string `json:"monthFontFamily"`
-	MonthFontSize   int    `json:"monthFontSize"`
-	MonthColor      string `json:"monthColor"`
-	MonthY          int    `json:"monthY"`
-
-	// Weekdays
-	ShowWeekdays       bool   `json:"showWeekdays"`
-	WeekdaysFontFamily string `json:"weekdaysFontFamily"`
-	WeekdaysFontSize   int    `json:"weekdaysFontSize"`
-	WeekdaysColor      string `json:"weekdaysColor"`
-	WeekdaysX          int    `json:"weekdaysX"`
-	WeekdaysY          int    `json:"weekdaysY"`
-
-	// WeekNumbers
-	ShowWeekNumbers       bool   `json:"showWeekNumbers"`
-	WeeknumbersFontFamily string `json:"weeknumbersFontFamily"`
-	WeeknumbersFontSize   int    `json:"weeknumbersFontSize"`
-	WeeknumbersColor      string `json:"weeknumbersColor"`
-	WeeknumbersX          int    `json:"weeknumbersX"`
-	WeeknumbersY          int    `json:"weeknumbersY"`
-
+type input struct {
+	request          Request
 	textColor        color.Color
 	weekendColor     color.Color
 	weeknumbersColor color.Color
@@ -65,7 +26,7 @@ type pdfRequest struct {
 }
 
 func handlerPDF(w http.ResponseWriter, r *http.Request) {
-	req, err := parsePDFRequest(r)
+	in, err := parsePDFRequest(r)
 	if err != nil {
 		log.Printf("error parsing PDF request: %s", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -75,7 +36,7 @@ func handlerPDF(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/pdf")
 	w.Header().Set("Content-Disposition", "attachment; filename=calendar.pdf")
 
-	err = createPDF(w, req)
+	err = createPDF(w, in)
 	if err != nil {
 		log.Printf("error creating PDF: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -84,71 +45,71 @@ func handlerPDF(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func parsePDFRequest(r *http.Request) (*pdfRequest, error) {
-	var req pdfRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
+func parsePDFRequest(r *http.Request) (*input, error) {
+	in := input{}
+	err := json.NewDecoder(r.Body).Decode(&in.request)
 	if err != nil {
 		return nil, errors.Wrap(err, "error decoding json")
 	}
 
-	req.textColor, err = colorful.Hex(req.TextColor)
+	in.textColor, err = colorful.Hex(in.request.TextColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing text color %q", req.TextColor)
+		return nil, errors.Wrapf(err, "error parsing text color %q", in.request.TextColor)
 	}
 
-	req.weekendColor, err = colorful.Hex(req.WeekendColor)
+	in.weekendColor, err = colorful.Hex(in.request.WeekendColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing weekend color %q", req.WeekendColor)
+		return nil, errors.Wrapf(err, "error parsing weekend color %q", in.request.WeekendColor)
 	}
 
-	req.weeknumbersColor, err = colorful.Hex(req.WeeknumbersColor)
+	in.weeknumbersColor, err = colorful.Hex(in.request.WeeknumbersColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing weeknumbers color %q", req.WeeknumbersColor)
+		return nil, errors.Wrapf(err, "error parsing weeknumbers color %q", in.request.WeeknumbersColor)
 	}
 
-	req.monthColor, err = colorful.Hex(req.MonthColor)
+	in.monthColor, err = colorful.Hex(in.request.MonthColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing month color %q", req.MonthColor)
+		return nil, errors.Wrapf(err, "error parsing month color %q", in.request.MonthColor)
 	}
 
-	req.weekdaysColor, err = colorful.Hex(req.WeekdaysColor)
+	in.weekdaysColor, err = colorful.Hex(in.request.WeekdaysColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing weekdays color %q", req.WeekdaysColor)
+		return nil, errors.Wrapf(err, "error parsing weekdays color %q", in.request.WeekdaysColor)
 	}
 
-	req.inactiveColor, err = colorful.Hex(req.InactiveColor)
+	in.inactiveColor, err = colorful.Hex(in.request.InactiveColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing inactive color %q", req.InactiveColor)
+		return nil, errors.Wrapf(err, "error parsing inactive color %q", in.request.InactiveColor)
 	}
 
-	if req.Month < -1 || req.Month > 11 {
-		return nil, errors.Errorf("invalid month %d", req.Month)
+	if in.request.Month < -1 || in.request.Month > 11 {
+		return nil, errors.Errorf("invalid month %d", in.request.Month)
 	}
 
-	return &req, nil
+	return &in, nil
 }
 
-func createPDF(writer io.Writer, req *pdfRequest) error {
-	pdf := gofpdf.New("P", "mm", req.Size, "")
+func createPDF(writer io.Writer, in *input) error {
+	pdf := gofpdf.New("P", "mm", in.request.Size, "")
 	pdf.SetAutoPageBreak(false, 0)
 	pdf.SetFillColor(255, 255, 255)
 
-	pdf.AddUTF8Font("daysFontFamily", "", fmt.Sprint("fonts/", req.DaysFontFamily, ".ttf"))
-	pdf.AddUTF8Font("monthFontFamily", "", fmt.Sprint("fonts/", req.MonthFontFamily, ".ttf"))
-	pdf.AddUTF8Font("weekdaysFontFamily", "", fmt.Sprint("fonts/", req.WeekdaysFontFamily, ".ttf"))
-	pdf.AddUTF8Font("weeknumbersFontFamily", "", fmt.Sprint("fonts/", req.WeeknumbersFontFamily, ".ttf"))
+	pdf.AddUTF8Font("daysFontFamily", "", fmt.Sprint("fonts/", in.request.DaysFontFamily, ".ttf"))
+	pdf.AddUTF8Font("monthFontFamily", "", fmt.Sprint("fonts/", in.request.MonthFontFamily, ".ttf"))
+	pdf.AddUTF8Font("weekdaysFontFamily", "", fmt.Sprint("fonts/", in.request.WeekdaysFontFamily, ".ttf"))
+	pdf.AddUTF8Font("weeknumbersFontFamily", "", fmt.Sprint("fonts/", in.request.WeeknumbersFontFamily, ".ttf"))
 
-	if req.Month == -1 {
+	if in.request.Month == -1 {
 		for month := 0; month < 12; month++ {
-			err := createPDFMonth(writer, pdf, req, time.Month(month+1))
+			err := createPDFMonth(writer, pdf, in, time.Month(month+1))
 			if err != nil {
 				return errors.Wrapf(err, "error creating PDF for month %d", month)
 			}
 		}
 	} else {
-		err := createPDFMonth(writer, pdf, req, time.Month(req.Month+1))
+		err := createPDFMonth(writer, pdf, in, time.Month(in.request.Month+1))
 		if err != nil {
-			return errors.Wrapf(err, "error creating PDF for month %d", req.Month)
+			return errors.Wrapf(err, "error creating PDF for month %d", in.request.Month)
 		}
 	}
 
@@ -160,95 +121,96 @@ func createPDF(writer io.Writer, req *pdfRequest) error {
 	return nil
 }
 
-func createPDFMonth(writer io.Writer, pdf *gofpdf.Fpdf, req *pdfRequest, month time.Month) error {
+func createPDFMonth(writer io.Writer, pdf *gofpdf.Fpdf, in *input, month time.Month) error {
 	pdf.AddPage()
 
-	days, weekNumbers := getDays(req, req.Year, month)
+	days, weekNumbers := getDays(in, in.request.Year, month)
 
-	setTextColor(pdf, req.textColor)
+	setTextColor(pdf, in.textColor)
 
-	if req.ShowMonth {
-		drawMonth(pdf, req, req.Year, month)
+	if in.request.ShowMonth {
+		drawMonth(pdf, in, in.request.Year, month)
 	}
 
-	if req.ShowWeekdays {
-		drawWeekdays(pdf, req)
+	if in.request.ShowWeekdays {
+		drawWeekdays(pdf, in)
 	}
 
-	if req.ShowWeekNumbers {
-		drawWeekNumbers(pdf, req, weekNumbers)
+	if in.request.ShowWeekNumbers {
+		drawWeekNumbers(pdf, in, weekNumbers)
 	}
 
-	drawDays(pdf, req, days)
+	drawDays(pdf, in, days)
 
 	return nil
 }
 
-func drawWeekdays(pdf *gofpdf.Fpdf, req *pdfRequest) {
-	setTextColor(pdf, req.weekdaysColor)
-	pdf.SetFont("weekdaysFontFamily", "", float64(req.WeekdaysFontSize))
+func drawWeekdays(pdf *gofpdf.Fpdf, in *input) {
+	setTextColor(pdf, in.weekdaysColor)
+	pdf.SetFont("weekdaysFontFamily", "", float64(in.request.WeekdaysFontSize))
 
-	for day := 0; day < 7; day++ {
-		x := day*req.DaysXStep + req.WeekdaysX - req.DaysXStep
+	var day int32
+	for day = 0; day < 7; day++ {
+		x := day*in.request.DaysXStep + in.request.WeekdaysX - in.request.DaysXStep
 
 		day := time.Weekday((day + 1) % 7).String()
 		day = day[:3]
 
 		pdf.MoveTo(float64(x), 0)
-		pdf.CellFormat(float64(req.DaysXStep), float64(req.WeekdaysY), day, "0", 0, "RA", false, 0, "")
+		pdf.CellFormat(float64(in.request.DaysXStep), float64(in.request.WeekdaysY), day, "0", 0, "RA", false, 0, "")
 	}
 }
 
-func drawWeekNumbers(pdf *gofpdf.Fpdf, req *pdfRequest, weekNumbers []int) {
-	setTextColor(pdf, req.weeknumbersColor)
-	pdf.SetFont("weeknumbersFontFamily", "", float64(req.WeeknumbersFontSize))
+func drawWeekNumbers(pdf *gofpdf.Fpdf, in *input, weekNumbers []int) {
+	setTextColor(pdf, in.weeknumbersColor)
+	pdf.SetFont("weeknumbersFontFamily", "", float64(in.request.WeeknumbersFontSize))
 
-	line := 0
+	var line int32
 	for _, weekNumber := range weekNumbers {
-		y := line*req.DaysYStep + req.WeeknumbersY - req.DaysYStep
+		y := line*in.request.DaysYStep + in.request.WeeknumbersY - in.request.DaysYStep
 
 		pdf.MoveTo(0, float64(y))
-		pdf.CellFormat(float64(req.WeeknumbersX), float64(req.DaysYStep), strconv.Itoa(weekNumber), "0", 0, "RA", false, 0, "")
+		pdf.CellFormat(float64(in.request.WeeknumbersX), float64(in.request.DaysYStep), strconv.Itoa(weekNumber), "0", 0, "RA", false, 0, "")
 
 		line++
 	}
 }
 
-func drawDays(pdf *gofpdf.Fpdf, req *pdfRequest, days []dayInfo) {
-	pdf.SetFont("daysFontFamily", "", float64(req.DaysFontSize))
+func drawDays(pdf *gofpdf.Fpdf, in *input, days []dayInfo) {
+	pdf.SetFont("daysFontFamily", "", float64(in.request.DaysFontSize))
 
 	var color color.Color
 
 	for _, dayInfo := range days {
-		color = req.textColor
+		color = in.textColor
 		if dayInfo.Inactive {
-			color = req.inactiveColor
+			color = in.inactiveColor
 		} else {
 			if dayInfo.Weekend {
-				color = req.weekendColor
+				color = in.weekendColor
 			}
 		}
 
-		if dayInfo.Inactive && !req.ShowInactiveDays {
+		if dayInfo.Inactive && !in.request.ShowInactiveDays {
 			continue
 		}
 
 		setTextColor(pdf, color)
 		pdf.MoveTo(float64(dayInfo.X), float64(dayInfo.Y))
 		pdf.CellFormat(
-			float64(req.DaysXStep),
-			float64(req.DaysYStep),
+			float64(in.request.DaysXStep),
+			float64(in.request.DaysYStep),
 			fmt.Sprintf("%d", dayInfo.Date.Day()),
 			"0", 0, "RA", false, 0, "",
 		)
 	}
 }
 
-func drawMonth(pdf *gofpdf.Fpdf, req *pdfRequest, year int, month time.Month) {
-	setTextColor(pdf, req.monthColor)
-	pdf.SetFont("monthFontFamily", "", float64(req.MonthFontSize))
+func drawMonth(pdf *gofpdf.Fpdf, in *input, year int32, month time.Month) {
+	setTextColor(pdf, in.monthColor)
+	pdf.SetFont("monthFontFamily", "", float64(in.request.MonthFontSize))
 
-	pdf.MoveTo(0, float64(req.MonthY))
+	pdf.MoveTo(0, float64(in.request.MonthY))
 	pdf.CellFormat(
 		// w, h, fmt.Sprintf("%s %d", i18n(month.String()), year),
 		200, 0, fmt.Sprintf("%s %d", month.String(), year),
@@ -289,17 +251,17 @@ func date(year, month, day int) time.Time {
 
 type dayInfo struct {
 	Date     time.Time
-	X        int
-	Y        int
+	X        int32
+	Y        int32
 	Weekend  bool
 	Inactive bool
 }
 
-func getDays(req *pdfRequest, year int, month time.Month) (days []dayInfo, weekNumbers []int) {
-	start := date(year, int(month), 1) // 2020 October 1
-	end := start.AddDate(0, 1, 0)      // 2020 November 1
+func getDays(in *input, year int32, month time.Month) (days []dayInfo, weekNumbers []int) {
+	start := date(int(year), int(month), 1) // 2020 October 1
+	end := start.AddDate(0, 1, 0)           // 2020 November 1
 
-	firstDay := time.Weekday(req.FirstDay)
+	firstDay := time.Weekday(in.request.FirstDay)
 	weekday := start.Weekday() // Thursday
 	daysSinceWeekStartToBeginningOfMonth := int(weekday) - int(firstDay)
 	if daysSinceWeekStartToBeginningOfMonth == -1 {
@@ -310,20 +272,20 @@ func getDays(req *pdfRequest, year int, month time.Month) (days []dayInfo, weekN
 	sheetStart := start.AddDate(0, 0, -daysSinceWeekStartToBeginningOfMonth)
 	t := sheetStart
 
-	row := 0
-	column := 0
+	var row int32
+	var column int32
 	_, weekNumber := t.ISOWeek()
 
 	for t.Unix() < end.Unix() {
 		days = append(days, dayInfo{
 			Date:     t,
-			X:        column*req.DaysXStep + req.DaysX - req.DaysXStep,
-			Y:        row*req.DaysYStep + req.DaysY - req.DaysYStep,
+			X:        column*in.request.DaysXStep + in.request.DaysX - in.request.DaysXStep,
+			Y:        row*in.request.DaysYStep + in.request.DaysY - in.request.DaysYStep,
 			Weekend:  t.Weekday() == time.Saturday || t.Weekday() == time.Sunday,
 			Inactive: t.Month() != month,
 		})
 
-		if int(t.Weekday()) == req.FirstDay {
+		if int32(t.Weekday()) == in.request.FirstDay {
 			weekNumbers = append(weekNumbers, weekNumber)
 			weekNumber++
 			if weekNumber > 52 {
@@ -341,7 +303,7 @@ func getDays(req *pdfRequest, year int, month time.Month) (days []dayInfo, weekN
 		t = t.AddDate(0, 0, 1)
 	}
 
-	if !req.ShowInactiveDays {
+	if !in.request.ShowInactiveDays {
 		return
 	}
 
@@ -349,8 +311,8 @@ func getDays(req *pdfRequest, year int, month time.Month) (days []dayInfo, weekN
 	for column < 7 {
 		days = append(days, dayInfo{
 			Date:     t,
-			X:        column*req.DaysXStep + req.DaysX - req.DaysXStep,
-			Y:        row*req.DaysYStep + req.DaysY - req.DaysYStep,
+			X:        column*in.request.DaysXStep + in.request.DaysX - in.request.DaysXStep,
+			Y:        row*in.request.DaysYStep + in.request.DaysY - in.request.DaysYStep,
 			Weekend:  t.Weekday() == time.Saturday || t.Weekday() == time.Sunday,
 			Inactive: t.Month() != month,
 		})

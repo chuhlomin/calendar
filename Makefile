@@ -14,6 +14,11 @@ vet:
 test:
 	@go test ./...
 
+.PHONY: protoc
+## protoc: generates the protobuf files
+protoc:
+	@protoc --go_out=. --go_opt=paths=source_relative request.proto
+
 .PHONY: run
 ## run: runs the binary
 run:
