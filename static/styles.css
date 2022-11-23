@@ -105,11 +105,24 @@ fieldset {
 }
 
 .actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: calc(100% - 25ch + 1px);
+  padding: 20px;
+  height: auto;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
-  height: 100%;
+  border-top: 1px solid var(--color-panel-border);
+  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.1s linear;
+  background: var(--color-background);
+}
+
+.scrolled .actions {
+  box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
 }
 
 .btn {
@@ -148,6 +161,7 @@ fieldset {
 
 .panel {
   border-right: 1px solid var(--color-panel-border);
+  padding-bottom: calc(109px + 20px);
 }
 
 .content {
@@ -170,6 +184,7 @@ fieldset {
   max-height: calc(100vh - 40px);
   height: -webkit-fill-available;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .canvas svg rect {
@@ -286,7 +301,7 @@ input[type="checkbox"] + span {
     --color-content-background: #282a3a;
 
     --color-panel-text: #888d94;
-    --color-panel-border: #1E1F2B;
+    --color-panel-border: #2e303e;
     --color-panel-current: #252633;
 
     --color-link: #6bf;
@@ -315,6 +330,9 @@ input[type="checkbox"] + span {
   }
   .field.color button {
     border: 1px solid #6d717b;
+  }
+  .actions {
+    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.4);
   }
   .btn {
     color: var(--color-text);
@@ -366,22 +384,11 @@ input[type="checkbox"] + span {
   .panel {
     width: auto;
     right: 0;
-    padding-bottom: calc(124px + 20px);
     border-right: 0;
+    padding-bottom: calc(124px + 20px);
   }
   .actions {
-    position: fixed;
-    bottom: 0;
-    left: 0;
     right: 0;
-    height: auto;
-    border-top: 1px solid var(--color-panel-border);
-    box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.1s linear;
-    background: var(--color-background);
-  }
-  .scrolled .actions {
-    box-shadow: 0 0px 5px rgba(0, 0, 0, 0.05);
   }
   .actions .buttons {
     display: grid;
