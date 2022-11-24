@@ -108,6 +108,7 @@ let templateWeeknumbers = document.getElementById('template_weeknumbers').innerH
 let calendarThresholds = [];
 
 let availableFonts = {
+    "firacode-regular": "Fira Code",
     "iosevka-regular": "Iosevka",
     "iosevka-aile-regular": "Iosevka Aile",
     "iosevka-etoile-regular": "Iosevka Etoile",
@@ -131,6 +132,7 @@ let availableFonts = {
     "iosevka-ss16-regular": "Iosevka SS16 (PT Mono Style)",
     "iosevka-ss17-regular": "Iosevka SS17 (Recursive Mono Style)",
     "iosevka-ss18-regular": "Iosevka SS18 (Input Mono Style)",
+    "jetbrains-mono-regular": "JetBrains Mono",
 };
 let loadedFonts = {};
 let loadingFonts = {};
