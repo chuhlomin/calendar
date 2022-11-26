@@ -741,6 +741,15 @@ function togglePreview(element) {
     }
 }
 
+function buildFilename(cfg) {
+    let filename = "calendar_" + cfg.year;
+    if (cfg.month != -1) {
+        filename += "_" + (cfg.month + 1);
+    }
+    filename += ".pdf";
+    return filename;
+}
+
 function submitForm(element) {
     let defaultLabel = element.value;
     element.setAttribute("disabled", "disabled");
@@ -764,7 +773,7 @@ function submitForm(element) {
                 let url = URL.createObjectURL(blob);
                 let a = document.createElement("a");
                 a.href = url;
-                a.download = "calendar.pdf";
+                a.download = buildFilename(cfg);
                 a.click();
             });
             element.removeAttribute("disabled");
