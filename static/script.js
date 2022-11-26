@@ -133,6 +133,8 @@ let availableFonts = {
     "iosevka-ss17-regular": "Iosevka SS17 (Recursive Mono Style)",
     "iosevka-ss18-regular": "Iosevka SS18 (Input Mono Style)",
     "jetbrains-mono-regular": "JetBrains Mono",
+    "naga-regular": "Naga",
+    "onest-regular": "Onest",
 };
 let loadedFonts = {};
 let loadingFonts = {};
