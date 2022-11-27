@@ -3,6 +3,7 @@
 let today = new Date();
 
 let config = {
+    language: "en",
     pageSize: "A4",
     firstDay: "0",
     year: today.getFullYear(),
@@ -45,6 +46,7 @@ let config = {
 };
 
 let configInputTypes = {
+    language: "select",
     pageSize: "select",
     firstDay: "radio",
     month: "select",
@@ -92,6 +94,7 @@ let configIntegerFields = ["firstDay", "year", "month"];
 
 let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
+let language = document.getElementById("language");
 let pageSize = document.getElementById("pageSize");
 let canvas = document.getElementById("canvas");
 let calendar = document.getElementById("calendar");
@@ -106,6 +109,31 @@ let templateWeeknumbers = document.getElementById('template_weeknumbers').innerH
 // calendarThresholds calculated based on page size (see `updatePage`)
 // and affects optimal number of rows and columns
 let calendarThresholds = [];
+
+let months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+];
+
+let weekdays = [
+    "Sun",
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+];
 
 let availableFonts = {
     "firacode-regular": "Fira Code",
@@ -174,6 +202,10 @@ function loadConfig(key) {
             select.value = value;
             if (select.classList.contains("font")) {
                 loadFont(value);
+            }
+
+            if (key == "language") {
+                updateLanguage();
             }
 
             if (key == "pageSize") {
@@ -366,6 +398,56 @@ function updatePage() {
     rect.setAttribute("height", height);
 }
 
+function updateLanguage() {
+    let language = config.language;
+    
+    // get translations from /i18n/?lang=language endpoint
+    fetch("/i18n/?lang=" + language)
+        .then(response => response.json())
+        .then(data => {
+            // find all elements with data-i18n attribute
+            let elements = document.querySelectorAll("[data-i18n]");
+
+            for (let i = 0; i < elements.length; i++) {
+                let element = elements[i];
+                let key = element.dataset.i18n;
+                if (data[key]) {
+                    element.innerHTML = data[key];
+                }
+            }
+
+            months = [
+                data.month_january,
+                data.month_february,
+                data.month_march,
+                data.month_april,
+                data.month_may,
+                data.month_june,
+                data.month_july,
+                data.month_august,
+                data.month_september,
+                data.month_october,
+                data.month_november,
+                data.month_december
+            ];
+
+            weekdays = [
+                data.weekday_short_sunday,
+                data.weekday_short_monday,
+                data.weekday_short_tuesday,
+                data.weekday_short_wednesday,
+                data.weekday_short_thursday,
+                data.weekday_short_friday,
+                data.weekday_short_saturday
+            ];
+
+            updateCalendar();
+        })
+        .catch(error => {
+            alert("Error: " + error);
+        });
+}
+
 function changeMonth(step) {
     let month = parseInt(config.month);
     let year = parseInt(config.year);
@@ -415,6 +497,9 @@ function changeConfigKV(key, value) {
     config[key] = value;
     if (key == "pageSize") {
         updatePage();
+    }
+    if (key == "language") {
+        updateLanguage();
     }
     updateCalendar();
     localStorage.setItem(key, value);
@@ -543,27 +628,10 @@ function days(cfg, month) {
     return [days, weekNumbers];
 }
 
-function weekdays(cfg, xShift, yShift) {
+function weekdaysLayout(cfg, xShift, yShift) {
     if (!cfg.showWeekdays) {
         return [];
     }
-
-    let weekdays = [
-        // "Sunday",
-        // "Monday",
-        // "Tuesday",
-        // "Wednesday",
-        // "Thursday",
-        // "Friday",
-        // "Saturday",
-        "Sun",
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-    ];
 
     let days = [];
     for (let i = 0; i < 7; i++) {
@@ -675,7 +743,7 @@ function addMonthToPage(page, cfg, width, month) {
     let weekdaysGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
     weekdaysGroup.classList.add("weekdays");
     weekdaysGroup.innerHTML = Mustache.render(templateWeekdays, {
-        weekdays: weekdays(cfg, 0, 0),
+        weekdays: weekdaysLayout(cfg, 0, 0),
         weekdaysFontFamilyLoading: (cfg.weekdaysFontFamily in loadingFonts)
     });
     page.appendChild(weekdaysGroup);
@@ -700,21 +768,6 @@ function updateSVGStyles(cfg) {
 
     document.getElementById('style').innerHTML = Mustache.render(templateStyles, cfg);
 }
-
-let months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-];
 
 function getMonth(cfg, month) {
     if (!cfg.showMonth) {

@@ -8,6 +8,7 @@ message Request {
   int32 firstDay = 2;
   int32 year = 3;
   int32 month = 4;
+  string language = 5;
 
   // Days
   int32 daysFontSize = 10;

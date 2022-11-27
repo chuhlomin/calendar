@@ -36,4 +36,5 @@ func (s *server) routes() {
 
 	s.router.Post("/pdf", handlerPDF)
 	s.router.Post("/encode", handlerEncode)
+	s.router.Get("/i18n", handlerI18n)
 }

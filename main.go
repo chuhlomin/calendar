@@ -10,6 +10,8 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
+var localizer *Localizer
+
 func main() {
 	log.Println("Starting...")
 
@@ -24,6 +26,12 @@ func run() error {
 	bind := flag.String("bind", ":8080", "Bind address")
 	flag.Parse()
 
+	var err error
+	localizer, err = NewLocalizer("langs")
+	if err != nil {
+		return err
+	}
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.RequestID)
@@ -37,7 +45,7 @@ func run() error {
 
 	log.Printf("Starting server on %s", *bind)
 	if err := http.ListenAndServe(*bind, srv.router); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	return nil

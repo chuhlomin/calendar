@@ -9,7 +9,6 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     -o /go/bin/app .
 
 FROM scratch
-COPY static /static
-COPY fonts /fonts
+COPY langs static fonts /
 COPY --from=builder /go/bin/app /app
 ENTRYPOINT ["/app", "--bind", "0.0.0.0:80"]

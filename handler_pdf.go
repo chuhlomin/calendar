@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/jung-kurt/gofpdf"
@@ -50,6 +51,10 @@ func parsePDFRequest(r *http.Request) (*input, error) {
 	err := json.NewDecoder(r.Body).Decode(&in.request)
 	if err != nil {
 		return nil, errors.Wrap(err, "error decoding json")
+	}
+
+	if !localizer.HasLanguage(in.request.Language) {
+		return nil, errors.New("language not supported")
 	}
 
 	in.textColor, err = colorful.Hex(in.request.TextColor)
@@ -154,7 +159,7 @@ func drawWeekdays(pdf *gofpdf.Fpdf, in *input) {
 		x := day*in.request.DaysXStep + in.request.WeekdaysX - in.request.DaysXStep
 
 		day := time.Weekday((day + 1) % 7).String()
-		day = day[:3]
+		day = localizer.I18n(in.request.Language, "weekday_short_"+strings.ToLower(day))
 
 		pdf.MoveTo(float64(x), 0)
 		pdf.CellFormat(float64(in.request.DaysXStep), float64(in.request.WeekdaysY), day, "0", 0, "RA", false, 0, "")
@@ -212,8 +217,15 @@ func drawMonth(pdf *gofpdf.Fpdf, in *input, year int32, month time.Month) {
 
 	pdf.MoveTo(0, float64(in.request.MonthY))
 	pdf.CellFormat(
-		// w, h, fmt.Sprintf("%s %d", i18n(month.String()), year),
-		200, 0, fmt.Sprintf("%s %d", month.String(), year),
+		200, 0,
+		fmt.Sprintf(
+			"%s %d",
+			localizer.I18n(
+				in.request.Language,
+				"month_"+strings.ToLower(month.String()),
+			),
+			year,
+		),
 		"0", 0, "CA", false, 0, "",
 	)
 }
