@@ -1,9 +1,6 @@
 calendar = "Calendar"
 
 language = "Language"
-english = "English"
-russian = "Russian"
-ukranian = "Ukranian"
 
 paper_size = "Paper size"
 paper_size_a4 = "A4 (210 × 297 mm)"
@@ -35,6 +32,7 @@ font_size = "Font size, pt"
 color = "Color"
 weekends = "Weekends"
 inactive_color = "Inactive"
+format = "Format"
 
 x = "X, mm"
 y = "Y, mm"

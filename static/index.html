@@ -39,9 +39,9 @@
                 <div class="field">
                     <legend data-i18n="language">Language</legend>
                     <select name="language" id="language" onchange="changeConfig(this)">
-                        <option value="en" selected data-i18n="english">English</option>
-                        <option value="ru" data-i18n="russian">Russian</option>
-                        <option value="uk" data-i18n="ukranian">Ukranian</option>
+                        <option value="en" selected>English</option>
+                        <option value="ru">Русский – Russian</option>
+                        <option value="uk">Українська – Ukranian</option>
                     </select>
                 </div>
 
@@ -164,6 +164,18 @@
                             <input type="checkbox" name="showMonth" checked="true" onchange="changeConfig(this)" data-fieldset="month"> <span data-i18n="month">Month</span>
                         </label>
                     </legend>
+
+                    <div class="field">
+                        <label class="full-width-label" data-i18n="format">Format</label>
+                        <select name="monthFormat" onchange="changeConfig(this)">
+                            <option class="month-format" value="January">January</option>
+                            <option class="month-format" value="January 2006" selected>January 2006</option>
+                            <option value="1">1</option>
+                            <option value="1.2006">1.2006</option>
+                            <option value="01.2006">01.2006</option>
+                            <option value="2006-01">2006-01</option>
+                        </select>
+                    </div>
 
                     <div class="field">
                         <label class="full-width-label" data-i18n="font_family">Font family</label>

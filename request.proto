@@ -28,6 +28,7 @@ message Request {
   int32 monthFontSize = 102;
   string monthColor = 103;
   int32 monthY = 104;
+  string monthFormat = 105;
 
   // Weekdays
   bool showWeekdays = 200;

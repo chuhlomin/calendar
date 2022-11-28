@@ -215,19 +215,26 @@ func drawMonth(pdf *gofpdf.Fpdf, in *input, year int32, month time.Month) {
 	setTextColor(pdf, in.monthColor)
 	pdf.SetFont("monthFontFamily", "", float64(in.request.MonthFontSize))
 
-	pdf.MoveTo(0, float64(in.request.MonthY))
-	pdf.CellFormat(
-		200, 0,
-		fmt.Sprintf(
-			"%s %d",
-			localizer.I18n(
-				in.request.Language,
-				"month_"+strings.ToLower(month.String()),
-			),
-			year,
-		),
-		"0", 0, "CA", false, 0, "",
+	line := time.Date(int(year), month, 1, 0, 0, 0, 0, time.UTC).Format(in.request.MonthFormat)
+	log.Printf("line: %s, format: %s", line, in.request.MonthFormat)
+	replacer := strings.NewReplacer(
+		"January", localizer.I18n(in.request.Language, "month_january"),
+		"February", localizer.I18n(in.request.Language, "month_february"),
+		"March", localizer.I18n(in.request.Language, "month_march"),
+		"April", localizer.I18n(in.request.Language, "month_april"),
+		"May", localizer.I18n(in.request.Language, "month_may"),
+		"June", localizer.I18n(in.request.Language, "month_june"),
+		"July", localizer.I18n(in.request.Language, "month_july"),
+		"August", localizer.I18n(in.request.Language, "month_august"),
+		"September", localizer.I18n(in.request.Language, "month_september"),
+		"October", localizer.I18n(in.request.Language, "month_october"),
+		"November", localizer.I18n(in.request.Language, "month_november"),
+		"December", localizer.I18n(in.request.Language, "month_december"),
 	)
+	line = replacer.Replace(line)
+
+	pdf.MoveTo(0, float64(in.request.MonthY))
+	pdf.CellFormat(200, 0, line, "0", 0, "CA", false, 0, "")
 }
 
 func setTextColor(pdf *gofpdf.Fpdf, color color.Color) {

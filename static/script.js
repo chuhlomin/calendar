@@ -23,6 +23,7 @@ let config = {
 
     // month
     showMonth: "true",
+    monthFormat: "January 2006",
     monthFontFamily: "iosevka-aile-regular",
     monthFontSize: "50",
     monthColor: "#222222",
@@ -66,6 +67,7 @@ let configInputTypes = {
 
     // month
     showMonth: "checkbox",
+    monthFormat: "select",
     monthFontFamily: "select",
     monthFontSize: "number",
     monthColor: "color",
@@ -221,6 +223,10 @@ function loadConfig(key) {
         case "number":
             let input = document.getElementsByName(key)[0];
             input.value = value;
+
+            if (key == "year" || key == "month") {
+                updateFormats();
+            }
             break;
 
         case "checkbox":
@@ -329,7 +335,7 @@ window.onload = function() {
     updateCalendar();
 };
 
-let prevRows = 0;
+let currentRows = 0;
 
 function maybeResizeCalendar() {
     if (config.month != "-1") { // year
@@ -341,8 +347,8 @@ function maybeResizeCalendar() {
     let height = parseInt(pageData.height);
 
     let rows = getOptimalNumberOfRows(width, height);
-    if (rows != prevRows) {
-        prevRows = rows;
+    if (rows != currentRows) {
+        currentRows = rows;
         resizeCalendar(rows, width, height);
     }
 }
@@ -441,6 +447,7 @@ function updateLanguage() {
                 data.weekday_short_saturday
             ];
 
+            updateFormats();
             updateCalendar();
         })
         .catch(error => {
@@ -498,6 +505,9 @@ function changeConfigKV(key, value) {
     if (key == "pageSize") {
         updatePage();
     }
+    if (key == "year" || key == "month") {
+        updateFormats();
+    }
     if (key == "language") {
         updateLanguage();
     }
@@ -520,6 +530,17 @@ function toggleFieldset(fieldsetName, enabled) {
         for (let i = 0; i < inputs.length; i++) {
             inputs[i].disabled = true;
         }
+    }
+}
+
+function updateFormats() {
+    let options = document.getElementsByClassName("month-format");
+    for (let i = 0; i < options.length; i++) {
+        let option = options[i];
+        let format = option.value;
+        let result = format;
+
+        option.innerHTML = result.replace("January", months[0]);
     }
 }
 
@@ -667,7 +688,7 @@ function getOptimalNumberOfRows(width, height) {
 
 function drawYear(cfg, width, height) {
     let rows = getOptimalNumberOfRows(width, height);
-    prevRows = rows;
+    currentRows = rows;
     let columns = 12 / rows;
 
     svg.setAttribute("viewBox", "0 0 " + (width * columns + gap * (columns - 1)) + " " + (height * rows + gap * (rows - 1)));
@@ -774,7 +795,14 @@ function getMonth(cfg, month) {
         return "";
     }
 
-    return months[month] + " " + cfg.year;
+    return cfg.monthFormat
+        .replace("2006", "_year_")
+        .replace("01", "_monthPad_")
+        .replace("1", "_month_")
+        .replace("_year_", cfg.year)
+        .replace("_monthPad_", ("0" + (month + 1).toString()).slice(-2))
+        .replace("_month_", month + 1)
+        .replace("January", months[month]);
 }
 
 function getWeekNumber(d) {
