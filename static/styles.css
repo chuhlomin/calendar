@@ -141,6 +141,7 @@ fieldset {
 .actions .btn {
   display: block;
   width: 100%;
+  white-space: nowrap;
 }
 
 .btn:active {
