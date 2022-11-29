@@ -30,7 +30,7 @@ loading = "Loading..."
 font_family = "Font family"
 font_size = "Font size, pt"
 color = "Color"
-weekends = "Weekends"
+weekend_color = "Weekends"
 inactive_color = "Inactive"
 format = "Format"
 
