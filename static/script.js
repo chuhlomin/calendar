@@ -315,6 +315,20 @@ window.onload = function() {
             let option = document.createElement("option");
             option.value = font;
             option.text = availableFonts[font];
+            
+            if (select.name == "daysFontFamily" && font == config.daysFontFamily) {
+                option.selected = true;
+            }
+            if (select.name == "monthFontFamily" && font == config.monthFontFamily) {
+                option.selected = true;
+            }
+            if (select.name == "weekdaysFontFamily" && font == config.weekdaysFontFamily) {
+                option.selected = true;
+            }
+            if (select.name == "weeknumbersFontFamily" && font == config.weeknumbersFontFamily) {
+                option.selected = true;
+            }
+
             select.add(option);
         }
     }
