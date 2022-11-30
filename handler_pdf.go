@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"image/color"
@@ -12,7 +13,6 @@ import (
 	"time"
 
 	"github.com/jung-kurt/gofpdf"
-	"github.com/lucasb-eyer/go-colorful"
 	"github.com/pkg/errors"
 )
 
@@ -57,32 +57,32 @@ func parsePDFRequest(r *http.Request) (*input, error) {
 		return nil, errors.New("language not supported")
 	}
 
-	in.textColor, err = colorful.Hex(in.request.TextColor)
+	in.textColor, err = decodeColorHex(in.request.TextColor)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing text color %q", in.request.TextColor)
 	}
 
-	in.weekendColor, err = colorful.Hex(in.request.WeekendColor)
+	in.weekendColor, err = decodeColorHex(in.request.WeekendColor)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing weekend color %q", in.request.WeekendColor)
 	}
 
-	in.weeknumbersColor, err = colorful.Hex(in.request.WeeknumbersColor)
+	in.weeknumbersColor, err = decodeColorHex(in.request.WeeknumbersColor)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing weeknumbers color %q", in.request.WeeknumbersColor)
 	}
 
-	in.monthColor, err = colorful.Hex(in.request.MonthColor)
+	in.monthColor, err = decodeColorHex(in.request.MonthColor)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing month color %q", in.request.MonthColor)
 	}
 
-	in.weekdaysColor, err = colorful.Hex(in.request.WeekdaysColor)
+	in.weekdaysColor, err = decodeColorHex(in.request.WeekdaysColor)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing weekdays color %q", in.request.WeekdaysColor)
 	}
 
-	in.inactiveColor, err = colorful.Hex(in.request.InactiveColor)
+	in.inactiveColor, err = decodeColorHex(in.request.InactiveColor)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing inactive color %q", in.request.InactiveColor)
 	}
@@ -340,4 +340,27 @@ func getDays(in *input, year int32, month time.Month) (days []dayInfo, weekNumbe
 	}
 
 	return
+}
+
+func decodeColorHex(colorStr string) (color.Color, error) {
+	b, err := hex.DecodeString(normalizeColor(colorStr))
+	if err != nil {
+		return nil, err
+	}
+
+	return color.RGBA{b[0], b[1], b[2], b[3]}, nil
+}
+
+func normalizeColor(colorStr string) string {
+	colorStr = strings.TrimPrefix(colorStr, "#")
+
+	if len(colorStr) == 3 {
+		colorStr = fmt.Sprintf("%s%s%s%s%s%s", colorStr[0:1], colorStr[0:1], colorStr[1:2], colorStr[1:2], colorStr[2:3], colorStr[2:3])
+	}
+
+	if len(colorStr) == 6 {
+		colorStr += "FF"
+	}
+
+	return colorStr
 }
