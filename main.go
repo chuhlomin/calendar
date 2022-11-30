@@ -43,7 +43,7 @@ func run() error {
 	srv := server{router: r}
 	srv.routes()
 
-	log.Printf("Starting server on %s", *bind)
+	log.Printf("Starting server on http://%s", *bind)
 	if err := http.ListenAndServe(*bind, srv.router); err != nil {
 		return err
 	}

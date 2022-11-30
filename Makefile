@@ -23,4 +23,4 @@ protoc:
 ## run: runs the binary
 run:
 	@go build -o calendar .
-	@./calendar --bind :8082
+	@./calendar --bind 127.0.0.1:8082
