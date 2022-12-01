@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/jung-kurt/gofpdf"
-	"github.com/pkg/errors"
 )
 
 type input struct {
@@ -50,45 +49,45 @@ func parsePDFRequest(r *http.Request) (*input, error) {
 	in := input{}
 	err := json.NewDecoder(r.Body).Decode(&in.request)
 	if err != nil {
-		return nil, errors.Wrap(err, "error decoding json")
+		return nil, fmt.Errorf("error decoding request: %w", err)
 	}
 
 	if !localizer.HasLanguage(in.request.Language) {
-		return nil, errors.New("language not supported")
+		return nil, fmt.Errorf("language not supported")
 	}
 
 	in.textColor, err = decodeColorHex(in.request.TextColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing text color %q", in.request.TextColor)
+		return nil, fmt.Errorf("error parsing text color: %w", err)
 	}
 
 	in.weekendColor, err = decodeColorHex(in.request.WeekendColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing weekend color %q", in.request.WeekendColor)
+		return nil, fmt.Errorf("error parsing weekend color: %w", err)
 	}
 
 	in.weeknumbersColor, err = decodeColorHex(in.request.WeeknumbersColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing weeknumbers color %q", in.request.WeeknumbersColor)
+		return nil, fmt.Errorf("error parsing weeknumbers color %q", in.request.WeeknumbersColor)
 	}
 
 	in.monthColor, err = decodeColorHex(in.request.MonthColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing month color %q", in.request.MonthColor)
+		return nil, fmt.Errorf("error parsing month color %q: %w", in.request.MonthColor, err)
 	}
 
 	in.weekdaysColor, err = decodeColorHex(in.request.WeekdaysColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing weekdays color %q", in.request.WeekdaysColor)
+		return nil, fmt.Errorf("error parsing weekdays color %q: %w", in.request.WeekdaysColor, err)
 	}
 
 	in.inactiveColor, err = decodeColorHex(in.request.InactiveColor)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing inactive color %q", in.request.InactiveColor)
+		return nil, fmt.Errorf("error parsing inactive color %q: %w", in.request.InactiveColor, err)
 	}
 
 	if in.request.Month < -1 || in.request.Month > 11 {
-		return nil, errors.Errorf("invalid month %d", in.request.Month)
+		return nil, fmt.Errorf("invalid month %d", in.request.Month)
 	}
 
 	return &in, nil
@@ -108,19 +107,19 @@ func createPDF(writer io.Writer, in *input) error {
 		for month := 0; month < 12; month++ {
 			err := createPDFMonth(writer, pdf, in, time.Month(month+1))
 			if err != nil {
-				return errors.Wrapf(err, "error creating PDF for month %d", month)
+				return fmt.Errorf("error creating PDF month: %w", err)
 			}
 		}
 	} else {
 		err := createPDFMonth(writer, pdf, in, time.Month(in.request.Month+1))
 		if err != nil {
-			return errors.Wrapf(err, "error creating PDF for month %d", in.request.Month)
+			return fmt.Errorf("error creating PDF month: %w", err)
 		}
 	}
 
 	err := pdf.Output(writer)
 	if err != nil {
-		return errors.Wrap(err, "error writing pdf")
+		return fmt.Errorf("error writing PDF: %w", err)
 	}
 
 	return nil
@@ -216,7 +215,6 @@ func drawMonth(pdf *gofpdf.Fpdf, in *input, year int32, month time.Month) {
 	pdf.SetFont("monthFontFamily", "", float64(in.request.MonthFontSize))
 
 	line := time.Date(int(year), month, 1, 0, 0, 0, 0, time.UTC).Format(in.request.MonthFormat)
-	log.Printf("line: %s, format: %s", line, in.request.MonthFormat)
 	replacer := strings.NewReplacer(
 		"January", localizer.I18n(in.request.Language, "month_january"),
 		"February", localizer.I18n(in.request.Language, "month_february"),
