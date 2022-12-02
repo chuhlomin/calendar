@@ -98,6 +98,7 @@ let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
 let language = document.getElementById("language");
 let pageSize = document.getElementById("pageSize");
+let yearInput = document.getElementsById("year");
 let canvas = document.getElementById("canvas");
 let calendar = document.getElementById("calendar");
 let svg = document.getElementById("svg");
@@ -244,11 +245,6 @@ function loadConfig(key) {
                 loadFont(config[key]);
             }
         }
-        if (key == "year") {
-            // set year to current year
-            let input = document.getElementsByName(key)[0];
-            input.value = config.year;
-        }
         if (key == "month") {
             // make sure the month by default is the next month
             let date = new Date();
@@ -256,6 +252,7 @@ function loadConfig(key) {
             if (config.month == 12) {
                 config.month = 0;
                 config.year++;
+                yearInput.value = config.year;
             }
             let select = document.getElementsByName(key)[0];
             select.value = config.month;
