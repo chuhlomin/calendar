@@ -252,12 +252,13 @@ function loadConfig(key) {
         if (key == "month") {
             // make sure the month by default is the next month
             let date = new Date();
-            config[key] = date.getMonth() + 1;
-            if (config[key] == 12) {
+            config.month = date.getMonth() + 1;
+            if (config.month == 12) {
+                config.month = 0;
                 config.year++;
             }
             let select = document.getElementsByName(key)[0];
-            select.value = config[key];
+            select.value = config.month;
         }
     }
 }
