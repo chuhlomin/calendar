@@ -98,7 +98,7 @@ let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
 let language = document.getElementById("language");
 let pageSize = document.getElementById("pageSize");
-let yearInput = document.getElementsById("year");
+let yearInput = document.getElementById("year");
 let canvas = document.getElementById("canvas");
 let calendar = document.getElementById("calendar");
 let svg = document.getElementById("svg");
@@ -302,8 +302,7 @@ window.onload = function() {
 
     // update select.font options
     let fontSelects = document.querySelectorAll("select.font");
-    for (let i = 0; i < fontSelects.length; i++) {
-        let select = fontSelects[i];
+    for (const select of fontSelects) {
         // remove all options
         while (select.firstChild) {
             select.removeChild(select.firstChild);
@@ -338,7 +337,7 @@ window.onload = function() {
         if (configInputTypes[key] == "color") {
             let button = document.getElementsByName(key)[0];
             new ColorPicker(button, config[key]);
-            button.addEventListener('colorChange', function (event) {
+            button.addEventListener('colorChange', (event) => {
                 changeConfigKV(key, event.detail.color.hexa);
             });
         }
@@ -426,8 +425,7 @@ function updateLanguage() {
             // find all elements with data-i18n attribute
             let elements = document.querySelectorAll("[data-i18n]");
 
-            for (let i = 0; i < elements.length; i++) {
-                let element = elements[i];
+            for (const element of elements) {
                 let key = element.dataset.i18n;
                 if (data[key]) {
                     element.innerHTML = data[key];
@@ -534,21 +532,20 @@ function toggleFieldset(fieldsetName, enabled) {
 
     if (enabled) {
         fieldset.classList.remove("disabled");
-        for (let i = 0; i < inputs.length; i++) {
-            inputs[i].disabled = false;
+        for (const input of inputs) {
+            input.disabled = false;
         }
     } else {
         fieldset.classList.add("disabled");
-        for (let i = 0; i < inputs.length; i++) {
-            inputs[i].disabled = true;
+        for (const input of inputs) {
+            input.disabled = true;
         }
     }
 }
 
 function updateFormats() {
     let options = document.getElementsByClassName("month-format");
-    for (let i = 0; i < options.length; i++) {
-        let option = options[i];
+    for (const option of options) {
         let format = option.value;
         let result = format;
 
