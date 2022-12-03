@@ -26,24 +26,24 @@ let config = {
     monthFormat: "January 2006",
     monthFontFamily: "iosevka-aile-regular",
     monthFontSize: "50",
-    monthColor: "#222222",
     monthY: "260",
+    monthColor: "#222222",
 
     // weekdays
     showWeekdays: "true",
     weekdaysFontFamily: "iosevka-aile-regular",
     weekdaysFontSize: "18",
-    weekdaysColor: "#999999",
     weekdaysX: "40",
     weekdaysY: "32",
+    weekdaysColor: "#999999",
 
     // week numbers
     showWeekNumbers: "true",
     weeknumbersFontFamily: "iosevka-regular",
     weeknumbersFontSize: "16",
-    weeknumbersColor: "#999999",
     weeknumbersX: "20",
     weeknumbersY: "43",
+    weeknumbersColor: "#999999",
 };
 
 let configInputTypes = {
@@ -56,12 +56,12 @@ let configInputTypes = {
     // days
     daysFontSize: "number",
     daysFontFamily: "select",
-    textColor: "color",
-    weekendColor: "color",
     daysX: "number",
     daysY: "number",
     daysXStep: "number",
     daysYStep: "number",
+    textColor: "color",
+    weekendColor: "color",
     showInactiveDays: "checkbox",
     inactiveColor: "color",
 
@@ -90,6 +90,20 @@ let configInputTypes = {
     weeknumbersY: "number",
 };
 
+const styleOnlyConfig = [
+    "daysFontSize",
+    "daysFontFamily",
+    "textColor",
+    "weekendColor",
+    "inactiveColor",
+    "monthFontFamily",
+    "monthColor",
+    "weekdaysFontFamily",
+    "weekdaysColor",
+    "weeknumbersFontFamily",
+    "weeknumbersColor",
+];
+
 const gap = 10; // mm
 
 let configIntegerFields = ["firstDay", "year", "month"];
@@ -101,6 +115,7 @@ let pageSize = document.getElementById("pageSize");
 let yearInput = document.getElementById("year");
 let canvas = document.getElementById("canvas");
 let calendar = document.getElementById("calendar");
+let style = document.getElementById('style');
 let svg = document.getElementById("svg");
 let rect = document.getElementById("rect");
 let templateStyles = document.getElementById('template_styles').innerHTML;
@@ -187,7 +202,7 @@ function loadFont(fontName) {
             document.fonts.add(loadedFace);
             loadedFonts[fontName] = true;
             delete loadingFonts[fontName];
-            updateCalendar();
+            updateCalendar(true);
         })
         .catch(function(error) {
             console.log(error);
@@ -521,7 +536,7 @@ function changeConfigKV(key, value) {
     if (key == "language") {
         updateLanguage();
     }
-    updateCalendar();
+    updateCalendar(styleOnlyConfig.includes(key));
     localStorage.setItem(key, value);
 }
 
@@ -553,7 +568,7 @@ function updateFormats() {
     }
 }
 
-function updateCalendar() {
+function updateCalendar(styleOnly = false) {
     let pageData = pageSize.querySelector("option[value='" + config.pageSize + "']").dataset;
     let width = parseInt(pageData.width);
     let height = parseInt(pageData.height);
@@ -566,12 +581,19 @@ function updateCalendar() {
 
     updateSVGStyles(cfg);
 
-    if (cfg.month == -1) {
-        drawYear(cfg, width, height);
+    if (styleOnly) {
         return;
     }
 
-    drawMonth(cfg, width, height);
+    // sleep for 2 seconds
+    setTimeout(function() {
+        if (cfg.month == -1) {
+            drawYear(cfg, width, height);
+            return;
+        }
+    
+        drawMonth(cfg, width, height);
+    }, 2000);
 }
 
 function days(cfg, month) {
@@ -643,7 +665,7 @@ function days(cfg, month) {
     }
 
     // finish last row
-     while (date.getDay() != cfg.firstDay && cfg.showInactiveDays) {
+    while (date.getDay() != cfg.firstDay && cfg.showInactiveDays) {
         days.push({
             day: date.getDate(),
             x: column * cfg.daysXStep + cfg.daysX,
@@ -796,7 +818,7 @@ function updateSVGStyles(cfg) {
     cfg.weekdaysFontSize /= k;
     cfg.weeknumbersFontSize /= k;
 
-    document.getElementById('style').innerHTML = Mustache.render(templateStyles, cfg);
+    style.innerHTML = Mustache.render(templateStyles, cfg);
 }
 
 function getMonth(cfg, month) {
