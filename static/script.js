@@ -589,15 +589,12 @@ function updateCalendar(styleOnly = false) {
         return;
     }
 
-    // sleep for 2 seconds
-    setTimeout(function() {
-        if (cfg.month == -1) {
-            drawYear(cfg, width, height);
-            return;
-        }
+    if (cfg.month == -1) {
+        drawYear(cfg, width, height);
+        return;
+    }
     
-        drawMonth(cfg, width, height);
-    }, 2000);
+    drawMonth(cfg, width, height);
 }
 
 function days(cfg, month) {
