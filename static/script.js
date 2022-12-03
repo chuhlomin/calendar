@@ -2,12 +2,20 @@
 
 let today = new Date();
 
+let month = today.getMonth();
+let year = today.getFullYear();
+month++;
+if (month == 12) {
+    month = 0;
+    year++;
+}
+
 let config = {
     language: "en",
     pageSize: "A4",
     firstDay: "0",
-    year: today.getFullYear(),
-    month: today.getMonth(), // changed by loadConfig if not found in localStorage
+    year: year,
+    month: month, // changed by loadConfig if not found in localStorage
 
     // days
     daysFontSize: "45",
@@ -260,15 +268,11 @@ function loadConfig(key) {
                 loadFont(config[key]);
             }
         }
+        if (key == "year") {
+            yearInput.value = config.year;
+        }
         if (key == "month") {
             // make sure the month by default is the next month
-            let date = new Date();
-            config.month = date.getMonth() + 1;
-            if (config.month == 12) {
-                config.month = 0;
-                config.year++;
-                yearInput.value = config.year;
-            }
             let select = document.getElementsByName(key)[0];
             select.value = config.month;
         }
