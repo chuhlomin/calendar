@@ -270,39 +270,41 @@ type dayInfo struct {
 	Date     time.Time
 	X        int32
 	Y        int32
-	Weekend  bool
 	Inactive bool
+	Weekend  bool
 }
 
-func getDays(in *input, year int32, month time.Month) (days []dayInfo, weekNumbers []int) {
-	start := date(int(year), int(month), 1) // 2020 October 1
-	end := start.AddDate(0, 1, 0)           // 2020 November 1
+type days []dayInfo
 
+func getDays(in *input, year int32, month time.Month) (days days, weekNumbers []int) {
 	firstDay := time.Weekday(in.request.FirstDay)
-	weekday := start.Weekday() // Thursday
-	daysSinceWeekStartToBeginningOfMonth := int(weekday) - int(firstDay)
-	if daysSinceWeekStartToBeginningOfMonth == -1 {
-		// Sun (0) - Mon (1) = -1
-		daysSinceWeekStartToBeginningOfMonth = 6
+	lastDay := firstDay - 1
+	if lastDay < 0 {
+		lastDay = 6
 	}
 
-	sheetStart := start.AddDate(0, 0, -daysSinceWeekStartToBeginningOfMonth)
-	t := sheetStart
+	t := date(int(year), int(month), 1) // 2020 October 1
+	end := t.AddDate(0, 1, 0)           // 2020 November 1
+	if end.Weekday() == firstDay && in.request.ShowInactiveDays {
+		end = end.AddDate(0, 0, 7)
+	}
+
+	if t.Weekday() != firstDay {
+		if t.Weekday() == lastDay {
+			t = t.AddDate(0, 0, -6)
+		} else {
+			t = t.AddDate(0, 0, -int(t.Weekday()-firstDay))
+		}
+	}
 
 	var row int32
 	var column int32
 	_, weekNumber := t.ISOWeek()
 
 	for t.Unix() < end.Unix() {
-		days = append(days, dayInfo{
-			Date:     t,
-			X:        column*in.request.DaysXStep + in.request.DaysX - in.request.DaysXStep,
-			Y:        row*in.request.DaysYStep + in.request.DaysY - in.request.DaysYStep,
-			Weekend:  t.Weekday() == time.Saturday || t.Weekday() == time.Sunday,
-			Inactive: t.Month() != month,
-		})
+		inactive := t.Month() != month
 
-		if int32(t.Weekday()) == in.request.FirstDay {
+		if t.Weekday() == firstDay {
 			weekNumbers = append(weekNumbers, weekNumber)
 			weekNumber++
 			if weekNumber > 52 {
@@ -310,31 +312,42 @@ func getDays(in *input, year int32, month time.Month) (days []dayInfo, weekNumbe
 			}
 		}
 
+		// skip inactive days in the first week
+		if row == 0 && inactive && !in.request.ShowInactiveDays {
+			t = t.AddDate(0, 0, 1)
+			column++
+			continue
+		}
+
+		days = append(days, dayInfo{
+			Date:     t,
+			X:        column*in.request.DaysXStep + in.request.DaysX - in.request.DaysXStep,
+			Y:        row*in.request.DaysYStep + in.request.DaysY - in.request.DaysYStep,
+			Inactive: inactive,
+			Weekend:  t.Weekday() == time.Saturday || t.Weekday() == time.Sunday,
+		})
+
+		t = t.AddDate(0, 0, 1)
+
 		if column == 6 {
 			row++
 			column = 0
 		} else {
 			column++
 		}
-
-		t = t.AddDate(0, 0, 1)
 	}
 
-	if !in.request.ShowInactiveDays {
-		return
-	}
-
-	// finish
-	for column < 7 {
+	// finish last row
+	for t.Weekday() != firstDay && in.request.ShowInactiveDays {
 		days = append(days, dayInfo{
 			Date:     t,
 			X:        column*in.request.DaysXStep + in.request.DaysX - in.request.DaysXStep,
 			Y:        row*in.request.DaysYStep + in.request.DaysY - in.request.DaysYStep,
-			Weekend:  t.Weekday() == time.Saturday || t.Weekday() == time.Sunday,
 			Inactive: t.Month() != month,
+			Weekend:  t.Weekday() == time.Saturday || t.Weekday() == time.Sunday,
 		})
-		column++
 		t = t.AddDate(0, 0, 1)
+		column++
 	}
 
 	return

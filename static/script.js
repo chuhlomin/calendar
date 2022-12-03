@@ -640,7 +640,7 @@ function days(cfg, month) {
             }
         }
 
-        if (inactive && !cfg.showInactiveDays) {
+        if (row == 0 && inactive && !cfg.showInactiveDays) {
             date.setDate(date.getDate() + 1);
             column++;
             continue;
