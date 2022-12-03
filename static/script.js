@@ -210,7 +210,7 @@ function loadFont(fontName) {
             document.fonts.add(loadedFace);
             loadedFonts[fontName] = true;
             delete loadingFonts[fontName];
-            updateCalendar(true);
+            updateCalendar();
         })
         .catch(function(error) {
             console.log(error);
