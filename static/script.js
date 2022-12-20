@@ -116,6 +116,9 @@ const gap = 10; // mm
 
 let configIntegerFields = ["firstDay", "year", "month"];
 
+let width = 0;
+let height = 0;
+
 let body = document.getElementsByTagName("body")[0];
 let panel = document.getElementsByClassName('panel')[0];
 let language = document.getElementById("language");
@@ -276,6 +279,9 @@ function loadConfig(key) {
             let select = document.getElementsByName(key)[0];
             select.value = config.month;
         }
+        if (key == "pageSize") {
+            updatePage();
+        }
     }
 }
 
@@ -372,10 +378,6 @@ function maybeResizeCalendar() {
         return;
     }
 
-    let pageData = pageSize.querySelector("option[value='" + config.pageSize + "']").dataset;
-    let width = parseInt(pageData.width);
-    let height = parseInt(pageData.height);
-
     let rows = getOptimalNumberOfRows(width, height);
     if (rows != currentRows) {
         currentRows = rows;
@@ -413,9 +415,18 @@ const possibleRows = [2, 3, 4, 6];
 function updatePage() {
     let pageData = pageSize.querySelector("option[value='" + config.pageSize + "']").dataset;
 
-    let width = pageData.width;
-    let height = pageData.height;
+    width = parseInt(pageData.width);
+    height = parseInt(pageData.height);
 
+    calculateThresholds();
+    if (config.month != "-1") { // year
+        svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+    }
+    rect.setAttribute("width", width);
+    rect.setAttribute("height", height);
+}
+
+function calculateThresholds() {
     let prevCalendarAR;
     for (const rows of possibleRows) {
         let columns = 12 / rows;
@@ -428,10 +439,6 @@ function updatePage() {
         }
         prevCalendarAR = calendarAR;
     }
-
-    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
-    rect.setAttribute("width", width);
-    rect.setAttribute("height", height);
 }
 
 function updateLanguage() {
@@ -573,10 +580,6 @@ function updateFormats() {
 }
 
 function updateCalendar(styleOnly = false) {
-    let pageData = pageSize.querySelector("option[value='" + config.pageSize + "']").dataset;
-    let width = parseInt(pageData.width);
-    let height = parseInt(pageData.height);
-
     let [cfg, errors] = validateConfig(config);
     if (errors.length > 0) {
         console.error(errors);
