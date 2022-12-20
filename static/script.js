@@ -783,7 +783,6 @@ function addMonthToPage(page, cfg, width, month) {
 
     // month
     let monthGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    monthGroup.setAttribute("transform", "translateX(50%)");
     monthGroup.classList.add("month");
     monthGroup.innerHTML = Mustache.render(templateMonth, {
         month: getMonth(cfg, month),

@@ -183,12 +183,13 @@ fieldset {
 
 .canvas {
   text-align: center;
+  height: 100%;
 }
 
 .canvas svg {
   max-width: 100%;
   max-height: calc(100vh - 40px);
-  height: -webkit-fill-available;
+  height: 100%;
   user-select: none;
   -webkit-user-select: none;
 }
