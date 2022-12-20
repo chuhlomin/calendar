@@ -206,7 +206,10 @@ function loadFont(fontName) {
     const font = new FontFace(
         fontName,
         "url('/" + fontName + ".ttf') format('truetype'), url('/" + fontName + ".woff') format('woff2')",
-        { unicodeRange: "U+0020-007E" }
+        {
+            // range for numbers, latin characters and cyrillic
+            unicodeRange: "U+0020-007F, U+00A0-00FF, U+0400-04FF",
+        }
     );
     font.load()
         .then(function(loadedFace) {
