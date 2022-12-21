@@ -22,10 +22,10 @@ spec:
           resources:
             limits:
               cpu: 20m
-              memory: 64Mi
+              memory: 128Mi
             requests:
               cpu: 20m
-              memory: 64Mi
+              memory: 128Mi
       imagePullSecrets:
         - name: ghcrcred
 ---
