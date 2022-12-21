@@ -869,9 +869,9 @@ function buildFilename(cfg) {
 }
 
 function submitForm(element) {
-    let defaultLabel = element.value;
+    let defaultLabel = element.innerHTML;
     element.setAttribute("disabled", "disabled");
-    element.value = "Generating PDF...";
+    element.innerHTML = "Generating PDF...";
 
     let [cfg, errors] = validateConfig(config);
     if (errors.length > 0) {
@@ -895,19 +895,20 @@ function submitForm(element) {
                 a.click();
             });
             element.removeAttribute("disabled");
-            element.value = defaultLabel;
+            element.innerHTML = defaultLabel;
         } else {
             response.text().then(text => {
+                // todo: better error handling
                 alert(text);
                 console.log(text);
             });
 
             element.removeAttribute("disabled");
-            element.value = defaultLabel;
+            element.innerHTML = defaultLabel;
         }
     }).catch(error => {
         alert("Error: " + error);
         element.removeAttribute("disabled");
-        element.value = defaultLabel;
+        element.innerHTML = defaultLabel;
     });
 }
