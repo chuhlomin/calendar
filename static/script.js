@@ -267,6 +267,9 @@ function loadConfig(key) {
             if (checkbox.dataset.fieldset) {
                 toggleFieldset(checkbox.dataset.fieldset, checkbox.checked);
             }
+            if (checkbox.dataset.field) {
+                toggleField(checkbox.dataset.field, checkbox.checked);
+            }
             break;
         }
     } else { // value not found in localStorage
@@ -554,6 +557,10 @@ function changeConfigKV(key, value) {
     if (key == "language") {
         updateLanguage();
     }
+    if (key == "showInactiveDays") {
+        toggleField("inactive-color", value == "true");
+    }
+
     updateCalendar(styleOnlyConfig.includes(key));
     localStorage.setItem(key, value);
 }
@@ -573,6 +580,19 @@ function toggleFieldset(fieldsetName, enabled) {
         for (const input of inputs) {
             input.disabled = true;
         }
+    }
+}
+
+function toggleField(fieldName, enabled) {
+    let field = document.getElementById("field-" + fieldName);
+    let input = field.querySelector("input, button, select");
+
+    if (enabled) {
+        field.classList.remove("disabled");
+        input.disabled = false;
+    } else {
+        field.classList.add("disabled");
+        input.disabled = true;
     }
 }
 

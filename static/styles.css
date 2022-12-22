@@ -305,6 +305,10 @@ input[type="checkbox"] + span {
   cursor: pointer;
 }
 
+.field.disabled.color button {
+  cursor: default;
+}
+
 .github-icon {
   display: inline-block;
   width: 16px;
