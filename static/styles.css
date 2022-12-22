@@ -293,6 +293,10 @@ input[type="checkbox"] + span {
   width: calc(100% - 20px);
 }
 
+.field input[type="checkbox"] + span {
+  padding-left: 0.33rem;
+}
+
 .field.disabled {
   opacity: 0.5;
 }
