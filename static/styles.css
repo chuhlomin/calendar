@@ -290,7 +290,7 @@ input[type="number"]:disabled {
 input[type="checkbox"] + span {
   display: inline-block;
   vertical-align: top;
-  width: calc(100% - 20px);
+  width: calc(100% - 30px);
 }
 
 .field input[type="checkbox"] + span {
