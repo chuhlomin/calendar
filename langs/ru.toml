@@ -65,6 +65,7 @@ hide = " "
 show_preview = "Показать"
 hide_preview = "Скрыть"
 download = "Скачать"
+generating = "Генерирую"
 download_pdf = "PDF"
 
 made_by = "Сделано"

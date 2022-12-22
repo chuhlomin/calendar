@@ -64,6 +64,7 @@ show = " "
 hide = " "
 show_preview = "Показати"
 hide_preview = "Приховати"
+generating = "Генерування"
 download = "Завантажити"
 
 made_by = "Зроблено"

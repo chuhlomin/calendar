@@ -164,6 +164,8 @@ let weekdays = [
     "Sat",
 ];
 
+let generatingLabel = "Generating";
+
 let availableFonts = {
     "firacode-regular": "Fira Code",
     "iosevka-regular": "Iosevka",
@@ -485,6 +487,8 @@ function updateLanguage() {
                 data.weekday_short_friday,
                 data.weekday_short_saturday
             ];
+
+            generatingLabel = data.generating;
 
             updateFormats();
             updateCalendar();
@@ -871,7 +875,7 @@ function buildFilename(cfg) {
 function submitForm(element) {
     let defaultLabel = element.innerHTML;
     element.setAttribute("disabled", "disabled");
-    element.innerHTML = "Generating PDF...";
+    element.innerHTML = generatingLabel + '<span class="may-hide"> PDF</span>...';
 
     let [cfg, errors] = validateConfig(config);
     if (errors.length > 0) {
