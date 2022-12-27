@@ -100,15 +100,11 @@ let configInputTypes = {
 
 const styleOnlyConfig = [
     "daysFontSize",
-    "daysFontFamily",
     "textColor",
     "weekendColor",
     "inactiveColor",
-    "monthFontFamily",
     "monthColor",
-    "weekdaysFontFamily",
     "weekdaysColor",
-    "weeknumbersFontFamily",
     "weeknumbersColor",
 ];
 
