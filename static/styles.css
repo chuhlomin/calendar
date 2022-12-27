@@ -268,6 +268,10 @@ fieldset.disabled .field {
   opacity: 0.5;
 }
 
+fieldset.disabled .color button {
+  cursor: default;
+}
+
 fieldset legend {
   white-space: nowrap;
 }
