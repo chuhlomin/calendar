@@ -189,6 +189,8 @@ let availableFonts = {
     "iosevka-ss18-regular": "Iosevka SS18 (Input Mono Style)",
     "jetbrains-mono-regular": "JetBrains Mono",
     "naga-regular": "Naga",
+    "martianmono-regular": "MartianMono",
+    "martianmono-condenced-regular": "MartianMono Condenced",
     "onest-regular": "Onest",
 };
 let loadedFonts = {};
