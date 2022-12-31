@@ -299,7 +299,11 @@ func getDays(in *input, year int32, month time.Month) (days days, weekNumbers []
 
 	var row int32
 	var column int32
-	_, weekNumber := t.ISOWeek()
+
+	// day shift to get week number
+	shift := t
+	shift = shift.Add(3 * 24 * time.Hour)
+	_, weekNumber := shift.ISOWeek()
 
 	for t.Unix() < end.Unix() {
 		inactive := t.Month() != month

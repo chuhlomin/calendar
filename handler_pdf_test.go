@@ -70,7 +70,7 @@ func TestGetDays(t *testing.T) {
 				"*18* 19 20 21 22 23 *24*",
 				"*25* 26 27 28 29 30 *31*",
 			},
-			expectedWeekNumbers: []int{47, 48, 49, 50, 51},
+			expectedWeekNumbers: []int{48, 49, 50, 51, 52},
 		},
 		{
 			name:             "sunday, show inactive days",
@@ -86,7 +86,7 @@ func TestGetDays(t *testing.T) {
 				"*25* 26 27 28 29 30 *31*",
 				"_1_ _2_ _3_ _4_ _5_ _6_ _7_",
 			},
-			expectedWeekNumbers: []int{47, 48, 49, 50, 51, 52},
+			expectedWeekNumbers: []int{48, 49, 50, 51, 52, 1},
 		},
 		{
 			name:             "monday",

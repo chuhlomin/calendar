@@ -651,7 +651,11 @@ function days(cfg, month) {
     let row = 0;
     let column = 0;
 
-    let weeknumber = getWeekNumber(date);
+    // day shift to get week number
+    let shift = new Date(date);
+    shift.setDate(shift.getDate() + 3);
+
+    let weeknumber = getWeekNumber(shift);
 
     while (date <= end) {
         let inactive = date.getMonth() != month;
