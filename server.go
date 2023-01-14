@@ -1,9 +1,9 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -25,7 +25,7 @@ func (s *server) routes() {
 	staticFilesDirs := []string{"static", "fonts"}
 
 	for _, dir := range staticFilesDirs {
-		files, err := ioutil.ReadDir(dir)
+		files, err := os.ReadDir(dir)
 		if err != nil {
 			log.Fatalf("could not read static files: %v", err)
 		}

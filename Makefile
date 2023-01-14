@@ -12,7 +12,7 @@ vet:
 .PHONY: test
 ## test: runs the tests
 test:
-	@go test ./...
+	@go test -cover ./...
 
 .PHONY: protoc
 ## protoc: generates the protobuf files

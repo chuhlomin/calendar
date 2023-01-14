@@ -40,7 +40,10 @@ func handlerPDF(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("error creating PDF: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Sorry, something went wrong"))
+		_, err = w.Write([]byte("Sorry, something went wrong"))
+		if err != nil {
+			log.Printf("error writing response: %s", err)
+		}
 		return
 	}
 }
@@ -239,27 +242,6 @@ func setTextColor(pdf *gofpdf.Fpdf, color color.Color) {
 	r, g, b, a := color.RGBA()
 	pdf.SetTextColor(int(r/0x0101), int(g/0x0101), int(b/0x0101))
 	pdf.SetAlpha(float64(a)/0xffff, "Normal")
-}
-
-func convertColor(hex string) (int, int, int, float64) {
-	var r, g, b, a int64
-
-	if len(hex) == 7 {
-		r, _ = strconv.ParseInt(hex[1:3], 16, 0)
-		g, _ = strconv.ParseInt(hex[3:5], 16, 0)
-		b, _ = strconv.ParseInt(hex[5:7], 16, 0)
-		return int(r), int(g), int(b), 1.0
-	}
-
-	if len(hex) == 9 {
-		r, _ = strconv.ParseInt(hex[1:3], 16, 0)
-		g, _ = strconv.ParseInt(hex[3:5], 16, 0)
-		b, _ = strconv.ParseInt(hex[5:7], 16, 0)
-		a, _ = strconv.ParseInt(hex[7:9], 16, 0)
-		return int(r), int(g), int(b), float64(a) / 255.0
-	}
-
-	return 0, 0, 0, 0
 }
 
 func date(year, month, day int) time.Time {

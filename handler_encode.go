@@ -21,7 +21,10 @@ func handlerEncode(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("error marshaling proto: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Sorry, something went wrong"))
+		_, err = w.Write([]byte("Sorry, something went wrong"))
+		if err != nil {
+			log.Printf("error writing response: %s", err)
+		}
 		return
 	}
 
@@ -29,5 +32,8 @@ func handlerEncode(w http.ResponseWriter, r *http.Request) {
 	b64 := base64.StdEncoding.EncodeToString(b)
 
 	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte(b64))
+	_, err = w.Write([]byte(b64))
+	if err != nil {
+		log.Printf("error writing response: %s", err)
+	}
 }

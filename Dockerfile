@@ -9,6 +9,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     -o /go/bin/app .
 
 FROM scratch
+USER nobody
 COPY fonts /fonts
 COPY langs /langs
 COPY static /static
