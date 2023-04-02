@@ -125,13 +125,15 @@ fieldset {
   flex-direction: column;
   justify-content: space-between;
   border-top: 1px solid var(--color-panel-border);
-  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -5px 10px rgba(139, 142, 145, 0.2),
+    inset 0 1px 0 0.5px rgba(255, 255, 255, 0.5);
   transition: box-shadow 0.1s linear;
   background: var(--color-background);
 }
 
 .scrolled .actions {
-  box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 0.5px rgba(255, 255, 255, 0.5);
 }
 
 .btn {
@@ -179,7 +181,9 @@ fieldset {
 
 .panel {
   border-right: 1px solid var(--color-panel-border);
+  box-shadow: 1px 0 0 0.5px rgba(255, 255, 255, 0.5);
   padding-bottom: calc(109px + 20px);
+  z-index: 10;
 }
 
 .content {
@@ -370,6 +374,13 @@ input[type="checkbox"] + span {
   .actions {
     box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.4);
   }
+  .scrolled .actions {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.4);
+  }
+  .panel {
+    box-shadow: none;
+  }
+
   .btn {
     color: var(--color-text);
     border-color: #6d717b;
