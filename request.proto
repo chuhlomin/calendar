@@ -4,7 +4,7 @@ package main;
 option go_package = "github.com/chuhlomin/calendar/main";
 
 message Request {
-  string size = 1;
+  string pageSize = 1;
   int32 firstDay = 2;
   int32 year = 3;
   int32 month = 4;

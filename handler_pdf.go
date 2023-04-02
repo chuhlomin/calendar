@@ -97,7 +97,16 @@ func parsePDFRequest(r *http.Request) (*input, error) {
 }
 
 func createPDF(writer io.Writer, in *input) error {
-	pdf := gofpdf.New("P", "mm", in.request.Size, "")
+	size, err := getSize(in.request.PageSize)
+	if err != nil {
+		return err
+	}
+
+	pdf := gofpdf.NewCustom(&gofpdf.InitType{
+		OrientationStr: "P",
+		UnitStr:        "mm",
+		Size:           *size,
+	})
 	pdf.SetAutoPageBreak(false, 0)
 	pdf.SetFillColor(255, 255, 255)
 
@@ -120,12 +129,34 @@ func createPDF(writer io.Writer, in *input) error {
 		}
 	}
 
-	err := pdf.Output(writer)
+	err = pdf.Output(writer)
 	if err != nil {
 		return fmt.Errorf("error writing PDF: %w", err)
 	}
 
 	return nil
+}
+
+func getSize(size string) (*gofpdf.SizeType, error) {
+	switch size {
+	case "Letter":
+		return &gofpdf.SizeType{
+			Wd: 216,
+			Ht: 279,
+		}, nil
+	case "Legal":
+		return &gofpdf.SizeType{
+			Wd: 216,
+			Ht: 356,
+		}, nil
+	case "A4":
+		return &gofpdf.SizeType{
+			Wd: 210,
+			Ht: 297,
+		}, nil
+	default:
+		return nil, fmt.Errorf("invalid size %q", size)
+	}
 }
 
 func createPDFMonth(writer io.Writer, pdf *gofpdf.Fpdf, in *input, month time.Month) error {
