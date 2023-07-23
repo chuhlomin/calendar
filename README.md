@@ -4,6 +4,8 @@
 
 Powers [calendar.chuhlomin.com](https://calendar.chuhlomin.com).
 
+<img width="100%" alt="calendar chuhlomin com" src="https://github.com/chuhlomin/calendar/assets/3620471/920492b7-388e-4a50-b690-9b5a37a2bc09">
+
 ## Directory structure
 
 ```bash
