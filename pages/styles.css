@@ -73,6 +73,11 @@ body,
   overflow: hidden;
 }
 
+.common {
+  height: 100vh;
+  height: -webkit-fill-available;
+}
+
 a {
   transition-property: color, border;
   transition-duration: 0.33s;
@@ -519,6 +524,7 @@ input[type="checkbox"] + span {
     position: absolute;
     top: 50%;
     left: 20px;
+    right: 20px;
     transform: translateY(-50%);
   }
 }
