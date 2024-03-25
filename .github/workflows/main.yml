@@ -15,9 +15,6 @@ jobs:
       - name: Remove fonts
         run: rm -rf pages/fonts
 
-      - name: Update static file hashes
-        run: make hash
-
       - name: Deploy
         uses: cloudflare/wrangler-action@v3.4.1
         if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip deploy]')
