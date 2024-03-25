@@ -10,14 +10,14 @@ Powers [calendar.chuhlomin.com](https://calendar.chuhlomin.com).
 
 ```bash
 .
-├── fonts          # ttf and woff2 fonts used in browser and PDF
-├── langs          # language files
-├── static         # static files
-│   ├── script.js  # main script
+
+├── pages          # static files
+│   ├── fonts      # ttf and woff2 fonts used in browser and PDF
+│   ├── langs      # language files
 │   ├── styles.css # main styles
+│   ├── index.js   # main script
 │   └── index.html # main page
-├── vendor         # vendored dependencies
-└── main.go        # main application
+└── Makefile       # build and run commands
 ```
 
 ## Local development
@@ -45,8 +45,8 @@ Add new option to select in `static/index.html`:
 
 ```html
 <select name="language" id="language" ...>
-...
-<option value="en">English</option>
+  ...
+  <option value="en">English</option>
 </select>
 ```
 

@@ -1,26 +1,16 @@
 .PHONY: help
-## help: prints this help message
+## help: print this help message
 help:
 	@echo "Usage: \n"
 	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'
 
-.PHONY: vet
-## vet: runs the linter
-vet:
-	@go vet ./...
+.PHONY: hash
+## hash: update static files hashes in index.html
+hash:
+	sed -i '' -E "s/styles\.css\?crc=[0-9a-z]+/styles.css?crc=$$(crc32 ./pages/styles.css)/" pages/index.html
+	sed -i '' -E "s/index\.js\?crc=[0-9a-z]+/index.js?crc=$$(crc32 ./pages/index.js)/" pages/index.html
 
-.PHONY: test
-## test: runs the tests
-test:
-	@go test -cover ./...
-
-.PHONY: protoc
-## protoc: generates the protobuf files
-protoc:
-	@protoc --go_out=. --go_opt=paths=source_relative request.proto
-
-.PHONY: run
-## run: runs the binary
-run:
-	@go build -o calendar .
-	@./calendar --bind 127.0.0.1:8082
+.PHONY: dev
+## dev: run the wrangler pages dev
+dev: hash
+	wrangler pages dev pages/
