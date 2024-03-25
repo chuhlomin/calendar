@@ -199,6 +199,8 @@ const errorNode = document.createElement("span");
 errorNode.classList.add("error");
 errorNode.textContent = " ⚠";
 
+const fontBaseURL = "https://fonts.calendar.chuhlomin.com/";
+
 function loadFont(fontName) {
   if (loadedFonts[fontName] || loadingFonts[fontName]) {
     return;
@@ -208,7 +210,8 @@ function loadFont(fontName) {
 
   const font = new FontFace(
     fontName,
-    "url('https://fonts.calendar.chuhlomin.com/" +
+    "url('" +
+      fontBaseURL +
       fontName +
       ".ttf') format('truetype'), url('https://fonts.calendar.chuhlomin.com/" +
       fontName +
@@ -1029,7 +1032,7 @@ function addFonts(doc, cfg) {
   fonts[cfg.weeknumbersFontFamily] = null;
 
   Object.keys(fonts).map((font) => {
-    doc.addFont("/fonts/" + font + ".ttf", font, "normal");
+    doc.addFont(fontBaseURL + font + ".ttf", font, "normal");
   });
 }
 
