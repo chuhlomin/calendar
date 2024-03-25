@@ -22,26 +22,19 @@ Powers [calendar.chuhlomin.com](https://calendar.chuhlomin.com).
 
 ## Local development
 
-Install [Go](https://golang.org/doc/install).
+Install [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/).
 
 In terminal:
 
 ```bash
-make run
+make dev
 ```
 
-Example output:
-
-```
-2022/12/31 10:00:00 Starting...
-2022/12/31 10:00:00 Starting server on http://127.0.0.1:8082
-```
-
-Open http://localhost:8082
+Open http://localhost:8788
 
 ## Adding new language
 
-Add new option to select in `static/index.html`:
+Add new option to select in `pages/index.html`:
 
 ```html
 <select name="language" id="language" ...>
@@ -50,4 +43,4 @@ Add new option to select in `static/index.html`:
 </select>
 ```
 
-Create new file under `langs`.
+Create new file under `pages/langs`.
