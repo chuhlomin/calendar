@@ -308,7 +308,8 @@ input[type="number"] {
 
 select:focus,
 input[type="number"]:focus,
-input[type="radio"]:focus {
+input[type="radio"]:focus,
+.field.color button:focus {
   outline-style: solid;
   outline-color: var(--color-link);
   outline-width: 2px;
@@ -340,19 +341,6 @@ input[type="checkbox"] + span {
   cursor: default;
 }
 
-.github-icon {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  margin-left: 0.1rem;
-
-  background: url(GitHub-Mark-32px.png) center left no-repeat;
-  background-size: 16px 16px;
-
-  border: none;
-  text-decoration: none;
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --color-text: #d6dede;
@@ -378,9 +366,6 @@ input[type="checkbox"] + span {
     --btn-disabled-color: #999999;
     --btn-disabled-background: #282a3a;
     --btn-disabled-border: #6d717b;
-  }
-  .github-icon {
-    background-image: url(GitHub-Mark-Light-32px.png);
   }
   select {
     background: #282a3a;
