@@ -16,7 +16,7 @@ jobs:
         run: rm -rf pages/fonts
 
       - name: Deploy
-        uses: cloudflare/wrangler-action@v3.5.0
+        uses: cloudflare/wrangler-action@v3.7.0
         if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip deploy]')
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
