@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Calendar</title>
-    <link rel="stylesheet" href="styles.css?crc=b5568214" />
+    <link rel="stylesheet" href="styles.css?crc=86256927" />
     <link rel="stylesheet" href="colr_pickr.min.css" />
 
     <meta
@@ -202,6 +202,11 @@
                     Loading...
                   </option>
                 </select>
+                <select
+                  name="daysFontStyle"
+                  class="style hidden"
+                  onchange="changeConfig(this)"
+                ></select>
               </div>
 
               <div class="field">
@@ -369,6 +374,11 @@
                     Loading...
                   </option>
                 </select>
+                <select
+                  name="monthFontStyle"
+                  class="style hidden"
+                  onchange="changeConfig(this)"
+                ></select>
               </div>
 
               <div class="field">
@@ -440,6 +450,11 @@
                     Loading...
                   </option>
                 </select>
+                <select
+                  name="weekdaysFontStyle"
+                  class="style hidden"
+                  onchange="changeConfig(this)"
+                ></select>
               </div>
 
               <div class="field">
@@ -528,6 +543,11 @@
                     Loading...
                   </option>
                 </select>
+                <select
+                  name="weeknumbersFontStyle"
+                  class="style hidden"
+                  onchange="changeConfig(this)"
+                ></select>
               </div>
 
               <div class="field">
@@ -699,7 +719,7 @@
       {{/weeknumbers}}
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="index.js?crc=13ebe0b2"></script>
+    <script src="index.js?crc=c43eab7a"></script>
     <script src="colr_pickr.min.js"></script>
     <script src="mustache.min.js"></script>
   </body>

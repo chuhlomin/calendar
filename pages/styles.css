@@ -73,6 +73,10 @@ body,
   overflow: hidden;
 }
 
+.hidden {
+  display: none;
+}
+
 .common {
   height: 100vh;
   height: -webkit-fill-available;
@@ -252,8 +256,8 @@ select {
   border: 0.0625rem solid #c6c8ca;
 }
 
-select option.error {
-  color: red;
+select + select {
+  margin-top: 10px;
 }
 
 label {

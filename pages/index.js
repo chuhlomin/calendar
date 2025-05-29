@@ -24,6 +24,7 @@ let config = {
   // days
   daysFontSize: "45",
   daysFontFamily: "iosevka-regular",
+  daysFontStyle: "", // only used for system fonts
   textColor: "#222222",
   weekendColor: "#aa5555",
   daysX: "40",
@@ -37,6 +38,7 @@ let config = {
   showMonth: "true",
   monthFormat: "January 2006",
   monthFontFamily: "iosevka-aile-regular",
+  monthFontStyle: "",
   monthFontSize: "50",
   monthY: "260",
   monthColor: "#222222",
@@ -44,6 +46,7 @@ let config = {
   // weekdays
   showWeekdays: "true",
   weekdaysFontFamily: "iosevka-aile-regular",
+  weekdaysFontStyle: "",
   weekdaysFontSize: "18",
   weekdaysX: "40",
   weekdaysY: "32",
@@ -52,6 +55,7 @@ let config = {
   // week numbers
   showWeekNumbers: "true",
   weeknumbersFontFamily: "iosevka-regular",
+  weeknumbersFontStyle: "",
   weeknumbersFontSize: "16",
   weeknumbersX: "20",
   weeknumbersY: "43",
@@ -68,6 +72,7 @@ let configInputTypes = {
   // days
   daysFontSize: "number",
   daysFontFamily: "select",
+  daysFontStyle: "select",
   daysX: "number",
   daysY: "number",
   daysXStep: "number",
@@ -81,12 +86,14 @@ let configInputTypes = {
   showMonth: "checkbox",
   monthFormat: "select",
   monthFontFamily: "select",
+  monthFontStyle: "select",
   monthFontSize: "number",
   monthColor: "color",
   monthY: "number",
 
   // weekdays
   showWeekdays: "checkbox",
+  weekdaysFontFamily: "select",
   weekdaysFontFamily: "select",
   weekdaysFontSize: "number",
   weekdaysColor: "color",
@@ -96,6 +103,7 @@ let configInputTypes = {
   // week numbers
   showWeekNumbers: "checkbox",
   weeknumbersFontFamily: "select",
+  weeknumbersFontStyle: "select",
   weeknumbersFontSize: "number",
   weeknumbersColor: "color",
   weeknumbersX: "number",
@@ -201,8 +209,73 @@ errorNode.textContent = " ⚠";
 
 const fontBaseURL = "https://fonts.calendar.chuhlomin.com/";
 
-function loadFont(fontName) {
-  if (loadedFonts[fontName] || loadingFonts[fontName]) {
+async function loadFont(fontName) {
+  console.log("Loading font", fontName);
+  if (fontName === "system") {
+    await loadSystemFonts();
+    return;
+  }
+
+  if (loadingFonts[fontName]) {
+    return;
+  }
+
+  // if font is not in availableFonts, load it from system
+  if (!availableFonts[fontName]) {
+    if (!loadedFonts[fontName]) {
+      await loadSystemFonts(); // happens on page load
+    }
+
+    // optionally, show select for choosing font style
+    for (const select of fontSelects) {
+      if (select.value !== fontName) {
+        continue;
+      }
+
+      const nextSelect = select.nextElementSibling;
+      nextSelect.innerHTML = "";
+      const selectedStyle = nextSelect.dataset.style;
+
+      // get selected option dataset
+      const selectedOption = select.options[select.selectedIndex];
+      const stylesRaw = selectedOption.dataset.styles;
+      if (!stylesRaw) {
+        nextSelect.classList.add("hidden");
+        break;
+      }
+
+      // find next select and set options in there
+      const styles = stylesRaw.split("|");
+      nextSelect.disabled = styles.length === 1;
+
+      for (const styleRaw of styles) {
+        const [style, postscriptName] = styleRaw.split(":");
+
+        const option = document.createElement("option");
+        option.value = postscriptName;
+        option.textContent = style;
+        if (style === selectedStyle) {
+          option.selected = true;
+        }
+
+        nextSelect.appendChild(option);
+      }
+
+      // if none of the styles match, select first one
+      if (!nextSelect.querySelector("option[selected]")) {
+        nextSelect.querySelector("option").selected = true;
+      }
+
+      nextSelect.classList.remove("hidden");
+
+      break;
+    }
+
+    updateCalendar();
+    return;
+  }
+
+  if (loadedFonts[fontName]) {
     return;
   }
 
@@ -229,6 +302,16 @@ function loadFont(fontName) {
       delete loadingFonts[fontName];
       updateCalendar();
 
+      for (const select of fontSelects) {
+        if (select.value !== fontName) {
+          continue;
+        }
+
+        const nextSelect = select.nextElementSibling;
+        nextSelect.innerHTML = "";
+        nextSelect.classList.add("hidden");
+      }
+
       // delete all .error child nodes
       document
         .querySelectorAll("option[value='" + fontName + "'].error")
@@ -252,7 +335,99 @@ function loadFont(fontName) {
     });
 }
 
-function loadConfig(key) {
+let loadedSystemFonts = false;
+async function loadSystemFonts() {
+  if (loadedSystemFonts) {
+    return;
+  }
+
+  // update "Load system fonts" option to "Loading system fonts...",
+  // make it disabled and selected
+  for (const select of fontSelects) {
+    if (select.value !== "system") {
+      continue;
+    }
+    let option = select.querySelector("option[value='system']");
+    option.textContent = "Loading system fonts...";
+    option.disabled = true;
+    option.selected = true;
+  }
+
+  console.log("Loading system fonts");
+  const availableFonts = await window.queryLocalFonts();
+  let families = {};
+  for (const fontData of availableFonts) {
+    if (!(await isTTF(fontData))) {
+      continue;
+    }
+
+    if (!families[fontData.family]) {
+      families[fontData.family] = [];
+    }
+
+    families[fontData.family].push(fontData);
+  }
+
+  // sort all keys
+  let fontList = Object.keys(families).sort();
+
+  // update list of available fonts:
+  // remove option(s) with .system class
+  // add new options to the end of the list
+  document.querySelectorAll(".font .system").forEach(function (option) {
+    option.remove();
+  });
+
+  for (const select of fontSelects) {
+    let selectedFamily = select.dataset.font;
+    for (const family of fontList) {
+      let option = document.createElement("option");
+      option.value = family;
+      option.textContent = family;
+      if (selectedFamily === family) {
+        option.selected = true;
+      }
+
+      option.dataset.styles = families[family]
+        .map((font) => font.style + ":" + font.postscriptName)
+        .join("|");
+      option.classList.add("system");
+      select.appendChild(option);
+    }
+  }
+
+  for (const family of fontList) {
+    loadedFonts[family] = true;
+  }
+  loadedSystemFonts = true;
+}
+
+async function isTTF(fontData) {
+  // `blob()` returns a Blob containing valid and complete
+  // SFNT-wrapped font data.
+  var sfnt;
+  try {
+    sfnt = await fontData.blob();
+  } catch (e) {
+    console.log("Failed to load font", fontData.family, e);
+    return false;
+  }
+  // Slice out only the bytes we need: the first 4 bytes are the SFNT
+  // version info.
+  // Spec: https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
+  const sfntVersion = await sfnt.slice(0, 4).text();
+
+  switch (sfntVersion) {
+    case "\x00\x01\x00\x00":
+    case "true":
+    case "typ1":
+      return true;
+    default:
+      return false;
+  }
+}
+
+async function loadConfig(key) {
   let value = localStorage.getItem(key);
   if (value) {
     config[key] = value;
@@ -262,7 +437,16 @@ function loadConfig(key) {
         let select = document.getElementsByName(key)[0];
         select.value = value;
         if (select.classList.contains("font")) {
-          loadFont(value);
+          // store font name in dataset,
+          // so that after list of available fonts is loaded
+          // we can select it.
+          select.dataset.font = value;
+
+          await loadFont(value);
+        }
+
+        if (select.classList.contains("style")) {
+          select.dataset.style = value;
         }
 
         if (key == "language") {
@@ -360,15 +544,16 @@ function validateConfig(config) {
   return [cfg, errors];
 }
 
-window.onload = function () {
+const fontSelects = document.querySelectorAll(".font");
+
+window.onload = async function () {
   // restore panel scroll position
   let panelOffset = localStorage.getItem("panelOffset");
   if (panelOffset) {
     panel.scrollTop = panelOffset;
   }
 
-  // update select.font options
-  let fontSelects = document.querySelectorAll("select.font");
+  // update font options
   for (const select of fontSelects) {
     // remove all options
     while (select.firstChild) {
@@ -401,11 +586,23 @@ window.onload = function () {
 
       select.add(option);
     }
+
+    // add divider
+    let divider = document.createElement("hr");
+    divider.disabled = true;
+    select.appendChild(divider);
+
+    // add option to load system fonts
+    let option = document.createElement("option");
+    option.value = "system";
+    option.classList.add("system");
+    option.text = "Load system fonts";
+    select.add(option);
   }
 
   // load config from local storage
   for (let key in config) {
-    loadConfig(key);
+    await loadConfig(key);
 
     if (configInputTypes[key] == "color") {
       let button = document.getElementsByName(key)[0];
@@ -1001,14 +1198,16 @@ async function submitForm(element) {
   }, 100);
 }
 
+var doc;
+
 async function generatePDF(cfg) {
-  const doc = new jspdf.jsPDF({
+  doc = new jspdf.jsPDF({
     orientation: "portrait",
     unit: "mm",
     format: [cfg.width, cfg.height],
   });
 
-  addFonts(doc, cfg);
+  await addFonts(doc, cfg);
 
   if (cfg.month == -1) {
     for (let month = 0; month < 12; month++) {
@@ -1024,15 +1223,61 @@ async function generatePDF(cfg) {
   doc.save(buildFilename(cfg));
 }
 
-function addFonts(doc, cfg) {
-  const fonts = {};
-  fonts[cfg.daysFontFamily] = null;
-  fonts[cfg.monthFontFamily] = null;
-  fonts[cfg.weekdaysFontFamily] = null;
-  fonts[cfg.weeknumbersFontFamily] = null;
+async function addFonts(doc, cfg) {
+  const selectedFontFamilies = [
+    cfg.daysFontFamily,
+    cfg.monthFontFamily,
+    cfg.weekdaysFontFamily,
+    cfg.weeknumbersFontFamily,
+  ];
+  const selectedFontPostscriptNames = [
+    cfg.daysFontStyle,
+    cfg.monthFontStyle,
+    cfg.weekdaysFontStyle,
+    cfg.weeknumbersFontStyle,
+  ];
 
-  Object.keys(fonts).map((font) => {
-    doc.addFont(fontBaseURL + font + ".ttf", font, "normal");
+  // Add fonts that are "available" out of the box right away,
+  // collect the rest for load from system fonts
+  let postscriptNames = [];
+  for (let i = 0; i < selectedFontFamilies.length; i++) {
+    let font = selectedFontFamilies[i];
+    if (availableFonts[font]) {
+      doc.addFont(fontBaseURL + font + ".ttf", font, "normal");
+    } else {
+      postscriptNames.push(selectedFontPostscriptNames[i]);
+    }
+  }
+
+  console.log("postscriptNames", postscriptNames);
+
+  // Query system fonts and add them to the document
+  const localFonts = await window.queryLocalFonts({
+    postscriptNames: postscriptNames,
+  });
+  for (let i = 0; i < localFonts.length; i++) {
+    let postscriptName = localFonts[i].postscriptName;
+    let blob = await localFonts[i].blob();
+    let dataURL = await blobToDataUrl(blob);
+
+    doc.addFileToVFS(postscriptName + ".ttf", dataURL.split(",")[1]);
+    doc.addFont(postscriptName + ".ttf", postscriptName, "normal");
+  }
+}
+
+async function blobToDataUrl(blob) {
+  return new Promise((r) => {
+    let a = new FileReader();
+    a.onload = r;
+    a.readAsDataURL(blob);
+  }).then((e) => e.target.result);
+}
+
+async function blobToBase64(blob) {
+  return new Promise((resolve, _) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
   });
 }
 
@@ -1055,7 +1300,12 @@ function addMonthPage(doc, cfg, month) {
 }
 
 function drawDaysPDF(doc, cfg, d) {
-  doc.setFont(cfg.daysFontFamily);
+  console.log("Setting font for days", cfg.daysFontFamily, cfg.daysFontStyle);
+  if (availableFonts[cfg.daysFontFamily]) {
+    doc.setFont(cfg.daysFontFamily);
+  } else {
+    doc.setFont(cfg.daysFontStyle);
+  }
   doc.setFontSize(cfg.daysFontSize);
 
   const rgba = hexToRgb(cfg.textColor);
@@ -1084,7 +1334,13 @@ function drawDaysPDF(doc, cfg, d) {
 }
 
 function drawMonthPDF(doc, cfg, year, month) {
-  doc.setFont(cfg.monthFontFamily);
+  if (availableFonts[cfg.monthFontFamily]) {
+    console.log("Setting font for month", cfg.monthFontFamily);
+    doc.setFont(cfg.monthFontFamily);
+  } else {
+    console.log("Setting font for month", cfg.monthFontStyle);
+    doc.setFont(cfg.monthFontStyle);
+  }
   doc.setFontSize(cfg.monthFontSize);
 
   const rgba = hexToRgb(cfg.monthColor);
@@ -1102,10 +1358,10 @@ function drawWeekdaysPDF(doc, cfg) {
   const rgba = hexToRgb(cfg.weekdaysColor);
   doc.setTextColor(rgba.r, rgba.g, rgba.b, { a: rgba.a });
 
-  weekdays = weekdaysLayout(cfg);
+  let layout = weekdaysLayout(cfg);
 
-  for (let day = 0; day < weekdays.length; day++) {
-    let w = weekdays[day];
+  for (let day = 0; day < layout.length; day++) {
+    let w = layout[day];
     doc.text(w.day, w.x, w.y, { align: "right" });
   }
 }
